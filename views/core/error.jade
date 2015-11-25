@@ -1,0 +1,14 @@
+extends ../_shared/_root-layout.jade
+
+block body
+	div.jumbotron
+		div.container
+			h1.text-center= status + ': ' + message
+			p.text-center
+			a.btn.btn-primary(href='/') &laquo; Take me home
+
+	if error != null
+		div.container
+			div.row
+				div.col-md-12
+					pre #{error.stack}
