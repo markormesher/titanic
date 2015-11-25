@@ -12,4 +12,6 @@ var indexController = require('./index-controller');
 var router = express.Router();
 router.get('/', indexController.get);
 
+router.get('/make', indexController.make);
+
 module.exports = router;

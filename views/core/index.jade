@@ -1,4 +1,7 @@
 extends ../_shared/_root-layout.jade
 
 block body
-    h1 Test
+	h1=title
+
+	each d in devices
+		pre=d
