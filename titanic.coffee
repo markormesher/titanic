@@ -4,24 +4,21 @@
 
 path = require('path')
 express = require('express')
-app = express()
 mongoose = require('mongoose')
-
-#########################
-#  Global declarations  #
-#########################
-
-_global = {}
+rfr = require('rfr')
 
 ##########################
 #  Database connections  #
 ##########################
 
-mongoose.connect('mongodb://localhost/titanic', (err, db) -> _global.db = db);
+mongoose.connect('mongodb://localhost/titanic');
 
 ############
 #  Routes  #
 ############
+
+# start app
+app = express()
 
 # pull routes from routes folder
 routes = {

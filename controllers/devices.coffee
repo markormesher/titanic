@@ -5,7 +5,6 @@
 express = require('express')
 rfr = require('rfr')
 async = require('async')
-constants = rfr('./helpers/constants')
 
 # models
 Device = rfr('./models/device')
@@ -42,6 +41,8 @@ router.get('/', (req, res) ->
 			# create list of hostname entries
 			hostnameEntryList = [];
 			result.hostnameEntries.forEach((e) -> hostnameEntryList[hostnameEntryList.length] = e)
+
+			console.log(_global.constants)
 
 			# render output
 			res.render('devices/index', {
