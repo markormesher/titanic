@@ -42,8 +42,6 @@ router.get('/', (req, res) ->
 			hostnameEntryList = [];
 			result.hostnameEntries.forEach((e) -> hostnameEntryList[hostnameEntryList.length] = e)
 
-			console.log(_global.constants)
-
 			# render output
 			res.render('devices/index', {
 				title: 'Device List',
