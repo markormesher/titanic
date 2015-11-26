@@ -3,13 +3,17 @@
 //////////////////
 
 var express = require('express');
-var indexController = require('./index-controller');
 
 //////////////
 // Mappings //
 //////////////
 
 var router = express.Router();
-router.get('/', indexController.get);
+
+router.get('/', function (req, res) {
+	res.render('core/index', {
+		title: 'Titanic'
+	});
+});
 
 module.exports = router;

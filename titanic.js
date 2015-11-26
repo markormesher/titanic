@@ -5,6 +5,18 @@
 var path = require('path');
 var express = require('express');
 var app = express();
+var mongoose = require('mongoose');
+
+/////////////////////////
+// Global declarations //
+/////////////////////////
+
+var _global = {};
+
+// database connections
+mongoose.connect('mongodb://localhost/titanic', function(err, db) {
+	_global.db = db;
+});
 
 ////////////
 // Routes //
@@ -12,7 +24,8 @@ var app = express();
 
 // pull routes from routes folder
 var routes = {
-	'': require('./controllers/core/_routes')
+	'': require('./controllers/core'),
+	'devices': require('./controllers/devices')
 };
 for (var stem in routes) {
 	//noinspection JSUnfilteredForInLoop

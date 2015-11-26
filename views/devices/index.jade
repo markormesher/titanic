@@ -1,0 +1,10 @@
+extends ../_shared/_root-layout
+
+block body
+	h1=title
+
+	each d in devices
+		pre=d
+
+	each h in hostnameEntries
+		pre=h
