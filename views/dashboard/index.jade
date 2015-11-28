@@ -22,10 +22,12 @@ block body
 				div.portlet-body.activity-stream
 					if eventsError != null
 						p.error Activity log failed to load.
-						pre= eventsError
 					else
 						if events.length == 0
 							p.none No activity yet!
 						else
 							for e in events
-								pre= e
+								p
+									span.timestamp= e['timestamp']
+									| &nbsp;&nbsp;&nbsp;
+									span(class=e['type'])= e['message']
