@@ -5,6 +5,7 @@
 express = require('express')
 rfr = require('rfr')
 async = require('async')
+log = rfr('./helpers/log')
 
 # models
 Device = rfr('./models/device')
@@ -73,6 +74,9 @@ router.get('/make', (req, res) ->
 	sarah_chuck.save()
 	sarah_casey.save()
 
+	## demo log, for now - REMOVE LATER
+	log.event("Made devices")
+
 	## done
 	res.end()
 );
@@ -90,6 +94,9 @@ router.get('/clear', (req, res) ->
 
 		# callback
 		(err, docs) ->
+			## demo log, for now - REMOVE LATER
+			log.error("Cleared devices")
+
 			res.end()
 	)
 )

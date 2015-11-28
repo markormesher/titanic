@@ -4,13 +4,17 @@ LogEvent = rfr('./models/log-event')
 module.exports = {
 
 	# create a new log entry
-	event: (message, error = false) ->
+	event: (message) ->
 		new LogEvent({
 			message: message
-			type: if error then 'error' else 'normal'
+			type: 'normal'
 		}).save()
 
 	# create a new error log entry
-	error: (message) -> event(message, true)
+	error: (message) ->
+		new LogEvent({
+			message: message
+			type: 'error'
+		}).save();
 
 }
