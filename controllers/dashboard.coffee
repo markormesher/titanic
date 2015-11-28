@@ -12,7 +12,7 @@ router = express.Router()
 
 router.get('/', (req, res) ->
 	res.render('dashboard/index', {
-		title: 'Dashboard',
+		title: 'Dashboard'
 		activePage: 'dashboard'
 	})
 )
