@@ -5,6 +5,7 @@
 path = require('path')
 express = require('express')
 mongoose = require('mongoose')
+sassMiddleware = require('node-sass-middleware')
 rfr = require('rfr')
 
 ##########################
@@ -39,7 +40,14 @@ app.use('/favicon.ico', (req, res) -> res.end())
 
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'jade')
-app.use(express.static(path.join(__dirname, 'assets')))
+app.use(
+	sassMiddleware({
+		src: __dirname + '/assets/'
+		dest: __dirname + '/public'
+		outputStyle: 'compressed'
+	})
+)
+app.use(express.static(path.join(__dirname, 'public')))
 
 ####################
 #  Error handlers  #
