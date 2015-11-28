@@ -4,18 +4,18 @@ div.portlet
 
 	div.portlet-body
 		ul.navigation
-			li: a(href='/')
+			li: a(href='/')(class=(activePage == 'dashboard' ? 'active' : ''))
 				i.fa.fa-fw.fa-tv
 				span Dashboard
 
-			li: a(href='/devices')
+			li: a(href='/devices')(class=(activePage == 'devices' ? 'active' : ''))
 				i.fa.fa-fw.fa-server
 				span Devices
 
-			li: a(href='/devices')
+			li: a(href='/devices')(class=(activePage == 'hostname-aliases' ? 'active' : ''))
 				i.fa.fa-fw.fa-exchange
 				span Hostname Aliases
 
-			li: a(href='/devices')
+			li: a(href='/devices')(class=(activePage == 'bash-shortcuts' ? 'active' : ''))
 				i.fa.fa-fw.fa-terminal
 				span Bash Shortcuts

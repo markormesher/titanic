@@ -46,7 +46,8 @@ router.get('/', (req, res) ->
 			res.render('devices/index', {
 				title: 'Device List',
 				devices: deviceList,
-				hostnameEntries: hostnameEntryList
+				hostnameEntries: hostnameEntryList,
+				activePage: 'devices'
 			})
 	)
 )
@@ -88,8 +89,7 @@ router.get('/clear', (req, res) ->
 		],
 
 		# callback
-		(err, docs) ->
-			res.end()
+		(err, docs) -> res.end()
 	)
 )
 

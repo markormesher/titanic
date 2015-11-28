@@ -21,11 +21,13 @@ ul.navigation {
 			}
 		}
 
-		a:hover {
+		a:hover, a.active {
 			i {
 				color: $textHighlight;
 			}
+		}
 
+		a:hover {
 			span {
 				text-decoration: underline;
 			}
