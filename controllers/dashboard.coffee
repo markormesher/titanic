@@ -10,6 +10,10 @@ express = require('express')
 
 router = express.Router()
 
-router.get('/', (req, res) -> res.render('dashboard/index'))
+router.get('/', (req, res) ->
+	res.render('dashboard/index', {
+		title: 'Dashboard'
+	})
+)
 
 module.exports = router
