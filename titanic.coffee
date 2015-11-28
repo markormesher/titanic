@@ -67,7 +67,7 @@ app.use((error, req, res, next) ->
 		title: error.status + ': ' + error.message,
 		message: error.message,
 		status: error.status || 500,
-		error: app.get('env') == 'development' ? error: null
+		error: if app.get('env') == 'development' then error
 	})
 )
 
