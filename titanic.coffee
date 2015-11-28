@@ -5,6 +5,7 @@
 path = require('path')
 express = require('express')
 mongoose = require('mongoose')
+sassMiddleware = require('node-sass-middleware')
 rfr = require('rfr')
 
 ##########################
@@ -20,9 +21,19 @@ mongoose.connect('mongodb://localhost/titanic');
 # start app
 app = express()
 
+# middleware
+app.use(
+	sassMiddleware({
+		src: __dirname + '/assets/'
+		dest: __dirname + '/public'
+		outputStyle: 'compressed'
+	})
+)
+
 # pull routes from routes folder
 routes = {
-	'': require('./controllers/core'),
+	'': require('./controllers/core')
+	'dashboard': require('./controllers/dashboard')
 	'devices': require('./controllers/devices')
 };
 
@@ -38,7 +49,7 @@ app.use('/favicon.ico', (req, res) -> res.end())
 
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'jade')
-app.use(express.static(path.join(__dirname, 'assets')))
+app.use(express.static(path.join(__dirname, 'public')))
 
 ####################
 #  Error handlers  #
@@ -58,7 +69,7 @@ app.use((error, req, res, next) ->
 		title: error.status + ': ' + error.message,
 		message: error.message,
 		status: error.status || 500,
-		error: app.get('env') == 'development' ? error: null
+		error: if app.get('env') == 'development' then error
 	})
 )
 

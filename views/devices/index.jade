@@ -1,10 +1,15 @@
-extends ../_shared/_root-layout
+extends ../_shared/page-layout
 
-block body
-	h1=title
+block page-body
 
-	each d in devices
-		pre=d
+	div.portlet
+		div.portlet-title
+			caption: span.caption-subject.text-uppercase Devices
 
-	each h in hostnameEntries
-		pre=h
+		div.portlet-body
+
+			each d in devices
+				pre= d
+
+			each h in hostnameEntries
+				pre= h

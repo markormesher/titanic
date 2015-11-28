@@ -1,0 +1,23 @@
+extends ../_shared/root-layout
+
+block head
+	link(rel='stylesheet', href='/dashboard/css/dashboard.css')
+
+block body
+
+	div#header
+		h1 Titanic
+		h2 Transparent Integration of Terminal Aliases,<br />Networked In-between Computers
+
+	div.container
+
+		div.row
+
+			div.col-md-4: include ../_shared/navigation
+
+			div.col-md-8: div.portlet
+				div.portlet-title
+					caption: span.caption-subject.text-uppercase Activity Stream
+
+				div.portlet-body.activity-stream
+					p.none No activity yet!

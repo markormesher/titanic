@@ -44,8 +44,9 @@ router.get('/', (req, res) ->
 
 			# render output
 			res.render('devices/index', {
-				title: 'Device List',
-				devices: deviceList,
+				title: 'Device List'
+				activePage: 'devices'
+				devices: deviceList
 				hostnameEntries: hostnameEntryList
 			})
 	)

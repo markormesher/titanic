@@ -1,4 +1,12 @@
-# Created by https://www.gitignore.io/api/intellij,node,linux,windows
+### Titanic ###
+
+# Ignore CSS (commit the SCSS instead)
+*.css
+
+# Keep any 3rd party code
+!public/_vendor
+
+### Below: created by https://www.gitignore.io/api/intellij,node,linux,windows ###
 
 ### Intellij ###
 
