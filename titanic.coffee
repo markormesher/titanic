@@ -21,6 +21,15 @@ mongoose.connect('mongodb://localhost/titanic');
 # start app
 app = express()
 
+# middleware
+app.use(
+	sassMiddleware({
+		src: __dirname + '/assets/'
+		dest: __dirname + '/public'
+		outputStyle: 'compressed'
+	})
+)
+
 # pull routes from routes folder
 routes = {
 	'': require('./controllers/core')
@@ -40,13 +49,6 @@ app.use('/favicon.ico', (req, res) -> res.end())
 
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'jade')
-app.use(
-	sassMiddleware({
-		src: __dirname + '/assets/'
-		dest: __dirname + '/public'
-		outputStyle: 'compressed'
-	})
-)
 app.use(express.static(path.join(__dirname, 'public')))
 
 ####################
