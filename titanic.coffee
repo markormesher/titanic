@@ -7,6 +7,7 @@ express = require('express')
 mongoose = require('mongoose')
 sassMiddleware = require('node-sass-middleware')
 rfr = require('rfr')
+log = rfr('./helpers/log')
 
 ##########################
 #  Database connections  #
