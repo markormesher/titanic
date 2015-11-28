@@ -22,7 +22,8 @@ app = express()
 
 # pull routes from routes folder
 routes = {
-	'': require('./controllers/core'),
+	'': require('./controllers/core')
+	'dashboard': require('./controllers/dashboard')
 	'devices': require('./controllers/devices')
 };
 
