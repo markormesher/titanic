@@ -1,10 +1,10 @@
-extends ../_shared/_root-layout
+extends ../_shared/page-layout
 
-block body
-	h1=title
+block page-body
+	h1= title
 
 	each d in devices
-		pre=d
+		pre= d
 
 	each h in hostnameEntries
-		pre=h
+		pre= h
