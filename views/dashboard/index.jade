@@ -4,6 +4,32 @@ block head
 	link(rel='stylesheet', href='/dashboard/css/dashboard.css')
 
 block body
+
 	div#header
 		h1 Titanic
 		h2 Transparent Integration of Terminal Aliases,<br />Networked In-between Computers
+
+	div.container
+		div.row
+
+			div.col-md-4: div.portlet
+				div.portlet-title
+					caption: span.caption-subject.text-uppercase Navigation
+
+				div.portlet-body
+					ul.navigation
+						li: a(href='/devices')
+							i.fa.fa-fw.fa-desktop
+							span Devices
+
+						li: a(href='/devices')
+							i.fa.fa-fw.fa-exchange
+							span Hostname Aliases
+
+						li: a(href='/devices')
+							i.fa.fa-fw.fa-terminal
+							span Bash Shortcuts
+
+			div.col-md-8: div.portlet
+				div.portlet-title
+					caption: span.caption-subject.text-uppercase Activity Stream
