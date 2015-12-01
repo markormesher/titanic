@@ -25,11 +25,30 @@
 }
 
 div.activity-stream {
-	p.none {
+	p.none, p.error {
 		font-size: 1.5em;
 		font-weight: lighter;
 		font-style: italic;
-		color: $textMuted;
 		text-align: center;
+	}
+
+	p.none {
+		color: $textMuted;
+	}
+
+	p.error {
+		color: $textHighlight;
+	}
+
+	p {
+		font-size: 1.2em;
+
+		span.timestamp {
+			color: $textMuted;
+		}
+
+		span.error {
+			color: #ff0000;
+		}
 	}
 }
