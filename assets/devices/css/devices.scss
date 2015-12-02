@@ -1,0 +1,42 @@
+@import '../../_shared/css/defaults';
+
+.device-row {
+	padding: 15px 10px;
+
+	p {
+		margin: 0;
+		padding: 0;
+		font-size: 1.5em;
+		font-weight: lighter;
+
+		a {
+			text-decoration: none;
+			display: block;
+
+			i {
+				color: $textMuted;
+				vertical-align: middle;
+			}
+
+			span {
+				color: $textColour;
+			}
+		}
+
+		a:hover, a.active {
+			i {
+				color: $textHighlight;
+			}
+		}
+
+		a:hover {
+			span {
+				text-decoration: underline;
+			}
+		}
+	}
+}
+
+.device-row:hover {
+	background-color: #fafafa;
+}

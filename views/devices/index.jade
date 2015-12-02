@@ -1,5 +1,15 @@
 extends ../_shared/page-layout
 
+mixin device(d)
+	div.device-row
+		p: a(href = '/devices/edit/' + d._id)
+			i(class = 'fa fa-2x fa-' + d.type)
+			| &nbsp;&nbsp;&nbsp;
+			span d.hostname
+
+block page-head
+	link(rel='stylesheet', href='/devices/css/devices.css')
+
 block page-body
 
 	div.portlet
@@ -9,7 +19,4 @@ block page-body
 		div.portlet-body
 
 			each d in devices
-				pre= d
-
-			each h in hostnameEntries
-				pre= h
+				+device(d)

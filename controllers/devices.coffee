@@ -18,38 +18,14 @@ DeviceHostnameEntry = rfr('./models/device-hostname-entry')
 router = express.Router();
 
 router.get('/', (req, res) ->
-	# run requests in parallel
-	async.parallel(
-		{
-			# get all devices
-			devices: (callback) =>
-				Device.find({}, callback)
-
-			# get all hostname entries
-			hostnameEntries: (callback) =>
-				DeviceHostnameEntry
-				.find({})
-				.populate('from_device to_device')
-				.exec(callback)
-		},
-
-		# callback
-		(err, result) ->
-			# create list of devices
-			deviceList = [];
-			result.devices.forEach((d) -> deviceList[deviceList.length] = d)
-
-			# create list of hostname entries
-			hostnameEntryList = [];
-			result.hostnameEntries.forEach((e) -> hostnameEntryList[hostnameEntryList.length] = e)
-
-			# render output
-			res.render('devices/index', {
-				title: 'Device List'
-				activePage: 'devices'
-				devices: deviceList
-				hostnameEntries: hostnameEntryList
-			})
+	# get all devices
+	Device.find({}).sort({hostname: 'asc'}).exec((err, devices) ->
+		# render output
+		res.render('devices/index', {
+			title: 'Device List'
+			activePage: 'devices'
+			devices: devices
+		})
 	)
 )
 
