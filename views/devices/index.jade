@@ -14,7 +14,13 @@ block page-body
 
 	div.portlet
 		div.portlet-title
-			caption: span.caption-subject.text-uppercase Devices
+			div.caption
+				span.caption-subject.text-uppercase Devices
+			div.actions
+				a(href = '/devices/create', class = 'btn')
+					i.fa.fa-plus
+					| &nbsp;&nbsp;
+					| Create Device
 
 		div.portlet-body
 
