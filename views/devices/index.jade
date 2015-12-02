@@ -3,9 +3,9 @@ extends ../_shared/page-layout
 mixin device(d)
 	div.device-row
 		p: a(href = '/devices/edit/' + d._id)
-			i(class = 'fa fa-2x fa-' + d.type)
+			i(class = 'fa fa-lg fa-' + d.type)
 			| &nbsp;&nbsp;&nbsp;
-			span d.hostname
+			span= d.hostname
 
 block page-head
 	link(rel='stylesheet', href='/devices/css/devices.css')
