@@ -12,4 +12,40 @@ block page-body
 
 		div.portlet-body
 
-			pre= device
+			form(action = '#', method = 'post')
+
+				fieldset.form-group
+					label(for = 'hostname') Hostname
+					input#hostname.form-control(type = 'text', name = 'hostname', value = device ? device.hostname : '')
+
+				fieldset.form-group
+					label(for = 'ip_address') IP Address
+					input#ip_address.form-control(type = 'text', name = 'ip_address', value = device ? device.ip_address : '')
+
+				fieldset.form-group
+					label.control-label Type
+					div.btn-group.btn-group-justified(role = 'group', data-toggle = 'buttons')
+						label.btn.btn-default
+							input(type = 'radio', name = 'type', value = 'server')
+							| Server
+						label.btn.btn-default
+							input(type = 'radio', name = 'type', value = 'desktop')
+							| Desktop
+						label.btn.btn-default
+							input(type = 'radio', name = 'type', value = 'laptop')
+							| Laptop
+						label.btn.btn-default
+							input(type = 'radio', name = 'type', value = 'mobile')
+							| Mobile
+
+				fieldset.form-group
+					label.control-label Location
+					div.btn-group.btn-group-justified(role = 'group', data-toggle = 'buttons')
+						label.btn.btn-default
+							input(type = 'radio', name = 'location', value = 'Internal')
+							| Internal
+						label.btn.btn-default
+							input(type = 'radio', name = 'location', value = 'External')
+							| External
+
+				button.btn.btn-primary Save

@@ -67,9 +67,11 @@ app.use((req, res, next) ->
 app.use((error, req, res, next) ->
 	res.status(error.status || 500)
 	res.render('core/error', {
-		title: error.status + ': ' + error.message,
-		message: error.message,
-		status: error.status || 500,
+		_: {
+			title: error.status + ': ' + error.message
+		}
+		message: error.message
+		status: error.status || 500
 		error: if app.get('env') == 'development' then error
 	})
 )

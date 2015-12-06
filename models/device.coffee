@@ -4,6 +4,8 @@ module.exports = mongoose.model(
 	{
 		hostname: String
 
+		ip_address: String
+
 		type: {
 			type: String
 			validate: /(server|desktop|laptop|mobile)/
@@ -13,7 +15,5 @@ module.exports = mongoose.model(
 			type: String
 			validate: /(internal|external)/
 		}
-
-		ip_address: String
 	}
 )
