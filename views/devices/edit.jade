@@ -1,0 +1,15 @@
+extends ../_shared/page-layout
+
+block page-head
+	link(rel='stylesheet', href='/devices/css/devices.css')
+
+block page-body
+
+	div.portlet
+		div.portlet-title
+			div.caption
+				span.caption-subject.text-uppercase= title
+
+		div.portlet-body
+
+			pre= device
