@@ -18,12 +18,14 @@ DeviceHostnameEntry = rfr('./models/device-hostname-entry')
 router = express.Router();
 
 router.get('/', (req, res) ->
-# get all devices
+	# get all devices
 	Device.find({}).sort({hostname: 'asc'}).exec((err, devices) ->
-# render output
+		# render output
 		res.render('devices/index', {
-			title: 'Device List'
-			activePage: 'devices'
+			_: {
+				title: 'Device List'
+				activePage: 'devices'
+			}
 			devices: devices
 		})
 	)
@@ -31,8 +33,10 @@ router.get('/', (req, res) ->
 
 router.get('/create', (req, res) ->
 	res.render('devices/edit', {
-		title: 'Create Device'
-		activePage: 'devices'
+		_: {
+			title: 'Create Device'
+			activePage: 'devices'
+		}
 		device: null
 	})
 )
@@ -53,8 +57,10 @@ router.get('/edit/:deviceId', (req, res) ->
 
 		# render output
 		res.render('devices/edit', {
-			title: 'Edit Device: ' + device.hostname
-			activePage: 'devices'
+			_: {
+				title: 'Edit Device: ' + device.hostname
+				activePage: 'devices'
+			}
 			device: device
 		})
 	)
