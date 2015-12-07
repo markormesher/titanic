@@ -1,4 +1,5 @@
 extends ../_shared/page-layout
+include ../_shared/_mixins
 
 block page-head
 	link(rel='stylesheet', href='/devices/css/devices.css')
@@ -22,36 +23,24 @@ block page-body
 					label(for = 'ip_address') IP Address
 					input#ip_address.form-control(type = 'text', name = 'ip_address', value = device ? device.ip_address : '')
 
-				fieldset.form-group
-					label.control-label Type
-					div.btn-group.btn-group-justified(role = 'group', data-toggle = 'buttons')
-						label.btn.btn-default
-							input(type = 'radio', name = 'type', value = 'server')
-							i.fa.fa-server.text-muted
-							| &nbsp;&nbsp;&nbsp;&nbsp;Server
-						label.btn.btn-default
-							input(type = 'radio', name = 'type', value = 'desktop')
-							i.fa.fa-desktop.text-muted
-							| &nbsp;&nbsp;&nbsp;&nbsp;Desktop
-						label.btn.btn-default
-							input(type = 'radio', name = 'type', value = 'laptop')
-							i.fa.fa-laptop.text-muted
-							| &nbsp;&nbsp;&nbsp;&nbsp;Laptop
-						label.btn.btn-default
-							input(type = 'radio', name = 'type', value = 'mobile')
-							i.fa.fa-mobile.text-muted
-							| &nbsp;&nbsp;&nbsp;&nbsp;Mobile
+				+formButtonGroup(
+					'Type', 'type',
+					[
+						{value: 'server', label: 'Server', fa_icon: 'server'},
+						{value: 'desktop', label: 'Desktop', fa_icon: 'desktop'},
+						{value: 'laptop', label: 'Laptop', fa_icon: 'laptop'},
+						{value: 'mobile', label: 'Mobile', fa_icon: 'mobile'}
+					],
+					device ? device.type : ''
+				)
 
-				fieldset.form-group
-					label.control-label Location
-					div.btn-group.btn-group-justified(role = 'group', data-toggle = 'buttons')
-						label.btn.btn-default
-							input(type = 'radio', name = 'location', value = 'internal')
-							i.fa.fa-sign-in.text-muted
-							| &nbsp;&nbsp;&nbsp;&nbsp;Internal
-						label.btn.btn-default
-							input(type = 'radio', name = 'location', value = 'external')
-							i.fa.fa-sign-out.text-muted
-							| &nbsp;&nbsp;&nbsp;&nbsp;External
+				+formButtonGroup(
+					'Location', 'location',
+					[
+						{value: 'internal', label: 'Internal', fa_icon: 'sign-in'},
+						{value: 'external', label: 'External', fa_icon: 'sign-out'}
+					],
+					device ? device.location : ''
+				)
 
 				button.btn.btn-primary Save

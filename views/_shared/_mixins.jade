@@ -1,0 +1,10 @@
+mixin formButtonGroup(title, name, options, defaultValue)
+	fieldset.form-group
+		label.control-label= title
+		div.btn-group.btn-group-justified(role = 'group', data-toggle = 'buttons')
+			for o in options
+				label(class = ('btn btn-default' + (defaultValue == o.value ? ' active' : '')))
+					input(type = 'radio', name = name, value = o.value, checked = defaultValue == o.value)
+					i(class = 'fa text-muted fa-' + o.fa_icon)
+					| &nbsp;&nbsp;&nbsp;&nbsp;
+					=o.label
