@@ -27,25 +27,31 @@ block page-body
 					div.btn-group.btn-group-justified(role = 'group', data-toggle = 'buttons')
 						label.btn.btn-default
 							input(type = 'radio', name = 'type', value = 'server')
-							| Server
+							i.fa.fa-server.text-muted
+							| &nbsp;&nbsp;&nbsp;&nbsp;Server
 						label.btn.btn-default
 							input(type = 'radio', name = 'type', value = 'desktop')
-							| Desktop
+							i.fa.fa-desktop.text-muted
+							| &nbsp;&nbsp;&nbsp;&nbsp;Desktop
 						label.btn.btn-default
 							input(type = 'radio', name = 'type', value = 'laptop')
-							| Laptop
+							i.fa.fa-laptop.text-muted
+							| &nbsp;&nbsp;&nbsp;&nbsp;Laptop
 						label.btn.btn-default
 							input(type = 'radio', name = 'type', value = 'mobile')
-							| Mobile
+							i.fa.fa-mobile.text-muted
+							| &nbsp;&nbsp;&nbsp;&nbsp;Mobile
 
 				fieldset.form-group
 					label.control-label Location
 					div.btn-group.btn-group-justified(role = 'group', data-toggle = 'buttons')
 						label.btn.btn-default
-							input(type = 'radio', name = 'location', value = 'Internal')
-							| Internal
+							input(type = 'radio', name = 'location', value = 'internal')
+							i.fa.fa-sign-in.text-muted
+							| &nbsp;&nbsp;&nbsp;&nbsp;Internal
 						label.btn.btn-default
-							input(type = 'radio', name = 'location', value = 'External')
-							| External
+							input(type = 'radio', name = 'location', value = 'external')
+							i.fa.fa-sign-out.text-muted
+							| &nbsp;&nbsp;&nbsp;&nbsp;External
 
 				button.btn.btn-primary Save
