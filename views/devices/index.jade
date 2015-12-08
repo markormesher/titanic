@@ -33,5 +33,8 @@ block page-body
 						when 'deleted'
 							p.text-success The device was deleted!
 
+			if devices.length == 0
+				p.text-muted.text-center There are no registered devices!
+
 			each d in devices
 				+device(d)
