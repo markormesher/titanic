@@ -88,6 +88,9 @@ router.post('/edit/:deviceId', (req, res) ->
 	Device.update(query, device, {upsert: true}, (err) ->
 		if (err) then throw err
 
+		# log
+		log.event((if deviceId then 'Edited' else 'Created') + ' device (' + query._id + ')')
+
 		# forward to edit page
 		status = if err then 'error' else (if deviceId then 'saved' else 'created')
 		res.writeHead(301, {
@@ -103,6 +106,9 @@ router.get('/delete/:deviceId', (req, res) ->
 
 	# delete device
 	Device.remove({_id: deviceId}, (err) ->
+		# log
+		log.event('Deleted device (' + deviceId + ')')
+
 		res.writeHead(301, {
 			Location: '/devices?status=deleted'
 		})

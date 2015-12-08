@@ -1,6 +1,6 @@
 mixin formTextInput(title, name, defaultValue)
 	fieldset.form-group
-		label(for = name) Hostname
+		label(for = name)= title
 		input.form-control(id = name, name = name, type = 'text', value = defaultValue)
 
 mixin formButtonGroup(title, name, options, defaultValue)
