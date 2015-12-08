@@ -1,3 +1,8 @@
+mixin formTextInput(title, name, defaultValue)
+	fieldset.form-group
+		label(for = name) Hostname
+		input.form-control(id = name, name = name, type = 'text', value = defaultValue)
+
 mixin formButtonGroup(title, name, options, defaultValue)
 	fieldset.form-group
 		label.control-label= title
@@ -7,4 +12,4 @@ mixin formButtonGroup(title, name, options, defaultValue)
 					input(type = 'radio', name = name, value = o.value, checked = defaultValue == o.value)
 					i(class = 'fa text-muted fa-' + o.fa_icon)
 					| &nbsp;&nbsp;&nbsp;&nbsp;
-					=o.label
+					= o.label

@@ -1,5 +1,5 @@
 extends ../_shared/page-layout
-include ../_shared/_mixins
+include ../_mixins/forms
 
 block page-head
 	link(rel='stylesheet', href='/devices/css/devices.css')
@@ -25,13 +25,9 @@ block page-body
 
 			form(action = '/devices/edit/' + (device ? device._id : 0), method = 'post')
 
-				fieldset.form-group
-					label(for = 'hostname') Hostname
-					input#hostname.form-control(type = 'text', name = 'hostname', value = device ? device.hostname : '')
+				+formTextInput('Hostname', 'hostname', device ? device.hostname : '')
 
-				fieldset.form-group
-					label(for = 'ip_address') IP Address
-					input#ip_address.form-control(type = 'text', name = 'ip_address', value = device ? device.ip_address : '')
+				+formTextInput('IP Address', 'ip_address', device ? device.ip_address : '')
 
 				+formButtonGroup(
 					'Type', 'type',
