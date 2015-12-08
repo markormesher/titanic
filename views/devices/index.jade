@@ -25,5 +25,13 @@ block page-body
 
 		div.portlet-body
 
+			if status != null
+				div(class = 'alert alert-' + (status == 'error' ? 'danger' : 'success'))
+					case status
+						when 'error'
+							p.text-danger Something went wrong!
+						when 'deleted'
+							p.text-success The device was deleted!
+
 			each d in devices
 				+device(d)

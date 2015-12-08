@@ -19,6 +19,9 @@ DeviceHostnameEntry = rfr('./models/device-hostname-entry')
 router = express.Router();
 
 router.get('/', (req, res) ->
+	# get parameters
+	status = req.query.status
+
 	# get all devices
 	Device.find({}).sort({hostname: 'asc'}).exec((err, devices) ->
 		# render output
@@ -27,6 +30,7 @@ router.get('/', (req, res) ->
 				title: 'Device List'
 				activePage: 'devices'
 			}
+			status: status
 			devices: devices
 		})
 	)
@@ -82,8 +86,7 @@ router.post('/edit/:deviceId', (req, res) ->
 
 	# save in DB
 	Device.update(query, device, {upsert: true}, (err) ->
-		if (err)
-			throw err
+		if (err) then throw err
 
 		# forward to edit page
 		status = if err then 'error' else (if deviceId then 'saved' else 'created')
@@ -94,52 +97,18 @@ router.post('/edit/:deviceId', (req, res) ->
 	)
 )
 
-router.get('/make', (req, res) ->
-# devices
-	chuck = new Device({hostname: 'chuck', type: 'server', location: 'external', ip_address: '178.62.115.216'});
-	casey = new Device({hostname: 'casey', type: 'desktop', location: 'internal', ip_address: '192.168.0.11'});
-	sarah = new Device({hostname: 'sarah', type: 'laptop', location: 'internal', ip_address: '192.168.0.11'});
+router.get('/delete/:deviceId', (req, res) ->
+	# get parameters
+	deviceId = req.params.deviceId
 
-	chuck.save()
-	sarah.save()
-	casey.save()
-
-	# connections
-	casey_chuck = new DeviceHostnameEntry({from_device: casey._id, to_device: chuck._id})
-	casey_sarah = new DeviceHostnameEntry({from_device: casey._id, to_device: sarah._id})
-	sarah_chuck = new DeviceHostnameEntry({from_device: sarah._id, to_device: chuck._id})
-	sarah_casey = new DeviceHostnameEntry({from_device: sarah._id, to_device: casey._id})
-
-	casey_chuck.save()
-	casey_sarah.save()
-	sarah_chuck.save()
-	sarah_casey.save()
-
-	## demo log, for now - REMOVE LATER
-	log.event("Made devices")
-
-	## done
-	res.end()
-);
-
-router.get('/clear', (req, res) ->
-# run requests in parallel
-	async.parallel(
-		[
-# remove devices
-			(callback) -> Device.remove({}, callback)
-
-# remove hostname entries
-			(callback) -> DeviceHostnameEntry.remove({}, callback)
-		],
-
-# callback
-		(err, docs) ->
-## demo log, for now - REMOVE LATER
-			log.error("Cleared devices")
-
-			res.end()
+	# delete device
+	Device.remove({_id: deviceId}, (err) ->
+		res.writeHead(301, {
+			Location: '/devices?status=deleted'
+		})
+		res.end()
 	)
 )
+
 
 module.exports = router;
