@@ -5,6 +5,7 @@
 path = require('path')
 express = require('express')
 mongoose = require('mongoose')
+bodyParser = require('body-parser')
 sassMiddleware = require('node-sass-middleware')
 rfr = require('rfr')
 log = rfr('./helpers/log')
@@ -23,6 +24,7 @@ mongoose.connect('mongodb://localhost/titanic');
 app = express()
 
 # middleware
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
 	sassMiddleware({
 		src: __dirname + '/assets/'

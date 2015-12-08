@@ -8,6 +8,7 @@ async = require('async')
 log = rfr('./helpers/log')
 
 # models
+mongoose = require('mongoose')
 Device = rfr('./models/device')
 DeviceHostnameEntry = rfr('./models/device-hostname-entry')
 
@@ -44,6 +45,7 @@ router.get('/create', (req, res) ->
 router.get('/edit/:deviceId', (req, res) ->
 	# get parameters
 	deviceId = req.params.deviceId
+	status = req.query.status
 
 	# find device
 	Device.find({_id: deviceId}).exec((err, device) ->
@@ -62,7 +64,33 @@ router.get('/edit/:deviceId', (req, res) ->
 				activePage: 'devices'
 			}
 			device: device
+			status: status
 		})
+	)
+)
+
+router.post('/edit/:deviceId', (req, res) ->
+	# get parameters
+	deviceId = req.params.deviceId
+	if (deviceId == null || deviceId == 0 || deviceId == '0') then deviceId = false
+	device = req.body
+
+	# build create/edit query
+	query = {
+		_id: (if deviceId then deviceId else mongoose.Types.ObjectId())
+	}
+
+	# save in DB
+	Device.update(query, device, {upsert: true}, (err) ->
+		if (err)
+			throw err
+
+		# forward to edit page
+		status = if err then 'error' else (if deviceId then 'saved' else 'created')
+		res.writeHead(301, {
+			Location: '/devices/edit/' + query._id + '?status=' + status
+		})
+		res.end()
 	)
 )
 
