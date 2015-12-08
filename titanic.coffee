@@ -6,6 +6,7 @@ path = require('path')
 express = require('express')
 mongoose = require('mongoose')
 bodyParser = require('body-parser')
+coffeeMiddleware = require('coffee-middleware')
 sassMiddleware = require('node-sass-middleware')
 rfr = require('rfr')
 log = rfr('./helpers/log')
@@ -25,6 +26,12 @@ app = express()
 
 # middleware
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(
+	coffeeMiddleware({
+		src: __dirname + '/assets'
+		compress: true
+	})
+)
 app.use(
 	sassMiddleware({
 		src: __dirname + '/assets/'

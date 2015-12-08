@@ -2,7 +2,8 @@ extends ../_shared/page-layout
 include ../_mixins/forms
 
 block page-head
-	link(rel='stylesheet', href='/devices/css/devices.css')
+
+	link(rel = 'stylesheet', href = '/devices/css/devices.css')
 
 block page-body
 
@@ -49,4 +50,17 @@ block page-body
 					device ? device.location : ''
 				)
 
-				button.btn.btn-primary Save
+				fieldset.form-group
+					button.btn.btn-primary
+						i.fa.fa-save
+						| &nbsp;
+						| Save
+					| &nbsp;&nbsp;&nbsp;&nbsp;
+					a.btn.btn-default#delete-button(href = 'javascript:void;')
+						i.fa.fa-trash-o
+						| &nbsp;
+						| Delete
+
+block scripts
+
+	script(src = '/devices/js/edit.js')
