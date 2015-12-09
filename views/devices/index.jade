@@ -1,4 +1,5 @@
 extends ../_shared/page-layout
+include ../_mixins/plugins
 
 mixin device(d)
 	div.device-row
@@ -10,7 +11,7 @@ mixin device(d)
 			span= d.ip_address
 		p.buttons.btn-group
 			a.btn.btn-warning(href = '/devices/edit/' + d._id) Edit
-			a.btn.btn-danger(href = '/devices/delete/' + d._id) Delete
+			a.btn.btn-danger.delete-button(href = '/devices/delete/' + d._id, data-name = d.hostname, data-id = d._id) Delete
 
 block page-head
 
@@ -43,3 +44,8 @@ block page-body
 
 			each d in devices
 				+device(d)
+
+block scripts
+
+	+pluginBootbox
+	script(src = '/devices/js/delete.js')

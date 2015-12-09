@@ -1,6 +1,5 @@
 extends ../_shared/page-layout
 include ../_mixins/forms
-include ../_mixins/plugins
 
 block page-head
 
@@ -43,18 +42,6 @@ block page-body
 				)
 
 				fieldset.form-group
-					div.btn-group
-						button.btn.btn-primary
-							i.fa.fa-save
-							| &nbsp; Save
-						if device
-							a.btn.btn-default#delete-button(href = 'javascript:void;')
-								i.fa.fa-trash-o
-								| &nbsp; Delete
-
-block scripts
-
-	script.
-		var device = !{JSON.stringify(device)}
-	+pluginBootbox
-	script(src = '/devices/js/edit.js')
+					button.btn.btn-primary
+						i.fa.fa-save
+						| &nbsp; Save
