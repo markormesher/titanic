@@ -19,10 +19,6 @@ block page-body
 					case status
 						when 'error'
 							p.text-danger Something went wrong!
-						when 'saved'
-							p.text-success Your changes have been saved!
-						when 'created'
-							p.text-success The device <strong>#{device.hostname}</strong> was created!
 
 			form(action = '/devices/edit/' + (device ? device._id : 0), method = 'post')
 

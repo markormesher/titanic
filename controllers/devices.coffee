@@ -99,7 +99,7 @@ router.post('/edit/:deviceId', (req, res) ->
 		# forward to edit page
 		status = if err then 'error' else (if deviceId then 'saved' else 'created')
 		res.writeHead(301, {
-			Location: '/devices/edit/' + query._id + '?status=' + status
+			Location: '/devices?status=' + status
 		})
 		res.end()
 	)
