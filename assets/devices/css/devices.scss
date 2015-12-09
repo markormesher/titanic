@@ -1,39 +1,29 @@
 @import '../../_shared/css/defaults';
 
 .device-row {
-	padding: 10px 10px;
+	padding: 0 10px 20px;
+	display: flex;
+	align-items: center;
 
 	p {
 		margin: 0;
 		padding: 0;
 		font-size: 1.7em;
+		line-height: 0.8em;
 		font-weight: lighter;
+		display: inline-block;
 
-		a {
-			text-decoration: none;
-			display: block;
-
-			i {
-				color: $textMuted;
-				vertical-align: middle;
-			}
-
-			span {
-				color: $textColour;
-			}
+		span {
+			font-size: 0.5em;
 		}
+	}
 
-		a:hover, a.active {
-			i {
-				color: $textHighlight;
-			}
-		}
+	p.icon {
+		margin-right: 15px;
+	}
 
-		a:hover {
-			span {
-				text-decoration: underline;
-			}
-		}
+	p.buttons {
+		margin-left: auto;
 	}
 }
 

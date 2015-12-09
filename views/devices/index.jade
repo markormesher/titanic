@@ -2,10 +2,15 @@ extends ../_shared/page-layout
 
 mixin device(d)
 	div.device-row
-		p: a(href = '/devices/edit/' + d._id)
+		p.icon
 			i(class = 'fa fa-lg fa-fw fa-' + deviceTypes[d.type].fa_icon)
-			| &nbsp;&nbsp;&nbsp;
-			span= d.hostname
+		p.name
+			= d.hostname
+			br
+			span= d.ip_address
+		p.buttons.btn-group
+			a.btn.btn-warning(href = '/devices/edit/' + d._id) Edit
+			a.btn.btn-danger(href = '/devices/delete/' + d._id) Delete
 
 block page-head
 
