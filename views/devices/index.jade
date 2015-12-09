@@ -3,7 +3,7 @@ extends ../_shared/page-layout
 mixin device(d)
 	div.device-row
 		p: a(href = '/devices/edit/' + d._id)
-			i(class = 'fa fa-lg fa-fw fa-' + d.type)
+			i(class = 'fa fa-lg fa-fw fa-' + deviceTypes[d.type].fa_icon)
 			| &nbsp;&nbsp;&nbsp;
 			span= d.hostname
 

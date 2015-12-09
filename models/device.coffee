@@ -8,7 +8,7 @@ module.exports = mongoose.model(
 
 		type: {
 			type: String
-			validate: /(server|desktop|laptop|mobile)/
+			validate: /(server|desktop|laptop|mobile|other)/
 		}
 
 		location: {

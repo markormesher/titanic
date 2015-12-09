@@ -6,6 +6,8 @@ express = require('express')
 rfr = require('rfr')
 async = require('async')
 log = rfr('./helpers/log')
+c = rfr('./helpers/constants')
+utils = rfr('./helpers/utils')
 
 # models
 mongoose = require('mongoose')
@@ -32,6 +34,7 @@ router.get('/', (req, res) ->
 			}
 			status: status
 			devices: devices
+			deviceTypes: c.DEVICE_TYPES
 		})
 	)
 )
@@ -43,6 +46,7 @@ router.get('/create', (req, res) ->
 			activePage: 'devices'
 		}
 		device: null
+		deviceTypes: utils.objectToArray(c.DEVICE_TYPES)
 	})
 )
 
@@ -68,6 +72,7 @@ router.get('/edit/:deviceId', (req, res) ->
 				activePage: 'devices'
 			}
 			device: device
+			deviceTypes: c.DEVICE_TYPES
 			status: status
 		})
 	)
@@ -115,6 +120,5 @@ router.get('/delete/:deviceId', (req, res) ->
 		res.end()
 	)
 )
-
 
 module.exports = router;

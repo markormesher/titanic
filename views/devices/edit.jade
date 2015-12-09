@@ -31,16 +31,7 @@ block page-body
 
 				+formTextInput('IP Address', 'ip_address', device ? device.ip_address : '')
 
-				+formButtonGroup(
-					'Type', 'type',
-					[
-						{value: 'server', label: 'Server', fa_icon: 'server'},
-						{value: 'desktop', label: 'Desktop', fa_icon: 'desktop'},
-						{value: 'laptop', label: 'Laptop', fa_icon: 'laptop'},
-						{value: 'mobile', label: 'Mobile', fa_icon: 'mobile'}
-					],
-					device ? device.type : ''
-				)
+				+formButtonGroup('Type', 'type', deviceTypes, device ? device.type : '')
 
 				+formButtonGroup(
 					'Location', 'location',
