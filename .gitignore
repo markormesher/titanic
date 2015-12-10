@@ -2,9 +2,7 @@
 
 # Ignore CSS (commit the SCSS instead)
 *.css
-
-# Keep any 3rd party code
-!public/_vendor
+!public/_vendor/css/*
 
 ### Below: created by https://www.gitignore.io/api/intellij,node,linux,windows ###
 
