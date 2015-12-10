@@ -1,10 +1,14 @@
-mixin pluginBootbox
+mixin plugin_bootbox
 	script(src = '/_vendor/js/bootbox.min.js')
 
-mixin pluginValidation
+mixin plugin_validation
 	script(src = '/_vendor/js/jquery.form-validator.min.js')
 	script(type = 'text/javascript').
 		$.validate({
 			'inputParentClassOnSuccess': false
 		});
 		$('.btn').click(function() {$(this).validate();})
+
+mixin plugin_autoCloseAlerts
+	script(type = 'text/javascript').
+		$('.alert-success').delay(3000).slideUp(400, function() {$(this).alert('close');});

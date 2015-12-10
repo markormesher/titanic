@@ -50,13 +50,13 @@ block page-body
 						when 'created'
 							p.text-success The device was created!
 
-	if devices.length == 0
+			if devices.length == 0
 				p.text-muted.text-center There are no registered devices!
 
 			each d in devices
 				+device(d)
 
 block scripts
-
-	+pluginBootbox
+	+plugin_autoCloseAlerts
+	+plugin_bootbox
 	script(src = '/devices/js/delete.js')
