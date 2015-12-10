@@ -59,7 +59,7 @@ router.get('/edit/:deviceId', (req, res) ->
 	Device.find({_id: deviceId}).exec((err, device) ->
 		# check for device
 		if (err)
-			res.writeHead(301, {Location: '/devices'})
+			res.writeHead(302, {Location: '/devices?status=error'})
 			res.end()
 			return
 		else
@@ -98,7 +98,7 @@ router.post('/edit/:deviceId', (req, res) ->
 
 		# forward to edit page
 		status = if err then 'error' else (if deviceId then 'saved' else 'created')
-		res.writeHead(301, {
+		res.writeHead(302, {
 			Location: '/devices?status=' + status
 		})
 		res.end()
@@ -114,10 +114,10 @@ router.get('/delete/:deviceId', (req, res) ->
 		# log
 		log.event('Deleted device (' + deviceId + ')')
 
-		res.writeHead(301, {
+		res.writeHead(302, {
 			Location: '/devices?status=deleted'
 		})
-		res.end()
+		res.json(deviceId)
 	)
 )
 
