@@ -5,6 +5,8 @@
 path = require('path')
 express = require('express')
 mongoose = require('mongoose')
+bodyParser = require('body-parser')
+coffeeMiddleware = require('coffee-middleware')
 sassMiddleware = require('node-sass-middleware')
 rfr = require('rfr')
 log = rfr('./helpers/log')
@@ -23,6 +25,13 @@ mongoose.connect('mongodb://localhost/titanic');
 app = express()
 
 # middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(
+	coffeeMiddleware({
+		src: __dirname + '/assets'
+		compress: true
+	})
+)
 app.use(
 	sassMiddleware({
 		src: __dirname + '/assets/'
@@ -67,9 +76,11 @@ app.use((req, res, next) ->
 app.use((error, req, res, next) ->
 	res.status(error.status || 500)
 	res.render('core/error', {
-		title: error.status + ': ' + error.message,
-		message: error.message,
-		status: error.status || 500,
+		_: {
+			title: error.status + ': ' + error.message
+		}
+		message: error.message
+		status: error.status || 500
 		error: if app.get('env') == 'development' then error
 	})
 )

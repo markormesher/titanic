@@ -1,15 +1,62 @@
 extends ../_shared/page-layout
+include ../_mixins/plugins
+include ../_mixins/forms
+
+mixin device(d)
+	div.device-row
+		p.icon
+			i(class = 'fa fa-lg fa-fw fa-' + deviceTypes[d.type].fa_icon)
+		p.name
+			= d.hostname
+			br
+			span= d.ip_address
+		p.buttons.btn-group
+			+form_buttonLink('Edit', 'edit', '/devices/edit/' + d._id, {
+				'class': 'btn-warning'
+			})
+			+form_buttonLink('Delete', 'trash', '/devices/delete/' + d._id, {
+				'class': 'btn-danger delete-button',
+				'data-name': d.hostname,
+				'data-id': d._id.toString()
+			})
+
+block page-head
+
+	link(rel = 'stylesheet', href = '/devices/css/devices.css')
 
 block page-body
 
 	div.portlet
 		div.portlet-title
-			caption: span.caption-subject.text-uppercase Devices
+			div.caption
+				span.caption-subject.text-uppercase Devices
+			div.actions
+				a(href = '/devices/create', class = 'btn')
+					i.fa.fa-plus
+					| &nbsp;&nbsp;
+					| Create Device
 
 		div.portlet-body
 
-			each d in devices
-				pre= d
+			if status != null
+				div(class = 'alert alert-' + (status == 'error' ? 'danger' : 'success'))
+					case status
+						when 'error'
+							p.text-danger Something went wrong!
+						when 'deleted'
+							p.text-success The device was deleted!
+						when 'saved'
+							p.text-success Your changes have been saved!
+						when 'created'
+							p.text-success The device was created!
 
-			each h in hostnameEntries
-				pre= h
+			if devices.length == 0
+				p.text-muted.text-center There are no registered devices!
+
+			each d in devices
+				+device(d)
+
+block scripts
+	+plugin_autoCloseAlerts
+	+plugin_bootbox
+	script(src = '/devices/js/delete.js')

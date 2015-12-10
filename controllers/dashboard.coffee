@@ -22,16 +22,18 @@ router.get('/', (req, res) ->
 		# convert date format
 		events = events.map(
 			(e) -> {
-			type: e.type
-			message: e.message
-			timestamp: moment(e.timestamp).format('YYYY-MM-DD HH:mm:ss')
+				type: e.type
+				message: e.message
+				timestamp: moment(e.timestamp).format('YYYY-MM-DD HH:mm:ss')
 			}
 		)
 
 		# render
 		res.render('dashboard/index', {
-			title: 'Dashboard'
-			activePage: 'dashboard'
+			_: {
+				title: 'Dashboard'
+				activePage: 'dashboard'
+			}
 			eventsError: error
 			events: events
 		})
