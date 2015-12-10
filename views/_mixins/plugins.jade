@@ -1,2 +1,10 @@
 mixin pluginBootbox
 	script(src = '/_vendor/js/bootbox.min.js')
+
+mixin pluginValidation
+	script(src = '/_vendor/js/jquery.form-validator.min.js')
+	script(type = 'text/javascript').
+		$.validate({
+			'inputParentClassOnSuccess': false
+		});
+		$('.btn').click(function() {$(this).validate();})

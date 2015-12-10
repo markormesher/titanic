@@ -1,15 +1,35 @@
-mixin formTextInput(title, name, defaultValue)
+mixin formFieldset
 	fieldset.form-group
-		label(for = name)= title
-		input.form-control(id = name, name = name, type = 'text', value = defaultValue)
+		block
 
-mixin formButtonGroup(title, name, options, defaultValue)
-	fieldset.form-group
-		label.control-label= title
-		div.btn-group.btn-group-justified(role = 'group', data-toggle = 'buttons')
-			for o in options
-				label(class = ('btn btn-default' + (defaultValue == o.value ? ' active' : '')))
-					input(type = 'radio', name = name, value = o.value, checked = defaultValue == o.value)
-					i(class = 'fa text-muted fa-' + o.fa_icon)
-					| &nbsp;&nbsp;&nbsp;&nbsp;
-					= o.label
+mixin formLabel(field, title)
+	label(for = field, class = 'control-label')= title
+
+mixin formTextInput(field, value, attrs)
+	- attrs = attrs || {}
+	input.form-control(type = 'text', id = field, name = field, value = value)&attributes(attrs)
+
+mixin formButtonGroup(field, options, value, attrs)
+	- attrs = attrs || {}
+	div.btn-group.btn-group-justified(role = 'group', data-toggle = 'buttons')
+		for o in options
+			- active = value == o.value
+			label(class = ('btn btn-default' + (active ? ' active' : '')))
+				input(type = 'radio', name = field, value = o.value, checked = active)&attributes(attrs)
+				i(class = 'fa text-muted fa-' + o.fa_icon)
+				| &nbsp;&nbsp;&nbsp;&nbsp;
+				= o.label
+
+mixin formButton(label, fa_icon, attrs)
+	- attrs = attrs || {}
+	button.btn&attributes(attrs)
+		i(class = 'fa fa-' + fa_icon)
+		| &nbsp;&nbsp;
+		=label
+
+mixin formButtonLink(label, fa_icon, href, attrs)
+	- attrs = attrs || {}
+	a.btn(href = href)&attributes(attrs)
+		i(class = 'fa fa-' + fa_icon)
+		| &nbsp;&nbsp;
+		=label

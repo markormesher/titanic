@@ -1,5 +1,6 @@
 extends ../_shared/page-layout
 include ../_mixins/plugins
+include ../_mixins/forms
 
 mixin device(d)
 	div.device-row
@@ -10,8 +11,14 @@ mixin device(d)
 			br
 			span= d.ip_address
 		p.buttons.btn-group
-			a.btn.btn-warning(href = '/devices/edit/' + d._id) Edit
-			a.btn.btn-danger.delete-button(href = '/devices/delete/' + d._id, data-name = d.hostname, data-id = d._id) Delete
+			+formButtonLink('Edit', 'edit', '/devices/edit/' + d._id, {
+				'class': 'btn-warning'
+			})
+			+formButtonLink('Delete', 'trash', '/devices/delete/' + d._id, {
+				'class': 'btn-danger delete-button',
+				'data-name': d.hostname,
+				'data-id': d._id.toString()
+			})
 
 block page-head
 

@@ -1,11 +1,14 @@
 extends ../_shared/page-layout
 include ../_mixins/forms
+include ../_mixins/plugins
 
 block page-head
 
 	link(rel = 'stylesheet', href = '/devices/css/devices.css')
 
 block page-body
+
+	- device = device || {}
 
 	div.portlet
 		div.portlet-title
@@ -20,24 +23,56 @@ block page-body
 						when 'error'
 							p.text-danger Something went wrong!
 
-			form(action = '/devices/edit/' + (device ? device._id : 0), method = 'post')
+			form(action = '/devices/edit/' + (device._id || 0), method = 'post')
 
-				+formTextInput('Hostname', 'hostname', device ? device.hostname : '')
+				+formFieldset
+					+formLabel('hostname', 'Hostname')
+					+formTextInput(
+					'hostname',
+					device.hostname,
+					{
+						'data-validation': 'required alphanumeric',
+						'data-validation-allowing': '_-'
+					}
+					)
 
-				+formTextInput('IP Address', 'ip_address', device ? device.ip_address : '')
+				+formFieldset
+					+formLabel('ip_address', 'IP Address')
+					+formTextInput(
+					'ip_address',
+					device.ip_address,
+					{
+						'data-validation': 'custom',
+						'data-validation-regexp': '^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$'
+					})
 
-				+formButtonGroup('Type', 'type', deviceTypes, device ? device.type : '')
+				+formFieldset
+					+formLabel('type', 'Type')
+					+formButtonGroup(
+					'type',
+					deviceTypes,
+					device.type,
+					{
+						'data-validation': 'required'
+					}
+					)
 
-				+formButtonGroup(
-					'Location', 'location',
+				+formFieldset
+					+formLabel('location', 'Location')
+					+formButtonGroup(
+					'location',
 					[
 						{value: 'internal', label: 'Internal', fa_icon: 'sign-in'},
 						{value: 'external', label: 'External', fa_icon: 'sign-out'}
 					],
-					device ? device.location : ''
-				)
+					device.location,
+					{
+						'data-validation': 'required'
+					}
+					)
 
-				fieldset.form-group
-					button.btn.btn-primary
-						i.fa.fa-save
-						| &nbsp; Save
+				+formFieldset
+					+formButton('Save', 'save', {'class': 'btn-primary'})
+
+block scripts
+	+pluginValidation
