@@ -1,15 +1,15 @@
-mixin formFieldset
+mixin form_fieldset
 	fieldset.form-group
 		block
 
-mixin formLabel(field, title)
+mixin form_label(field, title)
 	label(for = field, class = 'control-label')= title
 
-mixin formTextInput(field, value, attrs)
+mixin form_textInput(field, value, attrs)
 	- attrs = attrs || {}
 	input.form-control(type = 'text', id = field, name = field, value = value)&attributes(attrs)
 
-mixin formButtonGroup(field, options, value, attrs)
+mixin form_buttonGroup(field, options, value, attrs)
 	- attrs = attrs || {}
 	div.btn-group.btn-group-justified(role = 'group', data-toggle = 'buttons')
 		for o in options
@@ -20,14 +20,14 @@ mixin formButtonGroup(field, options, value, attrs)
 				| &nbsp;&nbsp;&nbsp;&nbsp;
 				= o.label
 
-mixin formButton(label, fa_icon, attrs)
+mixin form_button(label, fa_icon, attrs)
 	- attrs = attrs || {}
 	button.btn&attributes(attrs)
 		i(class = 'fa fa-' + fa_icon)
 		| &nbsp;&nbsp;
 		=label
 
-mixin formButtonLink(label, fa_icon, href, attrs)
+mixin form_buttonLink(label, fa_icon, href, attrs)
 	- attrs = attrs || {}
 	a.btn(href = href)&attributes(attrs)
 		i(class = 'fa fa-' + fa_icon)

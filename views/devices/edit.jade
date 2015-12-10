@@ -25,9 +25,9 @@ block page-body
 
 			form(action = '/devices/edit/' + (device._id || 0), method = 'post')
 
-				+formFieldset
-					+formLabel('hostname', 'Hostname')
-					+formTextInput(
+				+form_fieldset
+					+form_label('hostname', 'Hostname')
+					+form_textInput(
 					'hostname',
 					device.hostname,
 					{
@@ -36,9 +36,9 @@ block page-body
 					}
 					)
 
-				+formFieldset
-					+formLabel('ip_address', 'IP Address')
-					+formTextInput(
+				+form_fieldset
+					+form_label('ip_address', 'IP Address')
+					+form_textInput(
 					'ip_address',
 					device.ip_address,
 					{
@@ -46,9 +46,9 @@ block page-body
 						'data-validation-regexp': '^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$'
 					})
 
-				+formFieldset
-					+formLabel('type', 'Type')
-					+formButtonGroup(
+				+form_fieldset
+					+form_label('type', 'Type')
+					+form_buttonGroup(
 					'type',
 					deviceTypes,
 					device.type,
@@ -57,9 +57,9 @@ block page-body
 					}
 					)
 
-				+formFieldset
-					+formLabel('location', 'Location')
-					+formButtonGroup(
+				+form_fieldset
+					+form_label('location', 'Location')
+					+form_buttonGroup(
 					'location',
 					[
 						{value: 'internal', label: 'Internal', fa_icon: 'sign-in'},
@@ -71,8 +71,8 @@ block page-body
 					}
 					)
 
-				+formFieldset
-					+formButton('Save', 'save', {'class': 'btn-primary'})
+				+form_fieldset
+					+form_button('Save', 'save', {'class': 'btn-primary'})
 
 block scripts
 	+plugin_validation
