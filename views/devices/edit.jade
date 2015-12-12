@@ -17,12 +17,6 @@ block page-body
 
 		div.portlet-body
 
-			if status != null
-				div(class = 'alert alert-' + (status == 'error' ? 'danger' : 'success'))
-					case status
-						when 'error'
-							p.text-danger Something went wrong!
-
 			form(action = '/devices/edit/' + (device._id || 0), method = 'post')
 
 				+form_fieldset

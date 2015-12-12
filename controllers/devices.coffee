@@ -12,7 +12,6 @@ utils = rfr('./helpers/utils')
 # models
 mongoose = require('mongoose')
 Device = rfr('./models/device')
-DeviceHostnameEntry = rfr('./models/device-hostname-entry')
 
 ##############
 #  Mappings  #
@@ -21,12 +20,12 @@ DeviceHostnameEntry = rfr('./models/device-hostname-entry')
 router = express.Router();
 
 router.get('/', (req, res) ->
-	# get parameters
+# get parameters
 	status = req.query.status
 
 	# get all devices
 	Device.find({}).sort({hostname: 'asc'}).exec((err, devices) ->
-		# render output
+# render output
 		res.render('devices/index', {
 			_: {
 				title: 'Device List'
@@ -51,15 +50,16 @@ router.get('/create', (req, res) ->
 )
 
 router.get('/edit/:deviceId', (req, res) ->
-	# get parameters
+# get parameters
 	deviceId = req.params.deviceId
 	status = req.query.status
 
 	# find device
 	Device.find({_id: deviceId}).exec((err, device) ->
-		# check for device
+# check for device
 		if (err)
-			res.writeHead(302, {Location: '/devices?status=error'})
+			req.flash('error', 'Sorry, that device couldn\'t be loaded!')
+			res.writeHead(302, {Location: '/devices'})
 			res.end()
 			return
 		else
@@ -97,10 +97,14 @@ router.post('/edit/:deviceId', (req, res) ->
 		log.event((if deviceId then 'Edited' else 'Created') + ' device (' + query._id + ')')
 
 		# forward to edit page
-		status = if err then 'error' else (if deviceId then 'saved' else 'created')
-		res.writeHead(302, {
-			Location: '/devices?status=' + status
-		})
+		if err
+			req.flas('error', 'Sorry, something went wrong!')
+		else
+			if deviceId
+				req.flash('success', 'Your changes were saved!')
+			else
+				req.flash('success', 'The device <strong>' + device.hostname + '</strong> was created!')
+		res.writeHead(302, {Location: '/devices'})
 		res.end()
 	)
 )
@@ -114,10 +118,9 @@ router.get('/delete/:deviceId', (req, res) ->
 		# log
 		log.event('Deleted device (' + deviceId + ')')
 
-		res.writeHead(302, {
-			Location: '/devices?status=deleted'
-		})
-		res.json(deviceId)
+		req.flash('info', 'Device deleted.')
+		res.writeHead(302, {Location: '/devices'})
+		res.end()
 	)
 )
 
