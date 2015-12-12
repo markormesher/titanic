@@ -38,18 +38,6 @@ block page-body
 
 		div.portlet-body
 
-			if status != null
-				div(class = 'alert alert-' + (status == 'error' ? 'danger' : 'success'))
-					case status
-						when 'error'
-							p.text-danger Something went wrong!
-						when 'deleted'
-							p.text-success The device was deleted!
-						when 'saved'
-							p.text-success Your changes have been saved!
-						when 'created'
-							p.text-success The device was created!
-
 			if devices.length == 0
 				p.text-muted.text-center There are no registered devices!
 

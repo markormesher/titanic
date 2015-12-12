@@ -8,6 +8,9 @@ mongoose = require('mongoose')
 bodyParser = require('body-parser')
 coffeeMiddleware = require('coffee-middleware')
 sassMiddleware = require('node-sass-middleware')
+cookieParser = require('cookie-parser')
+session = require('express-session')
+flash = require('express-flash')
 rfr = require('rfr')
 log = rfr('./helpers/log')
 
@@ -26,19 +29,22 @@ app = express()
 
 # middleware
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(
-	coffeeMiddleware({
-		src: __dirname + '/assets'
-		compress: true
-	})
-)
-app.use(
-	sassMiddleware({
-		src: __dirname + '/assets/'
-		dest: __dirname + '/public'
-		outputStyle: 'compressed'
-	})
-)
+app.use(coffeeMiddleware({
+	src: __dirname + '/assets'
+	compress: true
+}))
+app.use(sassMiddleware({
+	src: __dirname + '/assets/'
+	dest: __dirname + '/public'
+	outputStyle: 'compressed'
+}))
+app.use(cookieParser('titanic'))
+app.use(session({
+	secret: 'save the titanic!'
+	resave: false
+	saveUninitialized: true
+}))
+app.use(flash())
 
 # pull routes from routes folder
 routes = {
