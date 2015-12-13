@@ -48,9 +48,10 @@ app.use(flash())
 
 # pull routes from routes folder
 routes = {
-	'': require('./controllers/core')
-	'dashboard': require('./controllers/dashboard')
-	'devices': require('./controllers/devices')
+	'': rfr('./controllers/core')
+	'dashboard': rfr('./controllers/dashboard')
+	'devices': rfr('./controllers/devices')
+	'hosts-file-aliases': rfr('./controllers/hosts-file-aliases')
 };
 
 for stem, file of routes

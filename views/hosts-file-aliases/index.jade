@@ -1,0 +1,21 @@
+extends ../_shared/page-layout
+include ../_mixins/plugins
+include ../_mixins/forms
+
+block page-head
+
+	link(rel = 'stylesheet', href = '/hosts-file-aliases/css/hosts-file-aliases.css')
+
+block page-body
+
+	div.portlet
+		div.portlet-title
+			div.caption
+				span.caption-subject.text-uppercase Hosts File Aliases
+			div.actions
+				a(href = '#', class = 'btn')
+					i.fa.fa-edit
+					| &nbsp;&nbsp;
+					| Edit
+
+		div.portlet-body
