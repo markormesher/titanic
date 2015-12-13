@@ -2,20 +2,34 @@ extends ../_shared/page-layout
 include ../_mixins/plugins
 include ../_mixins/forms
 
+mixin device(d)
+	div.device-row
+		p.icon
+			i(class = 'fa fa-lg fa-fw fa-' + deviceTypes[d.type].fa_icon)
+		p.name
+			= d.hostname
+			br
+			span= d.hostsFileEntries.length + ' hosts file aliases'
+		p.buttons
+			+form_buttonLink('Select Devices', 'edit', '/hosts-file-aliases/edit/' + d._id, {
+				'class': 'btn-warning'
+			})
+
 block page-head
 
-	link(rel = 'stylesheet', href = '/hosts-file-aliases/css/hosts-file-aliases.css')
+	link(rel = 'stylesheet', href = '/_shared/css/device-list.css')
 
 block page-body
 
 	div.portlet
 		div.portlet-title
 			div.caption
-				span.caption-subject.text-uppercase Hosts File Aliases
-			div.actions
-				a(href = '#', class = 'btn')
-					i.fa.fa-edit
-					| &nbsp;&nbsp;
-					| Edit
+				span.caption-subject.text-uppercase Devices
 
 		div.portlet-body
+
+			if devices.length == 0
+				p.text-muted.text-center There are no registered devices!
+
+			each d in devices
+				+device(d)
