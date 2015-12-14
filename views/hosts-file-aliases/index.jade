@@ -10,8 +10,11 @@ mixin device(d)
 			= d.hostname
 			br
 			span= d.hostsFileEntries.length + ' hosts file aliases'
-		p.buttons
-			+form_buttonLink('Select Devices', 'edit', '/hosts-file-aliases/edit/' + d._id, {
+		p.buttons.btn-group
+			+form_buttonLink('Select Aliases', 'edit', '/hosts-file-aliases/edit/' + d._id, {
+				'class': 'btn-warning'
+			})
+			+form_buttonLink('Add to Others', 'external-link', '/hosts-file-aliases/edit/' + d._id, {
 				'class': 'btn-warning'
 			})
 
