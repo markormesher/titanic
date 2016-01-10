@@ -42,4 +42,45 @@ router.get('/', (req, res) ->
 	)
 )
 
+router.get('/create', (req, res) ->
+	# render output
+	res.render('bash-shortcuts/edit', {
+		_: {
+			title: 'Create Shortcut'
+			activePage: 'bash-shortcuts'
+		}
+		shortcut: null
+	})
+)
+
+router.get('/edit/:deviceId', (req, res) ->
+	# get parameters
+	shortcutId = req.params.deviceId
+
+	# find device
+	BashShortcut.find({_id: shortcutId}).exec((err, shortcut) ->
+	# check for device
+		if (false && err)
+			req.flash('error', 'Sorry, that shortcut couldn\'t be loaded!')
+			res.writeHead(302, {Location: '/bash-shortcuts'})
+			res.end()
+			return
+		else
+			shortcut = {
+				_id: ''
+				short_command: 'pub-key'
+				full_command: 'cat ~/.ssh/id_rsa.pub'
+			}#shortcut[0]
+
+		# render output
+		res.render('bash-shortcuts/edit', {
+			_: {
+				title: 'Edit Shortcut: ' + shortcut.short_command
+				activePage: 'bash-shortcuts'
+			}
+			shortcut: shortcut
+		})
+	)
+)
+
 module.exports = router;

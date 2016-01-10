@@ -8,7 +8,6 @@ async = require('async')
 mongoose = require('mongoose')
 log = rfr('./helpers/log')
 c = rfr('./helpers/constants')
-utils = rfr('./helpers/utils')
 
 # models
 Device = rfr('./models/device')
@@ -42,12 +41,12 @@ router.get('/create', (req, res) ->
 			activePage: 'devices'
 		}
 		device: null
-		deviceTypes: utils.objectToArray(c.DEVICE_TYPES)
+		deviceTypes: c.DEVICE_TYPES
 	})
 )
 
 router.get('/edit/:deviceId', (req, res) ->
-# get parameters
+	# get parameters
 	deviceId = req.params.deviceId
 
 	# find device
