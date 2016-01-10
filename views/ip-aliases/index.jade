@@ -9,7 +9,7 @@ mixin device(d)
 		p.name
 			= d.hostname
 			br
-			span= d.hostsFileEntries.length + ' IP aliases'
+			span= d.ipAliases + ' IP aliases'
 		p.buttons.btn-group
 			+form_buttonLink('Manage Aliases', 'edit', '/ip-aliases/edit/' + d._id, {
 				'class': 'btn-warning'

@@ -4,11 +4,13 @@
 
 express = require('express')
 rfr = require('rfr')
+async = require('async')
 c = rfr('./helpers/constants')
 utils = rfr('./helpers/utils')
 
 # models
 Device = rfr('./models/device')
+IpAlias = rfr('./models/ip-alias')
 
 ##############
 #  Mappings  #
@@ -17,23 +19,36 @@ Device = rfr('./models/device')
 router = express.Router();
 
 router.get('/', (req, res) ->
-	# get all devices
-	Device.find({}).sort({hostname: 'asc'}).exec((err, devices) ->
-		# add connections array to all
-		for d, i in devices
-			d = d.toObject()
-			d.hostsFileEntries = []
-			devices[i] = d
+	# get all devices and aliases
+	async.parallel(
+		{
+			devices: (c) -> Device.find({}).sort({hostname: 'asc'}).exec((err, devices) -> c(err, devices))
+			ipAliases: (c) -> IpAlias.find({}).exec((err, ipAliases) -> c(err, ipAliases))
+		},
+		(err, results) ->
+			# count ip aliases and convert results to objects
+			ipAliases = {};
+			for d in results.devices
+				ipAliases[d._id] = 0
+			for a in results.ipAliases
+				++ipAliases[a.from_device]
 
-		# render output
-		res.render('ip-aliases/index', {
-			_: {
-				title: 'IP Aliases'
-				activePage: 'ip-aliases'
-			}
-			devices: devices
-			deviceTypes: c.DEVICE_TYPES
-		})
+			# convert devices to objects with count
+			devices = []
+			for d in results.devices
+				d = d.toObject()
+				d.ipAliases = ipAliases[d._id]
+				devices.push(d)
+
+			# render output
+			res.render('ip-aliases/index', {
+				_: {
+					title: 'IP Aliases'
+					activePage: 'ip-aliases'
+				}
+				devices: devices
+				deviceTypes: c.DEVICE_TYPES
+			})
 	)
 )
 
@@ -41,25 +56,33 @@ router.get('/edit/:deviceId', (req, res) ->
 	# get parameters
 	deviceId = req.params.deviceId
 
-	# find device
-	Device.find({_id: deviceId}).exec((err, device) ->
-		# check for device
-		if (err || !device)
-			req.flash('error', 'Sorry, that device couldn\'t be loaded!')
-			res.writeHead(302, {Location: '/ip-aliases'})
-			res.end()
-			return
-		else
-			device = device[0]
+	# find device and aliases
+	async.parallel(
+		{
+			device: (c) -> Device.find({_id: deviceId}).exec((err, devices) -> c(err, devices))
+			ipAliases: (c) -> IpAlias.find().or([{from_device: deviceId}, {to_device: deviceId}]).exec((err, ipAliases) -> c(err, ipAliases))
+		},
+		(err, results) ->
+			# read results
+			{device, ipAliases} = results
 
-		# render output
-		res.render('ip-aliases/edit', {
-			_: {
-				title: 'Manage IP Aliases for ' + device.hostname
-				activePage: 'ip-aliases'
-			}
-			device: device
-		})
+			# check for device
+			if (err || !device)
+				req.flash('error', 'Sorry, that device couldn\'t be loaded!')
+				res.writeHead(302, {Location: '/ip-aliases'})
+				res.end()
+				return
+			else
+				device = device[0]
+
+			# render output
+			res.render('ip-aliases/edit', {
+				_: {
+					title: 'Manage IP Aliases for ' + device.hostname
+					activePage: 'ip-aliases'
+				}
+				device: device
+			})
 	)
 )
 

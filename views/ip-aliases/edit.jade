@@ -4,7 +4,7 @@ include ../_mixins/plugins
 
 block page-head
 
-	link(rel = 'stylesheet', href = '/hosts-file-aliases/css/manage.css')
+	link(rel = 'stylesheet', href = '/ip-aliases/css/edit.css')
 
 block page-body
 
@@ -15,7 +15,7 @@ block page-body
 
 		div.portlet-body
 
-			form(action = '/hosts-file-aliases/edit/' + device._id, method = 'post')
+			form(action = '/ip-aliases/edit/' + device._id, method = 'post')
 
 
 				+form_fieldset
