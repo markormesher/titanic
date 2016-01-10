@@ -22,22 +22,18 @@ block page-body
 				div.row
 
 					div.col-md-6
-
-						h2 #[em #{device.hostname}] !{arr} ...
-
+						h2 Out-Bound Aliases
 						for d in devices
 							if (d._id.toString() != device._id.toString())
 								+form_fieldset
-									+form_switchCheckBox('out_' + d._id, device.hostname + arr + d.hostname, '1', {checked: aliasMap[device._id][d._id]})
+									+form_switchCheckBox('out_' + d._id, device.hostname + arr + d.hostname, {checked: aliasMap[device._id][d._id]})
 
 					div.col-md-6
-
-						h2 ... !{arr} #[em #{device.hostname}]
-
+						h2 In-Bound Aliases
 						for d in devices
 							if (d._id.toString() != device._id.toString())
 								+form_fieldset
-									+form_switchCheckBox('in_' + d._id, d.hostname + arr + device.hostname, '1', {checked: aliasMap[d._id][device._id]})
+									+form_switchCheckBox('in_' + d._id, d.hostname + arr + device.hostname, {checked: aliasMap[d._id][device._id]})
 
 				+form_fieldset
 					+form_button('Save', 'save', {'class': 'btn-primary'})

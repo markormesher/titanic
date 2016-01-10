@@ -26,18 +26,22 @@ router.get('/', (req, res) ->
 			ipAliases: (c) -> IpAlias.find({}).exec((err, ipAliases) -> c(err, ipAliases))
 		},
 		(err, results) ->
-			# count ip aliases and convert results to objects
-			ipAliases = {};
+			# count ip aliases
+			outBoundIpAliases = {};
+			inBoundIpAliases = {};
 			for d in results.devices
-				ipAliases[d._id] = 0
+				outBoundIpAliases[d._id] = 0
+				inBoundIpAliases[d._id] = 0
 			for a in results.ipAliases
-				++ipAliases[a.from_device]
+				++outBoundIpAliases[a.from_device]
+				++inBoundIpAliases[a.to_device]
 
 			# convert devices to objects with count
 			devices = []
 			for d in results.devices
 				d = d.toObject()
-				d.ipAliases = ipAliases[d._id]
+				d.outBoundIpAliases = outBoundIpAliases[d._id]
+				d.inBoundIpAliases = inBoundIpAliases[d._id]
 				devices.push(d)
 
 			# render output
