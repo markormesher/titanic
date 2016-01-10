@@ -19,7 +19,7 @@ router = express.Router();
 
 router.get('/', (req, res) ->
 	# get all shortcuts
-	BashShortcut.find({}).sort({hostname: 'asc'}).exec((err, shortcuts) ->
+	BashShortcut.find({}).sort({short_command: 'asc'}).exec((err, shortcuts) ->
 		# render output
 		res.render('bash-shortcuts/index', {
 			_: {
