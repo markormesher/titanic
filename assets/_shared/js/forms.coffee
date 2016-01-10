@@ -20,7 +20,31 @@ $(document).ready(() ->
 		changeFunc()
 
 		# set click listener
-		e.click(() -> changeFunc())
+		input.change(() -> changeFunc())
+	)
+
+	# select all checkboxes
+	$('.select-all-checkboxes').each((i, e) ->
+		# get targets
+		e = $(e)
+		targets = $(e.data('target'))
+
+		# default state
+		allChecked = false
+		checkState = () ->
+			allChecked = targets.filter(':checked').length == targets.length
+			e.html(if allChecked then 'Deselect All' else 'Select All')
+		checkState()
+
+		# update state when targets change
+		targets.change(() -> checkState())
+
+		# change them all on click
+		e.click((ev) ->
+			ev.preventDefault()
+			newState = !allChecked
+			targets.each((i, e) -> $(e).prop('checked', newState).change())
+		)
 	)
 
 )
