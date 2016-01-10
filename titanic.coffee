@@ -51,7 +51,7 @@ routes = {
 	'': rfr('./controllers/core')
 	'dashboard': rfr('./controllers/dashboard')
 	'devices': rfr('./controllers/devices')
-	'hosts-file-aliases': rfr('./controllers/hosts-file-aliases')
+	'ip-aliases': rfr('./controllers/ip-aliases')
 };
 
 for stem, file of routes

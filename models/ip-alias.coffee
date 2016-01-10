@@ -1,7 +1,7 @@
 mongoose = require('mongoose')
 Schema = require('mongoose/lib/schema')
 module.exports = mongoose.model(
-	'HostsFileAlias',
+	'IpAlias',
 	{
 		from_device: {
 			type: Schema.Types.ObjectId
