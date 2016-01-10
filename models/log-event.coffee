@@ -6,13 +6,11 @@ module.exports = mongoose.model(
 			type: Date
 			default: Date.now
 		}
-
 		type: {
 			type: String
 			validate: /(normal|error)/
 			default: 'normal'
 		}
-
 		message: String
 	}
 )

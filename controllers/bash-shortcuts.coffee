@@ -38,7 +38,6 @@ router.get('/create', (req, res) ->
 			title: 'Create Shortcut'
 			activePage: 'bash-shortcuts'
 		}
-		shortcut: null
 	})
 )
 
@@ -81,17 +80,18 @@ router.post('/edit/:shortcutId', (req, res) ->
 
 	# save in DB
 	BashShortcut.update(query, shortcut, {upsert: true}, (err) ->
-		# log
-		log.event((if shortcutId then 'Edited' else 'Created') + ' shortcut (' + query._id + ')')
-
 		# forward to list
 		if err
-			req.flas('error', 'Sorry, something went wrong!')
+			log.error('Failed to update shortcut (' + query._id + ')')
+			req.flash('error', 'Sorry, something went wrong!')
 		else
 			if shortcutId
+				log.event('Edited shortcut (' + query._id + ')')
 				req.flash('success', 'Your changes were saved!')
 			else
+				log.event('Created shortcut (' + query._id + ')')
 				req.flash('success', 'The shortcut <strong>' + shortcut.short_command + '</strong> was created!')
+
 		res.writeHead(302, {Location: '/bash-shortcuts'})
 		res.end()
 	)
@@ -103,10 +103,13 @@ router.get('/delete/:shortcutId', (req, res) ->
 
 	# delete shortcut
 	BashShortcut.remove({_id: shortcutId}, (err) ->
-		# log
-		log.event('Deleted Bash shortcut (' + shortcutId + ')')
+		if err
+			log.error('Failed to delete shortcut (' + deviceId + ')')
+			req.flash('error', 'Sorry, something went wrong!')
+		else
+			log.event('Deleted shortcut (' + deviceId + ')')
+			req.flash('info', 'Shortcut deleted.')
 
-		req.flash('info', 'Shortcut deleted.')
 		res.writeHead(302, {Location: '/bash-shortcuts'})
 		res.end()
 	)

@@ -118,17 +118,16 @@ router.post('/edit/:deviceId', (req, res) ->
 	# update aliases
 	async.series(
 		[
-			(c) -> Alias.find().or([{from_device: deviceId}, {to_device: deviceId}]).remove((err) -> c(err, null))
-			(c) -> Alias.create(newAliases, (err, results) -> c(err, results))
+			(c) -> Alias.find().or([{from_device: deviceId}, {to_device: deviceId}]).remove((err) -> c(err))
+			(c) -> Alias.create(newAliases, (err) -> c(err))
 		],
-		(err, results) ->
-			# log event
-			log.event('Edited aliases (' + deviceId + ')')
-
+		(err) ->
 			# send back to list
 			if err
-				req.flas('error', 'Sorry, something went wrong!')
+				log.error('Failed to update aliases (' + deviceId + ')')
+				req.flash('error', 'Sorry, something went wrong!')
 			else
+				log.event('Edited aliases (' + deviceId + ')')
 				req.flash('success', 'Your changes were saved!')
 
 			res.writeHead(302, {Location: '/aliases'})

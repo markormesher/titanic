@@ -7,7 +7,6 @@ module.exports = mongoose.model(
 			type: Schema.Types.ObjectId
 			ref: 'Device'
 		}
-
 		to_device: {
 			type: Schema.Types.ObjectId
 			ref: 'Device'

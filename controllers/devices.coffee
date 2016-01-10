@@ -40,7 +40,6 @@ router.get('/create', (req, res) ->
 			title: 'Create Device'
 			activePage: 'devices'
 		}
-		device: null
 		deviceTypes: c.DEVICE_TYPES
 	})
 )
@@ -85,17 +84,18 @@ router.post('/edit/:deviceId', (req, res) ->
 
 	# save in DB
 	Device.update(query, device, {upsert: true}, (err) ->
-		# log
-		log.event((if deviceId then 'Edited' else 'Created') + ' device (' + query._id + ')')
-
 		# forward to list
 		if err
-			req.flas('error', 'Sorry, something went wrong!')
+			log.error('Failed to update device (' + query._id + ')')
+			req.flash('error', 'Sorry, something went wrong!')
 		else
 			if deviceId
+				log.event('Edited device (' + query._id + ')')
 				req.flash('success', 'Your changes were saved!')
 			else
+				log.event('Created device (' + query._id + ')')
 				req.flash('success', 'The device <strong>' + device.hostname + '</strong> was created!')
+
 		res.writeHead(302, {Location: '/devices'})
 		res.end()
 	)
@@ -108,14 +108,17 @@ router.get('/delete/:deviceId', (req, res) ->
 	# delete device and aliases to the device
 	async.series(
 		[
-			(c) -> Device.remove({_id: deviceId}, (err) -> c(err, null))
-			(c) -> Alias.find().or([{from_device: deviceId}, {to_device: deviceId}]).remove((err) -> c(err, null))
+			(c) -> Device.remove({_id: deviceId}, (err) -> c(err))
+			(c) -> Alias.find().or([{from_device: deviceId}, {to_device: deviceId}]).remove((err) -> c(err))
 		],
-		(err, results) ->
-			# log
-			log.event('Deleted device (' + deviceId + ')')
+		(err) ->
+			if err
+				log.error('Failed to delete device (' + deviceId + ')')
+				req.flash('error', 'Sorry, something went wrong!')
+			else
+				log.event('Deleted device (' + deviceId + ')')
+				req.flash('info', 'Device deleted.')
 
-			req.flash('info', 'Device deleted.')
 			res.writeHead(302, {Location: '/devices'})
 			res.end()
 	)

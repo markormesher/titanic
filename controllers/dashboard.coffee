@@ -17,7 +17,7 @@ router = express.Router()
 
 router.get('/', (req, res) ->
 	# get all log events, in descending order
-	LogEvent.find({}).sort({timestamp: 'desc'}).exec((error, events) ->
+	LogEvent.find({}).sort({timestamp: 'desc'}).exec((err, events) ->
 
 		# convert date format
 		events = events.map(
@@ -34,7 +34,7 @@ router.get('/', (req, res) ->
 				title: 'Dashboard'
 				activePage: 'dashboard'
 			}
-			eventsError: error
+			eventsError: err
 			events: events
 		})
 	)
