@@ -59,12 +59,13 @@ router.get('/edit/:deviceId', (req, res) ->
 	# find device and aliases
 	async.parallel(
 		{
+			devices: (c) -> Device.find({}).exec((err, devices) -> c(err, devices))
 			device: (c) -> Device.find({_id: deviceId}).exec((err, devices) -> c(err, devices))
 			ipAliases: (c) -> IpAlias.find().or([{from_device: deviceId}, {to_device: deviceId}]).exec((err, ipAliases) -> c(err, ipAliases))
 		},
 		(err, results) ->
 			# read results
-			{device, ipAliases} = results
+			{devices, device, ipAliases} = results
 
 			# check for device
 			if (err || !device)
@@ -75,13 +76,24 @@ router.get('/edit/:deviceId', (req, res) ->
 			else
 				device = device[0]
 
+			# convert aliases to true/false 2D array
+			aliasMap = {}
+			for d1 in devices
+				aliasMap[d1._id] = {}
+				for d2 in devices
+					aliasMap[d1._id][d2._id] = false;
+			for a in ipAliases
+				aliasMap[a.from_device][a.to_device] = true
+
 			# render output
 			res.render('ip-aliases/edit', {
 				_: {
 					title: 'Manage IP Aliases for ' + device.hostname
 					activePage: 'ip-aliases'
 				}
+				devices: devices
 				device: device
+				aliasMap: aliasMap
 			})
 	)
 )
