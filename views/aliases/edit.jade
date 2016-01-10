@@ -24,7 +24,10 @@ block page-body
 					div.col-md-6
 						h2 Out-Bound Aliases
 
-						p: a.select-all-checkboxes(href = 'javascript:;' data-target = 'input[name^=out_]') Select/Deselect All
+						p
+							i.fa.fa-fw.fa-bolt.text-muted
+							| &nbsp;&nbsp;
+							a.select-all-checkboxes(href = 'javascript:;' data-target = 'input[name^=out_]') Select/Deselect All
 
 						for d in devices
 							if (d._id.toString() != device._id.toString())
@@ -34,7 +37,10 @@ block page-body
 					div.col-md-6
 						h2 In-Bound Aliases
 
-						p: a.select-all-checkboxes(href = 'javascript:;' data-target = 'input[name^=in_]') Select/Deselect All
+						p
+							i.fa.fa-fw.fa-bolt.text-muted
+							| &nbsp;&nbsp;
+							a.select-all-checkboxes(href = 'javascript:;' data-target = 'input[name^=in_]') Select/Deselect All
 
 						for d in devices
 							if (d._id.toString() != device._id.toString())

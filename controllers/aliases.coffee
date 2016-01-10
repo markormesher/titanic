@@ -6,7 +6,7 @@ express = require('express')
 rfr = require('rfr')
 async = require('async')
 c = rfr('./helpers/constants')
-utils = rfr('./helpers/utils')
+log = rfr('./helpers/log')
 
 # models
 Device = rfr('./models/device')
@@ -122,6 +122,9 @@ router.post('/edit/:deviceId', (req, res) ->
 			(c) -> Alias.create(newAliases, (err, results) -> c(err, results))
 		],
 		(err, results) ->
+			# log event
+			log.event('Edited aliases (' + deviceId + ')')
+
 			# send back to list
 			if err
 				req.flas('error', 'Sorry, something went wrong!')

@@ -12,6 +12,7 @@ utils = rfr('./helpers/utils')
 
 # models
 Device = rfr('./models/device')
+Alias = rfr('./models/alias')
 
 ##############
 #  Mappings  #
@@ -107,14 +108,19 @@ router.get('/delete/:deviceId', (req, res) ->
 	# get parameters
 	deviceId = req.params.deviceId
 
-	# delete device
-	Device.remove({_id: deviceId}, (err) ->
-		# log
-		log.event('Deleted device (' + deviceId + ')')
+	# delete device and aliases to the device
+	async.series(
+		[
+			(c) -> Device.remove({_id: deviceId}, (err) -> c(err, null))
+			(c) -> Alias.find().or([{from_device: deviceId}, {to_device: deviceId}]).remove((err) -> c(err, null))
+		],
+		(err, results) ->
+			# log
+			log.event('Deleted device (' + deviceId + ')')
 
-		req.flash('info', 'Device deleted.')
-		res.writeHead(302, {Location: '/devices'})
-		res.end()
+			req.flash('info', 'Device deleted.')
+			res.writeHead(302, {Location: '/devices'})
+			res.end()
 	)
 )
 
