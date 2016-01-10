@@ -22,28 +22,32 @@ block page-body
 				div.row
 
 					div.col-md-6
-						h2 Out-Bound Aliases
+						h2 Outbound Aliases
 
-						p
-							i.fa.fa-fw.fa-bolt.text-muted
-							| &nbsp;&nbsp;
-							a.select-all-checkboxes(href = 'javascript:;' data-target = 'input[name^=out_]') Select/Deselect All
+						if outboundDevices.length == 0
+							p.text-muted.text-center There are no possible outbound aliases!
+						else
+							p
+								i.fa.fa-fw.fa-bolt.text-muted
+								| &nbsp;&nbsp;
+								a.select-all-checkboxes(href = 'javascript:;' data-target = 'input[name^=out_]') Select/Deselect All
 
-						for d in devices
-							if (d._id.toString() != device._id.toString())
+							for d in outboundDevices
 								+form_fieldset
 									+form_switchCheckBox('out_' + d._id, device.hostname + arr + d.hostname, {checked: aliasMap[device._id][d._id]})
 
 					div.col-md-6
-						h2 In-Bound Aliases
+						h2 Inbound Aliases
 
-						p
-							i.fa.fa-fw.fa-bolt.text-muted
-							| &nbsp;&nbsp;
-							a.select-all-checkboxes(href = 'javascript:;' data-target = 'input[name^=in_]') Select/Deselect All
+						if inboundDevices.length == 0
+							p.text-muted.text-center There are no possible inbound aliases!
+						else
+							p
+								i.fa.fa-fw.fa-bolt.text-muted
+								| &nbsp;&nbsp;
+								a.select-all-checkboxes(href = 'javascript:;' data-target = 'input[name^=in_]') Select/Deselect All
 
-						for d in devices
-							if (d._id.toString() != device._id.toString())
+							for d in inboundDevices
 								+form_fieldset
 									+form_switchCheckBox('in_' + d._id, d.hostname + arr + device.hostname, {checked: aliasMap[d._id][device._id]})
 

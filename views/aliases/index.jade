@@ -8,9 +8,9 @@ mixin device(d)
 		p.name
 			= d.hostname
 			br
-			span #{d.outBoundAliases} out-bound alias#{d.outBoundAliases == 1 ? '' : 'es'}
+			span #{d.outboundAliases} outbound alias#{d.outboundAliases == 1 ? '' : 'es'}
 			br
-			span #{d.inBoundAliases} in-bound alias#{d.inBoundAliases == 1 ? '' : 'es'}
+			span #{d.inboundAliases} inbound alias#{d.inboundAliases == 1 ? '' : 'es'}
 			p.buttons.btn-group
 				+form_buttonLink('Manage Aliases', 'edit', '/aliases/edit/' + d._id, {
 					'class': 'btn-warning'

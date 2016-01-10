@@ -27,21 +27,21 @@ router.get('/', (req, res) ->
 		},
 		(err, results) ->
 			# count aliases
-			outBoundAliases = {};
-			inBoundAliases = {};
+			outboundAliases = {};
+			inboundAliases = {};
 			for d in results.devices
-				outBoundAliases[d._id] = 0
-				inBoundAliases[d._id] = 0
+				outboundAliases[d._id] = 0
+				inboundAliases[d._id] = 0
 			for a in results.aliases
-				++outBoundAliases[a.from_device]
-				++inBoundAliases[a.to_device]
+				++outboundAliases[a.from_device]
+				++inboundAliases[a.to_device]
 
 			# convert devices to objects with count
 			devices = []
 			for d in results.devices
 				d = d.toObject()
-				d.outBoundAliases = outBoundAliases[d._id]
-				d.inBoundAliases = inBoundAliases[d._id]
+				d.outboundAliases = outboundAliases[d._id]
+				d.inboundAliases = inboundAliases[d._id]
 				devices.push(d)
 
 			# render output
@@ -89,13 +89,35 @@ router.get('/edit/:deviceId', (req, res) ->
 			for a in aliases
 				aliasMap[a.from_device][a.to_device] = true
 
+			# rule: aliases are not possible in some situations
+			aliasPossible = (from, to) ->
+				from = from.toObject()
+				to = to.toObject()
+
+				# a -> a not allowed
+				if (from._id.toString() == to._id.toString()) then return false
+
+				# ext -> int not allowed
+				if (from.location == 'external' && to.location == 'internal') then return false
+
+				# everything else is okay
+				return true
+
+			# create possible inbound and outbound device lists, based on rule above
+			outboundDevices = []
+			inboundDevices = []
+			for d in devices
+				if aliasPossible(device, d) then outboundDevices.push(d)
+				if aliasPossible(d, device) then inboundDevices.push(d)
+
 			# render output
 			res.render('aliases/edit', {
 				_: {
 					title: 'Manage Aliases: ' + device.hostname
 					activePage: 'aliases'
 				}
-				devices: devices
+				outboundDevices: outboundDevices
+				inboundDevices: inboundDevices
 				device: device
 				aliasMap: aliasMap
 			})
