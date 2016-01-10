@@ -49,7 +49,7 @@ router.get('/edit/:shortcutId', (req, res) ->
 	# find shortcut
 	BashShortcut.find({_id: shortcutId}).exec((err, shortcut) ->
 	# check for shortcut
-		if (false && err)
+		if err
 			req.flash('error', 'Sorry, that shortcut couldn\'t be loaded!')
 			res.writeHead(302, {Location: '/bash-shortcuts'})
 			res.end()
@@ -71,7 +71,7 @@ router.get('/edit/:shortcutId', (req, res) ->
 router.post('/edit/:shortcutId', (req, res) ->
 	# get parameters
 	shortcutId = req.params.shortcutId
-	if (shortcutId == null || shortcutId == 0 || shortcutId == '0') then shortcutId = false
+	if shortcutId == null || shortcutId == 0 || shortcutId == '0' then shortcutId = false
 	shortcut = req.body
 
 	# build create/edit query
@@ -81,8 +81,6 @@ router.post('/edit/:shortcutId', (req, res) ->
 
 	# save in DB
 	BashShortcut.update(query, shortcut, {upsert: true}, (err) ->
-		if (err) then throw err
-
 		# log
 		log.event((if shortcutId then 'Edited' else 'Created') + ' shortcut (' + query._id + ')')
 

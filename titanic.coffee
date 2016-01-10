@@ -49,10 +49,11 @@ app.use(flash())
 # pull routes from routes folder
 routes = {
 	'': rfr('./controllers/core')
+	'aliases': rfr('./controllers/aliases')
+	'api': rfr('./controllers/api')
+	'bash-shortcuts': rfr('./controllers/bash-shortcuts')
 	'dashboard': rfr('./controllers/dashboard')
 	'devices': rfr('./controllers/devices')
-	'aliases': rfr('./controllers/aliases')
-	'bash-shortcuts': rfr('./controllers/bash-shortcuts')
 };
 
 for stem, file of routes

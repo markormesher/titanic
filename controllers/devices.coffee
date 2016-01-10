@@ -52,7 +52,7 @@ router.get('/edit/:deviceId', (req, res) ->
 	# find device
 	Device.find({_id: deviceId}).exec((err, device) ->
 		# check for device
-		if (err)
+		if err
 			req.flash('error', 'Sorry, that device couldn\'t be loaded!')
 			res.writeHead(302, {Location: '/devices'})
 			res.end()
@@ -75,7 +75,7 @@ router.get('/edit/:deviceId', (req, res) ->
 router.post('/edit/:deviceId', (req, res) ->
 	# get parameters
 	deviceId = req.params.deviceId
-	if (deviceId == null || deviceId == 0 || deviceId == '0') then deviceId = false
+	if deviceId == null || deviceId == 0 || deviceId == '0' then deviceId = false
 	device = req.body
 
 	# build create/edit query
@@ -85,8 +85,6 @@ router.post('/edit/:deviceId', (req, res) ->
 
 	# save in DB
 	Device.update(query, device, {upsert: true}, (err) ->
-		if (err) then throw err
-
 		# log
 		log.event((if deviceId then 'Edited' else 'Created') + ' device (' + query._id + ')')
 

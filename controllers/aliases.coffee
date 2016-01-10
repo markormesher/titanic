@@ -72,7 +72,7 @@ router.get('/edit/:deviceId', (req, res) ->
 			{devices, device, aliases} = results
 
 			# check for device
-			if (err || !device)
+			if err || !device
 				req.flash('error', 'Sorry, that device couldn\'t be loaded!')
 				res.writeHead(302, {Location: '/aliases'})
 				res.end()
@@ -110,9 +110,9 @@ router.post('/edit/:deviceId', (req, res) ->
 	# build new aliases
 	newAliases = []
 	for k, v of aliases
-		if (k.substr(0, 4) == 'out_' && v == '1')
+		if k.substr(0, 4) == 'out_' && v == '1'
 			newAliases.push({from_device: deviceId, to_device: k.substr(4)})
-		if (k.substr(0, 3) == 'in_' && v == '1')
+		if k.substr(0, 3) == 'in_' && v == '1'
 			newAliases.push({from_device: k.substr(3), to_device: deviceId})
 
 	# update aliases
