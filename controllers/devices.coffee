@@ -90,7 +90,7 @@ router.post('/edit/:deviceId', (req, res) ->
 		# log
 		log.event((if deviceId then 'Edited' else 'Created') + ' device (' + query._id + ')')
 
-		# forward to edit page
+		# forward to list
 		if err
 			req.flas('error', 'Sorry, something went wrong!')
 		else

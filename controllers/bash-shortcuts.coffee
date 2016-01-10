@@ -26,18 +26,7 @@ router.get('/', (req, res) ->
 				title: 'Bash Shortcuts'
 				activePage: 'bash-shortcuts'
 			}
-			shortcuts: [
-				{
-					_id: ''
-					short_command: 'full-update'
-					full_command: 'sudo apt-get -y update && sudo apt-get -y upgrade && sudo apt-get -y dist-upgrade && sudo apt-get -y autoremove && sudo apt-get -y autoclean'
-				}
-				{
-					_id: ''
-					short_command: 'pub-key'
-					full_command: 'cat ~/.ssh/id_rsa.pub'
-				}
-			]
+			shortcuts: shortcuts
 		})
 	)
 )
@@ -53,24 +42,20 @@ router.get('/create', (req, res) ->
 	})
 )
 
-router.get('/edit/:deviceId', (req, res) ->
+router.get('/edit/:shortcutId', (req, res) ->
 	# get parameters
-	shortcutId = req.params.deviceId
+	shortcutId = req.params.shortcutId
 
-	# find device
+	# find shortcut
 	BashShortcut.find({_id: shortcutId}).exec((err, shortcut) ->
-	# check for device
+	# check for shortcut
 		if (false && err)
 			req.flash('error', 'Sorry, that shortcut couldn\'t be loaded!')
 			res.writeHead(302, {Location: '/bash-shortcuts'})
 			res.end()
 			return
 		else
-			shortcut = {
-				_id: ''
-				short_command: 'pub-key'
-				full_command: 'cat ~/.ssh/id_rsa.pub'
-			}#shortcut[0]
+			shortcut = shortcut[0]
 
 		# render output
 		res.render('bash-shortcuts/edit', {
@@ -80,6 +65,57 @@ router.get('/edit/:deviceId', (req, res) ->
 			}
 			shortcut: shortcut
 		})
+	)
+)
+
+router.post('/edit/:shortcutId', (req, res) ->
+	# get parameters
+	shortcutId = req.params.shortcutId
+	if (shortcutId == null || shortcutId == 0 || shortcutId == '0') then shortcutId = false
+	shortcut = req.body
+
+	# build create/edit query
+	query = {
+		_id: (if shortcutId then shortcutId else mongoose.Types.ObjectId())
+	}
+
+	# save in DB
+	BashShortcut.update(query, shortcut, {upsert: true}, (err) ->
+		if (err) then throw err
+
+		# log
+		log.event((if shortcutId then 'Edited' else 'Created') + ' shortcut (' + query._id + ')')
+
+		# forward to list
+		if err
+			req.flas('error', 'Sorry, something went wrong!')
+		else
+			if shortcutId
+				req.flash('success', 'Your changes were saved!')
+			else
+				req.flash('success', 'The shortcut <strong>' + shortcut.short_command + '</strong> was created!')
+		res.writeHead(302, {Location: '/bash-shortcuts'})
+		res.end()
+	)
+)
+
+router.get('/delete/:shortcutId', (req, res) ->
+# get parameters
+	shortcutId = req.params.shortcutId
+
+	# delete shortcut and relations to the shortcut
+	async.series(
+		[
+			(c) -> BashShortcut.remove({_id: shortcutId}, (err) -> c(err, null))
+			#(c) -> Alias.find().or([{from_device: deviceId}, {to_device: deviceId}]).remove((err) -> c(err, null))
+		],
+		(err, results) ->
+			# log
+			log.event('Deleted Bash shortcut (' + shortcutId + ')')
+
+			req.flash('info', 'Shortcut deleted.')
+			res.writeHead(302, {Location: '/bash-shortcuts'})
+			res.end()
 	)
 )
 
