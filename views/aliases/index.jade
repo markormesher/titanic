@@ -1,5 +1,4 @@
 extends ../_shared/page-layout
-include ../_mixins/plugins
 include ../_mixins/forms
 
 mixin device(d)
@@ -9,15 +8,12 @@ mixin device(d)
 		p.name
 			= d.hostname
 			br
-			span= d.ip_address
-		p.buttons.btn-group
-			+form_buttonLink('Edit', 'edit', '/devices/edit/' + d._id, {
+			span #{d.outBoundAliases} out-bound alias#{d.outBoundAliases == 1 ? '' : 'es'}
+			br
+			span #{d.inBoundAliases} in-bound alias#{d.inBoundAliases == 1 ? '' : 'es'}
+			p.buttons.btn-group
+			+form_buttonLink('Manage Aliases', 'edit', '/aliases/edit/' + d._id, {
 				'class': 'btn-warning'
-			})
-			+form_buttonLink('Delete', 'trash', '/devices/delete/' + d._id, {
-				'class': 'btn-danger delete-button',
-				'data-name': d.hostname,
-				'data-id': d._id.toString()
 			})
 
 block page-head
@@ -30,11 +26,6 @@ block page-body
 		div.portlet-title
 			div.caption
 				span.caption-subject.text-uppercase Devices
-			div.actions
-				a(href = '/devices/create', class = 'btn')
-					i.fa.fa-plus
-					| &nbsp;&nbsp;
-					| Create Device
 
 		div.portlet-body
 
@@ -43,7 +34,3 @@ block page-body
 
 			each d in devices
 				+device(d)
-
-block scripts
-	+plugin_bootbox
-	script(src = '/devices/js/delete.js')

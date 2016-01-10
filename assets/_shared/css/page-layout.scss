@@ -2,8 +2,9 @@
 
 #header {
 	width: 100%;
-	background-color: #eeeeee;
-	padding: 8px 0 10px 30px;
+	background: #eeeeee url('/_shared/images/header-bg.png') no-repeat bottom left;
+	background-size: contain;
+	padding: 8px 0 10px 100px;
 	margin-bottom: 20px;
 
 	h1 {
@@ -12,5 +13,19 @@
 		color: $textColour;
 		font-size: 3em;
 		font-weight: normal;
+	}
+}
+
+.container {
+	h2, h3 {
+		margin: 0 0 14px;
+	}
+
+	p, li, label {
+		font-size: 1.25em;
+	}
+
+	p a {
+		color: inherit !important;
 	}
 }

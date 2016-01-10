@@ -5,12 +5,12 @@
 express = require('express')
 rfr = require('rfr')
 async = require('async')
+mongoose = require('mongoose')
 log = rfr('./helpers/log')
 c = rfr('./helpers/constants')
 utils = rfr('./helpers/utils')
 
 # models
-mongoose = require('mongoose')
 Device = rfr('./models/device')
 
 ##############
@@ -20,18 +20,14 @@ Device = rfr('./models/device')
 router = express.Router();
 
 router.get('/', (req, res) ->
-# get parameters
-	status = req.query.status
-
 	# get all devices
 	Device.find({}).sort({hostname: 'asc'}).exec((err, devices) ->
-# render output
+		# render output
 		res.render('devices/index', {
 			_: {
 				title: 'Device List'
 				activePage: 'devices'
 			}
-			status: status
 			devices: devices
 			deviceTypes: c.DEVICE_TYPES
 		})
@@ -52,11 +48,10 @@ router.get('/create', (req, res) ->
 router.get('/edit/:deviceId', (req, res) ->
 # get parameters
 	deviceId = req.params.deviceId
-	status = req.query.status
 
 	# find device
 	Device.find({_id: deviceId}).exec((err, device) ->
-# check for device
+		# check for device
 		if (err)
 			req.flash('error', 'Sorry, that device couldn\'t be loaded!')
 			res.writeHead(302, {Location: '/devices'})
@@ -73,7 +68,6 @@ router.get('/edit/:deviceId', (req, res) ->
 			}
 			device: device
 			deviceTypes: c.DEVICE_TYPES
-			status: status
 		})
 	)
 )
