@@ -52,6 +52,7 @@ routes = {
 	'dashboard': rfr('./controllers/dashboard')
 	'devices': rfr('./controllers/devices')
 	'aliases': rfr('./controllers/aliases')
+	'bash-shortcuts': rfr('./controllers/bash-shortcuts')
 };
 
 for stem, file of routes

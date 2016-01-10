@@ -9,6 +9,10 @@ mixin form_textInput(field, value, attrs)
 	- attrs = attrs || {}
 	input.form-control(type = 'text', id = field, name = field, value = value)&attributes(attrs)
 
+mixin form_longTextInput(field, value, attrs)
+	- attrs = attrs || {}
+	textarea.form-control(id = field, name = field)&attributes(attrs)= value
+
 mixin form_switchCheckBox(field, title, attrs)
 	- attrs = attrs || {}
 	label(for = field, class = 'switch-checkbox')

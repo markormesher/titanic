@@ -8,7 +8,6 @@ async = require('async')
 mongoose = require('mongoose')
 log = rfr('./helpers/log')
 c = rfr('./helpers/constants')
-utils = rfr('./helpers/utils')
 
 # models
 Device = rfr('./models/device')
@@ -26,7 +25,7 @@ router.get('/', (req, res) ->
 		# render output
 		res.render('devices/index', {
 			_: {
-				title: 'Device List'
+				title: 'Devices'
 				activePage: 'devices'
 			}
 			devices: devices
@@ -42,12 +41,12 @@ router.get('/create', (req, res) ->
 			activePage: 'devices'
 		}
 		device: null
-		deviceTypes: utils.objectToArray(c.DEVICE_TYPES)
+		deviceTypes: c.DEVICE_TYPES
 	})
 )
 
 router.get('/edit/:deviceId', (req, res) ->
-# get parameters
+	# get parameters
 	deviceId = req.params.deviceId
 
 	# find device
@@ -91,7 +90,7 @@ router.post('/edit/:deviceId', (req, res) ->
 		# log
 		log.event((if deviceId then 'Edited' else 'Created') + ' device (' + query._id + ')')
 
-		# forward to edit page
+		# forward to list
 		if err
 			req.flas('error', 'Sorry, something went wrong!')
 		else
