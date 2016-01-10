@@ -1,0 +1,36 @@
+extends ../_shared/page-layout
+include ../_mixins/forms
+
+mixin device(d)
+	div.device-row
+		p.icon
+			i(class = 'fa fa-lg fa-fw fa-' + deviceTypes[d.type].fa_icon)
+		p.name
+			= d.hostname
+			br
+			span #{d.outboundAliases} outbound alias#{d.outboundAliases == 1 ? '' : 'es'}
+			br
+			span #{d.inboundAliases} inbound alias#{d.inboundAliases == 1 ? '' : 'es'}
+			p.buttons.btn-group
+				+form_buttonLink('Manage Aliases', 'edit', '/aliases/edit/' + d._id, {
+					'class': 'btn-warning'
+				})
+
+block page-head
+
+	link(rel = 'stylesheet', href = '/_shared/css/device-list.css')
+
+block page-body
+
+	div.portlet
+		div.portlet-title
+			div.caption
+				span.caption-subject.text-uppercase Devices
+
+		div.portlet-body
+
+			if devices.length == 0
+				p.text-muted.text-center There are no registered devices!
+
+			each d in devices
+				+device(d)

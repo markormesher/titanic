@@ -1,0 +1,58 @@
+extends ../_shared/page-layout
+include ../_mixins/forms
+include ../_mixins/plugins
+
+block page-head
+
+	link(rel = 'stylesheet', href = '/_shared/css/forms.css')
+
+block page-body
+
+	- arr = '&nbsp;&nbsp;<i class="fa fa-angle-right text-muted"></i>&nbsp;&nbsp;'
+
+	div.portlet
+		div.portlet-title
+			div.caption
+				span.caption-subject.text-uppercase!= _.title
+
+		div.portlet-body
+
+			form(action = '/aliases/edit/' + device._id, method = 'post')
+
+				div.row
+
+					div.col-md-6
+						h2 Outbound Aliases
+
+						if outboundDevices.length == 0
+							p.text-muted.text-center There are no possible outbound aliases!
+						else
+							p
+								i.fa.fa-fw.fa-bolt.text-muted
+								| &nbsp;&nbsp;
+								a.select-all-checkboxes(href = 'javascript:;' data-target = 'input[name^=out_]') Select/Deselect All
+
+							for d in outboundDevices
+								+form_fieldset
+									+form_switchCheckBox('out_' + d._id, device.hostname + arr + d.hostname, {checked: aliasMap[device._id][d._id]})
+
+					div.col-md-6
+						h2 Inbound Aliases
+
+						if inboundDevices.length == 0
+							p.text-muted.text-center There are no possible inbound aliases!
+						else
+							p
+								i.fa.fa-fw.fa-bolt.text-muted
+								| &nbsp;&nbsp;
+								a.select-all-checkboxes(href = 'javascript:;' data-target = 'input[name^=in_]') Select/Deselect All
+
+							for d in inboundDevices
+								+form_fieldset
+									+form_switchCheckBox('in_' + d._id, d.hostname + arr + device.hostname, {checked: aliasMap[d._id][device._id]})
+
+				+form_fieldset
+					+form_button('Save', 'save', {'class': 'btn-primary'})
+
+block scripts
+	script(src = '/_shared/js/forms.js')

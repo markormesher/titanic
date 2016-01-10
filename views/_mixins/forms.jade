@@ -1,0 +1,47 @@
+mixin form_fieldset
+	fieldset.form-group
+		block
+
+mixin form_label(field, title)
+	label.control-label(for = field)= title
+
+mixin form_textInput(field, value, attrs)
+	- attrs = attrs || {}
+	input.form-control(type = 'text', id = field, name = field, value = value)&attributes(attrs)
+
+mixin form_longTextInput(field, value, attrs)
+	- attrs = attrs || {}
+	textarea.form-control(id = field, name = field)&attributes(attrs)= value
+
+mixin form_switchCheckBox(field, title, attrs)
+	- attrs = attrs || {}
+	label(for = field, class = 'switch-checkbox')
+		input(type = 'checkbox', id = field, name = field, value = attrs['value'] || '1')&attributes(attrs)
+		i.fa.fa-fw.fa-check.text-success(style = 'display: none;')
+		| &nbsp;&nbsp;
+		span!= title
+
+mixin form_buttonGroup(field, options, value, attrs)
+	- attrs = attrs || {}
+	div.btn-group.btn-group-justified(role = 'group', data-toggle = 'buttons')
+		for o in options
+			- active = value == o.value
+			label(class = ('btn btn-default' + (active ? ' active' : '')))
+				input(type = 'radio', name = field, value = o.value, checked = active)&attributes(attrs)
+				i(class = 'fa text-muted fa-' + o.fa_icon)
+				| &nbsp;&nbsp;&nbsp;&nbsp;
+				= o.label
+
+mixin form_button(label, fa_icon, attrs)
+	- attrs = attrs || {}
+	button.btn&attributes(attrs)
+		i(class = 'fa fa-' + fa_icon)
+		| &nbsp;&nbsp;
+		=label
+
+mixin form_buttonLink(label, fa_icon, href, attrs)
+	- attrs = attrs || {}
+	a.btn(href = href)&attributes(attrs)
+		i(class = 'fa fa-' + fa_icon)
+		| &nbsp;&nbsp;
+		=label

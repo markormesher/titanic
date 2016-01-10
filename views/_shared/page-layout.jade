@@ -1,0 +1,15 @@
+extends root-layout
+
+block head
+	link(rel = 'stylesheet', href = '/_shared/css/page-layout.css')
+	block page-head
+
+block body
+
+	div#header
+		h1!= _.title
+
+	div.container
+		div.row
+			div.col-md-4: include navigation
+			div.col-md-8: block page-body

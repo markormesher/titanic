@@ -1,0 +1,34 @@
+extends ../_shared/root-layout
+
+block head
+	link(rel='stylesheet', href='/dashboard/css/dashboard.css')
+
+block body
+
+	div#header
+		h1 Titanic
+		h2 Transparent Integration of Terminal Aliases,<br />Networked In-between Computers
+
+	div.container
+
+		div.row
+
+			div.col-md-4: include ../_shared/navigation
+
+			div.col-md-8: div.portlet
+				div.portlet-title
+					div.caption
+						span.caption-subject.text-uppercase Activity Stream
+
+				div.portlet-body.activity-stream
+					if eventsError != null
+						p.error Activity log failed to load.
+					else
+						if events.length == 0
+							p.none No activity yet!
+						else
+							for e in events
+								p
+									span.timestamp= e['timestamp']
+									| &nbsp;&nbsp;&nbsp;
+									span(class=e['type'])= e['message']
