@@ -18,7 +18,7 @@ This tool is a *work in progress*, but takes a back-seat to some of my other pro
 - ~~Device Management~~
 - ~~Alias Management~~
 - ~~Bash Shortcut Management~~
-- API
+- ~~API~~
 - Command Line Tool
 
 -
