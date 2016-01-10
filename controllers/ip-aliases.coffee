@@ -88,7 +88,7 @@ router.get('/edit/:deviceId', (req, res) ->
 			# render output
 			res.render('ip-aliases/edit', {
 				_: {
-					title: 'Manage IP Aliases for ' + device.hostname
+					title: 'Manage IP Aliases: ' + device.hostname
 					activePage: 'ip-aliases'
 				}
 				devices: devices

@@ -8,18 +8,3 @@ $textHighlight: #990000;
 // fonts
 
 $fontFamily: 'Lato';
-
-// CSS defaults
-
-h1, h2, h3, h4, h5, h6, p, li, input, label, span {
-	font-family: $fontFamily, sans-serif !important;
-	color: $textColour;
-}
-
-.text-muted {
-	color: $textMuted;
-}
-
-.text-very-muted {
-	color: $textVeryMuted;
-}
