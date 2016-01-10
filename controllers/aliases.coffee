@@ -10,7 +10,7 @@ utils = rfr('./helpers/utils')
 
 # models
 Device = rfr('./models/device')
-IpAlias = rfr('./models/ip-alias')
+Alias = rfr('./models/alias')
 
 ##############
 #  Mappings  #
@@ -23,32 +23,32 @@ router.get('/', (req, res) ->
 	async.parallel(
 		{
 			devices: (c) -> Device.find({}).sort({hostname: 'asc'}).exec((err, devices) -> c(err, devices))
-			ipAliases: (c) -> IpAlias.find({}).exec((err, ipAliases) -> c(err, ipAliases))
+			aliases: (c) -> Alias.find({}).exec((err, aliases) -> c(err, aliases))
 		},
 		(err, results) ->
-			# count ip aliases
-			outBoundIpAliases = {};
-			inBoundIpAliases = {};
+			# count aliases
+			outBoundAliases = {};
+			inBoundAliases = {};
 			for d in results.devices
-				outBoundIpAliases[d._id] = 0
-				inBoundIpAliases[d._id] = 0
-			for a in results.ipAliases
-				++outBoundIpAliases[a.from_device]
-				++inBoundIpAliases[a.to_device]
+				outBoundAliases[d._id] = 0
+				inBoundAliases[d._id] = 0
+			for a in results.aliases
+				++outBoundAliases[a.from_device]
+				++inBoundAliases[a.to_device]
 
 			# convert devices to objects with count
 			devices = []
 			for d in results.devices
 				d = d.toObject()
-				d.outBoundIpAliases = outBoundIpAliases[d._id]
-				d.inBoundIpAliases = inBoundIpAliases[d._id]
+				d.outBoundAliases = outBoundAliases[d._id]
+				d.inBoundAliases = inBoundAliases[d._id]
 				devices.push(d)
 
 			# render output
-			res.render('ip-aliases/index', {
+			res.render('aliases/index', {
 				_: {
-					title: 'IP Aliases'
-					activePage: 'ip-aliases'
+					title: 'Aliases'
+					activePage: 'aliases'
 				}
 				devices: devices
 				deviceTypes: c.DEVICE_TYPES
@@ -65,16 +65,16 @@ router.get('/edit/:deviceId', (req, res) ->
 		{
 			devices: (c) -> Device.find({}).exec((err, devices) -> c(err, devices))
 			device: (c) -> Device.find({_id: deviceId}).exec((err, devices) -> c(err, devices))
-			ipAliases: (c) -> IpAlias.find().or([{from_device: deviceId}, {to_device: deviceId}]).exec((err, ipAliases) -> c(err, ipAliases))
+			aliases: (c) -> Alias.find().or([{from_device: deviceId}, {to_device: deviceId}]).exec((err, aliases) -> c(err, aliases))
 		},
 		(err, results) ->
 			# read results
-			{devices, device, ipAliases} = results
+			{devices, device, aliases} = results
 
 			# check for device
 			if (err || !device)
 				req.flash('error', 'Sorry, that device couldn\'t be loaded!')
-				res.writeHead(302, {Location: '/ip-aliases'})
+				res.writeHead(302, {Location: '/aliases'})
 				res.end()
 				return
 			else
@@ -86,14 +86,14 @@ router.get('/edit/:deviceId', (req, res) ->
 				aliasMap[d1._id] = {}
 				for d2 in devices
 					aliasMap[d1._id][d2._id] = false;
-			for a in ipAliases
+			for a in aliases
 				aliasMap[a.from_device][a.to_device] = true
 
 			# render output
-			res.render('ip-aliases/edit', {
+			res.render('aliases/edit', {
 				_: {
-					title: 'Manage IP Aliases: ' + device.hostname
-					activePage: 'ip-aliases'
+					title: 'Manage Aliases: ' + device.hostname
+					activePage: 'aliases'
 				}
 				devices: devices
 				device: device
@@ -118,8 +118,8 @@ router.post('/edit/:deviceId', (req, res) ->
 	# update aliases
 	async.series(
 		[
-			(c) -> IpAlias.find().or([{from_device: deviceId}, {to_device: deviceId}]).remove((err) -> c(err, null))
-			(c) -> IpAlias.create(newAliases, (err, results) -> c(err, results))
+			(c) -> Alias.find().or([{from_device: deviceId}, {to_device: deviceId}]).remove((err) -> c(err, null))
+			(c) -> Alias.create(newAliases, (err, results) -> c(err, results))
 		],
 		(err, results) ->
 			# send back to list
@@ -128,7 +128,7 @@ router.post('/edit/:deviceId', (req, res) ->
 			else
 				req.flash('success', 'Your changes were saved!')
 
-			res.writeHead(302, {Location: '/ip-aliases'})
+			res.writeHead(302, {Location: '/aliases'})
 			res.end()
 	)
 )

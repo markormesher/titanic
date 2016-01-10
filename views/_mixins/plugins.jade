@@ -9,10 +9,6 @@ mixin plugin_validation
 		});
 		$('.btn').click(function() {$(this).validate();})
 
-mixin plugin_autoCloseAlerts
-	script(type = 'text/javascript').
-		$('.alert').delay(3000).slideUp(400, function() {$(this).alert('close');});
-
 mixin plugin_toastrListener(_)
 	script(type = 'text/javascript').
 		var toastrMessages = !{JSON.stringify(locals.messages || [])};
