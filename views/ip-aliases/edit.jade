@@ -28,7 +28,7 @@ block page-body
 						for d in devices
 							if (d._id.toString() != device._id.toString())
 								+form_fieldset
-									+form_checkBox('x_to_' + d._id, device.hostname + arr + d.hostname, true)
+									+form_switchCheckBox('out_' + d._id, device.hostname + arr + d.hostname, '1', {checked: aliasMap[device._id][d._id]})
 
 					div.col-md-6
 
@@ -37,7 +37,7 @@ block page-body
 						for d in devices
 							if (d._id.toString() != device._id.toString())
 								+form_fieldset
-									+form_checkBox('x_from_' + d._id, d.hostname + arr + device.hostname, true)
+									+form_switchCheckBox('in_' + d._id, d.hostname + arr + device.hostname, '1', {checked: aliasMap[d._id][device._id]})
 
 				+form_fieldset
 					+form_button('Save', 'save', {'class': 'btn-primary'})

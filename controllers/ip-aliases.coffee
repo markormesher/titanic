@@ -98,4 +98,35 @@ router.get('/edit/:deviceId', (req, res) ->
 	)
 )
 
+router.post('/edit/:deviceId', (req, res) ->
+	# get parameters
+	deviceId = req.params.deviceId
+	aliases = req.body
+
+	# build new aliases
+	newAliases = []
+	for k, v of aliases
+		if (k.substr(0, 4) == 'out_' && v == '1')
+			newAliases.push({from_device: deviceId, to_device: k.substr(4)})
+		if (k.substr(0, 3) == 'in_' && v == '1')
+			newAliases.push({from_device: k.substr(3), to_device: deviceId})
+
+	# update aliases
+	async.series(
+		[
+			(c) -> IpAlias.find().or([{from_device: deviceId}, {to_device: deviceId}]).remove((err) -> c(err, null))
+			(c) -> IpAlias.create(newAliases, (err, results) -> c(err, results))
+		],
+		(err, results) ->
+			# send back to list
+			if err
+				req.flas('error', 'Sorry, something went wrong!')
+			else
+				req.flash('success', 'Your changes were saved!')
+
+			res.writeHead(302, {Location: '/ip-aliases'})
+			res.end()
+	)
+)
+
 module.exports = router;

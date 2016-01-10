@@ -9,10 +9,10 @@ mixin form_textInput(field, value, attrs)
 	- attrs = attrs || {}
 	input.form-control(type = 'text', id = field, name = field, value = value)&attributes(attrs)
 
-mixin form_checkBox(field, title, value, attrs)
+mixin form_switchCheckBox(field, title, value, attrs)
 	- attrs = attrs || {}
 	label(for = field, class = 'switch-checkbox')
-		input(type = 'checkbox', id = field, name = field)&attributes(attrs)
+		input(type = 'checkbox', id = field, name = field, value = value)&attributes(attrs)
 		i.fa.fa-fw.fa-check.text-success(style = 'display: none;')
 		| &nbsp;&nbsp;
 		span!= title
