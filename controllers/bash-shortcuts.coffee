@@ -100,22 +100,17 @@ router.post('/edit/:shortcutId', (req, res) ->
 )
 
 router.get('/delete/:shortcutId', (req, res) ->
-# get parameters
+	# get parameters
 	shortcutId = req.params.shortcutId
 
-	# delete shortcut and relations to the shortcut
-	async.series(
-		[
-			(c) -> BashShortcut.remove({_id: shortcutId}, (err) -> c(err, null))
-			#(c) -> Alias.find().or([{from_device: deviceId}, {to_device: deviceId}]).remove((err) -> c(err, null))
-		],
-		(err, results) ->
-			# log
-			log.event('Deleted Bash shortcut (' + shortcutId + ')')
+	# delete shortcut
+	BashShortcut.remove({_id: shortcutId}, (err) ->
+		# log
+		log.event('Deleted Bash shortcut (' + shortcutId + ')')
 
-			req.flash('info', 'Shortcut deleted.')
-			res.writeHead(302, {Location: '/bash-shortcuts'})
-			res.end()
+		req.flash('info', 'Shortcut deleted.')
+		res.writeHead(302, {Location: '/bash-shortcuts'})
+		res.end()
 	)
 )
 
