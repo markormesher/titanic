@@ -22,8 +22,10 @@ router.get('/', (req, res) ->
 		message: 'Titanic API'
 		endpoints: [
 			'/aliases'
-			'/aliases?hostname={hostname}'
+			'/aliases/{hostname}'
 			'/bash-shortcuts'
+			'/bash-shortcuts/external'
+			'/bash-shortcuts/internal'
 			'/devices'
 		]
 	})
@@ -122,9 +124,21 @@ router.get('/aliases/:fromHostName', (req, res) ->
 	)
 )
 
-router.get('/bash-shortcuts', (req, res) ->
+router.get('/bash-shortcuts/:query?', (req, res) ->
+	# get parameters
+	query = req.params.query
+
+	# build search
+	search = null
+	if (!query) then search = {}
+	if (query == 'internal') then search = {available_internal: true}
+	if (query == 'external') then search = {available_external: true}
+	if search == null
+		res.status(404)
+		res.end();
+
 	# get devices
-	BashShortcut.find().exec((err, shortcuts) ->
+	BashShortcut.find(search).exec((err, shortcuts) ->
 		if err
 			res.status(500)
 			res.end();

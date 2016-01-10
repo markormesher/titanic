@@ -2,6 +2,10 @@ extends ../_shared/page-layout
 include ../_mixins/forms
 include ../_mixins/plugins
 
+block page-head
+
+	link(rel = 'stylesheet', href = '/_shared/css/forms.css')
+
 block page-body
 
 	- shortcut = shortcut || {}
@@ -17,27 +21,30 @@ block page-body
 
 				+form_fieldset
 					+form_label('short_command', 'Short Command')
-					+form_textInput(
-					'short_command',
-					shortcut.short_command,
-					{
+					+form_textInput('short_command', shortcut.short_command, {
 						'data-validation': 'required alphanumeric',
 						'data-validation-allowing': '._-'
-					}
-					)
+					})
 
 				+form_fieldset
 					+form_label('full_command', 'Full Command')
-					+form_longTextInput(
-					'full_command',
-					shortcut.full_command,
-					{
+					+form_longTextInput('full_command', shortcut.full_command, {
 						'data-validation': 'required',
 						rows: 3
+					})
+
+				+form_fieldset
+					+form_switchCheckBox('available_internal', 'Available to internal devices', {
+						checked: shortcut.available_internal
+					})
+				+form_fieldset
+					+form_switchCheckBox('available_external', 'Available to external devices', {
+						checked: shortcut.available_external
 					})
 
 				+form_fieldset
 					+form_button('Save', 'save', {'class': 'btn-primary'})
 
 block scripts
+	script(src = '/_shared/js/forms.js')
 	+plugin_validation

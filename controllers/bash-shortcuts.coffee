@@ -73,6 +73,10 @@ router.post('/edit/:shortcutId', (req, res) ->
 	if shortcutId == null || shortcutId == 0 || shortcutId == '0' then shortcutId = false
 	shortcut = req.body
 
+	# normalise booleans
+	shortcut.available_internal = shortcut.available_internal == '1'
+	shortcut.available_external = shortcut.available_external == '1'
+
 	# build create/edit query
 	query = {
 		_id: (if shortcutId then shortcutId else mongoose.Types.ObjectId())
