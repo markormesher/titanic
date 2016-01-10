@@ -1,0 +1,48 @@
+extends ../_shared/page-layout
+include ../_mixins/plugins
+include ../_mixins/forms
+
+mixin shortcut(s)
+	div.shortcut-row
+		- trimmed = s.full_command.length > 80 ? s.full_command.substr(0, 77) + '...' : s.full_command
+		p
+			= s.short_command
+			br
+			span= trimmed
+		p.buttons.btn-group
+			+form_buttonLink('Edit', 'edit', '/bash-shortcuts/edit/' + s._id, {
+				'class': 'btn-warning'
+			})
+			+form_buttonLink('Delete', 'trash', '/bash-shortcuts/delete/' + s._id, {
+				'class': 'btn-danger delete-button',
+				'data-name': s.short_command,
+				'data-id': s._id.toString()
+			})
+
+block page-head
+
+	link(rel = 'stylesheet', href = '/bash-shortcuts/css/list.css')
+
+block page-body
+
+	div.portlet
+		div.portlet-title
+			div.caption
+				span.caption-subject.text-uppercase Bash Shortcuts
+			div.actions
+				a(href = '/bash-shortcuts/create', class = 'btn')
+					i.fa.fa-plus
+					| &nbsp;&nbsp;
+					| Create Shortcut
+
+		div.portlet-body
+
+			if shortcuts.length == 0
+				p.text-muted.text-center There are no registered shortcuts!
+
+			each s in shortcuts
+				+shortcut(s)
+
+block scripts
+	+plugin_bootbox
+	script(src = '/bash-shortcuts/js/delete.js')

@@ -26,7 +26,7 @@ router.get('/', (req, res) ->
 		# render output
 		res.render('devices/index', {
 			_: {
-				title: 'Device List'
+				title: 'Devices'
 				activePage: 'devices'
 			}
 			devices: devices
