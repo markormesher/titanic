@@ -9,7 +9,7 @@ log = rfr('./helpers/log')
 c = rfr('./helpers/constants')
 
 # managers
-DeviceManager = rfr('./managers/device')
+DeviceManager = rfr('./managers/devices')
 
 ##############
 #  Mappings  #
