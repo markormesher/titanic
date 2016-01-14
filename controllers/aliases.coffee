@@ -140,10 +140,10 @@ router.post('/edit/:deviceId', (req, res) ->
 		(err) ->
 			# send back to list
 			if err
-				log.error('Failed to update aliases (' + deviceId + ')')
+				log.error('Failed to update aliases for device ' + deviceId)
 				req.flash('error', 'Sorry, something went wrong!')
 			else
-				log.event('Edited aliases (' + deviceId + ')')
+				log.event('Edited aliases for device ' + deviceId)
 				req.flash('success', 'Your changes were saved!')
 
 			res.writeHead(302, {Location: '/aliases'})

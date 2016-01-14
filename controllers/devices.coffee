@@ -76,14 +76,14 @@ router.post('/edit/:deviceId', (req, res) ->
 	DeviceManager.createOrUpdate(deviceId, device, (err, deviceId, createdNew) ->
 		# forward to list
 		if err
-			log.error('Failed to update device (' + deviceId + ')')
+			log.error('Failed to update device ' + deviceId)
 			req.flash('error', 'Sorry, something went wrong!')
 		else
 			if createdNew
-				log.event('Created device (' + deviceId + ')')
+				log.event('Created device ' + deviceId)
 				req.flash('success', 'The device <strong>' + device.hostname + '</strong> was created!')
 			else
-				log.event('Edited device (' + deviceId + ')')
+				log.event('Edited device ' + deviceId)
 				req.flash('success', 'Your changes were saved!')
 
 		res.writeHead(302, {Location: '/devices'})
@@ -98,10 +98,10 @@ router.get('/delete/:deviceId', (req, res) ->
 	# delete device
 	DeviceManager.delete(deviceId, (err) ->
 		if err
-			log.error('Failed to delete device (' + deviceId + ')')
+			log.error('Failed to delete device ' + deviceId)
 			req.flash('error', 'Sorry, something went wrong!')
 		else
-			log.event('Deleted device (' + deviceId + ')')
+			log.event('Deleted device ' + deviceId)
 			req.flash('info', 'Device deleted.')
 
 		res.writeHead(302, {Location: '/devices'})

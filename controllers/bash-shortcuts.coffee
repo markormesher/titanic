@@ -77,14 +77,14 @@ router.post('/edit/:shortcutId', (req, res) ->
 	ShortcutManager.createOrUpdate(shortcutId, shortcut, (err, shortcutId, createdNew) ->
 		# forward to list
 		if err
-			log.error('Failed to update shortcut (' + shortcutId + ')')
+			log.error('Failed to update shortcut ' + shortcutId)
 			req.flash('error', 'Sorry, something went wrong!')
 		else
 			if createdNew
-				log.event('Created shortcut (' + shortcutId + ')')
+				log.event('Created shortcut ' + shortcutId)
 				req.flash('success', 'The shortcut <strong>' + shortcut.short_command + '</strong> was created!')
 			else
-				log.event('Edited shortcut (' + shortcutId + ')')
+				log.event('Edited shortcut ' + shortcutId)
 				req.flash('success', 'Your changes were saved!')
 
 		res.writeHead(302, {Location: '/bash-shortcuts'})
@@ -99,10 +99,10 @@ router.get('/delete/:shortcutId', (req, res) ->
 	# delete shortcut
 	ShortcutManager.delete(shortcutId, (err) ->
 		if err
-			log.error('Failed to delete shortcut (' + shortcutId + ')')
+			log.error('Failed to delete shortcut ' + shortcutId)
 			req.flash('error', 'Sorry, something went wrong!')
 		else
-			log.event('Deleted shortcut (' + shortcutId + ')')
+			log.event('Deleted shortcut ' + shortcutId)
 			req.flash('info', 'Shortcut deleted.')
 
 		res.writeHead(302, {Location: '/bash-shortcuts'})
