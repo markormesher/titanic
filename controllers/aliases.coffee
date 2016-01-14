@@ -8,9 +8,9 @@ async = require('async')
 c = rfr('./helpers/constants')
 log = rfr('./helpers/log')
 
-# models
-Device = rfr('./models/device')
-Alias = rfr('./models/alias')
+# managers
+DeviceManager = rfr('./managers/devices')
+AliasManager = rfr('./managers/aliases')
 
 ##############
 #  Mappings  #
@@ -22,8 +22,8 @@ router.get('/', (req, res) ->
 	# get all devices and aliases
 	async.parallel(
 		{
-			devices: (c) -> Device.find({}).sort({hostname: 'asc'}).exec((err, devices) -> c(err, devices))
-			aliases: (c) -> Alias.find({}).exec((err, aliases) -> c(err, aliases))
+			devices: (c) -> DeviceManager.get(c)
+			aliases: (c) -> AliasManager.get(c)
 		},
 		(err, results) ->
 			# count aliases
@@ -39,7 +39,6 @@ router.get('/', (req, res) ->
 			# convert devices to objects with count
 			devices = []
 			for d in results.devices
-				d = d.toObject()
 				d.outboundAliases = outboundAliases[d._id]
 				d.inboundAliases = inboundAliases[d._id]
 				devices.push(d)
@@ -63,22 +62,20 @@ router.get('/edit/:deviceId', (req, res) ->
 	# find device and aliases
 	async.parallel(
 		{
-			devices: (c) -> Device.find({}).exec((err, devices) -> c(err, devices))
-			device: (c) -> Device.find({_id: deviceId}).exec((err, devices) -> c(err, devices))
-			aliases: (c) -> Alias.find().or([{from_device: deviceId}, {to_device: deviceId}]).exec((err, aliases) -> c(err, aliases))
+			devices: (c) -> DeviceManager.get(c)
+			device: (c) -> DeviceManager.get(deviceId, c)
+			aliases: (c) -> AliasManager.get(deviceId, c)
 		},
 		(err, results) ->
 			# read results
 			{devices, device, aliases} = results
 
 			# check for device
-			if err || !device
-				req.flash('error', 'Sorry, that device couldn\'t be loaded!')
+			if err or !device
+				req.flash('error', 'Sorry, that device\'s aliases couldn\'t be loaded!')
 				res.writeHead(302, {Location: '/aliases'})
 				res.end()
 				return
-			else
-				device = device[0]
 
 			# convert aliases to true/false 2D array
 			aliasMap = {}
@@ -91,9 +88,6 @@ router.get('/edit/:deviceId', (req, res) ->
 
 			# rule: aliases are not possible in some situations
 			aliasPossible = (from, to) ->
-				from = from.toObject()
-				to = to.toObject()
-
 				# a -> a not allowed
 				if (from._id.toString() == to._id.toString()) then return false
 
@@ -140,8 +134,8 @@ router.post('/edit/:deviceId', (req, res) ->
 	# update aliases
 	async.series(
 		[
-			(c) -> Alias.find().or([{from_device: deviceId}, {to_device: deviceId}]).remove((err) -> c(err))
-			(c) -> Alias.create(newAliases, (err) -> c(err))
+			(c) -> AliasManager.deleteAll(deviceId, c)
+			(c) -> AliasManager.create(newAliases, c)
 		],
 		(err) ->
 			# send back to list

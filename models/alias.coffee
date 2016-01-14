@@ -13,10 +13,5 @@ module.exports = mongoose.model(
 			type: Schema.Types.ObjectId
 			ref: 'Device'
 		}
-		is_deleted: {
-			type: Boolean
-			required: true
-			default: false
-		}
 	}
 )
