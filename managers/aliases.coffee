@@ -5,16 +5,17 @@ Alias = rfr('./models/alias')
 module.exports = {
 
 	# get all aliases (no ID) or aliases for one device (with ID)
-	get: (deviceId, callback) ->
+	get: (query, callback) ->
 		# calls without ID
-		if typeof deviceId == 'function'
-			callback = deviceId
-			deviceId = null
+		if typeof query == 'function'
+			callback = query
+			query = null
 
 		# build search query
-		query = {}
-		if deviceId != null
-			query = {$or:[{from_device: deviceId}, {to_device: deviceId}]}
+		if query == null
+			query = {}
+		else if typeof query == 'string'
+			query = {$or:[{from_device: query}, {to_device: query}]}
 
 		# run query
 		Alias.find(query).exec((err, result) ->
