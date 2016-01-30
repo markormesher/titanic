@@ -3,6 +3,35 @@
 # globals and settings
 version="1.0"
 
+############
+## Config ##
+############
+
+configFolder="${HOME}/.titanic"
+configFile="${configFolder}/titanic.config"
+
+# check folder/file exists
+mkdir -p $configFolder
+touch $configFile
+
+# load default config
+_machineIdentity="unknown"
+
+# load config from file, overwriting some of the above
+. $configFile
+
+# write a config item to the file
+writeConfig () { # 1: key; 2: value
+	# TODO: actually write to the file
+	out "Set $1 as $2"
+	exit 0
+}
+
+# show all config details
+printConfig () { # 1: key
+	out "machineIdentity  =  ${_machineIdentity}"
+}
+
 #############
 ## Helpers ##
 #############
@@ -11,62 +40,32 @@ out () {
 	echo "  $1"
 }
 
-#####################
-## Inner Functions ##
-#####################
-
-# config
-
-_config () {
-	# todo
-	out "Show config"
-	exit 0
-}
-
-_id () {
-	# todo
-	out "Show ID"
-	exit 0
-}
-
-_set () { # 1: key; 2: value
-	# todo
-	out "Set $1 as $2"
-	exit 0
-}
-
-_set-id () { # 1: new ID
-	# todo
-	out "Set ID to $1"
-	exit 0
-}
-
-# normal use
-
-_sync () {
-	# todo
-	out "Sync"
-	exit 0
-}
-
-# misc
-
 _help () {
 	out "Titanic v$version"
 	out ""
 	out "Usage: ./titanic.sh [action]"
 	out ""
 	out "Configuration:"
-	out "  --config          Show the current local configuration"
-	out "  --id              Show the identity of this machine (see also: --set-id)"
-	out "  --set key=value   Set a given configuration option"
-	out "  --set-id new-id   Show the identity of this machine (see also: --id)"
+	out "  --set-config key=value   Set a given configuration option"
+	out "  --set-id new-id          Set the identity of this machine (see also: --show-id)"
+	out "  --show-config            Show the current local configuration"
+	out "  --show-id                Show the identity of this machine (see also: --set-id)"
 	out ""
 	out "Normal Use:"
-	out "  -s --sync         Synchronise settings on this machine"
+	out "  -s --sync                Synchronise settings on this machine"
 	out ""
 	out "Misc:"
-	out "  --help            Show this help text"
+	out "  --help                    Show this help text"
+	exit 0
+}
+
+##########
+## Sync ##
+##########
+
+_sync () {
+	# todo
+	out "Sync"
 	exit 0
 }
 
@@ -88,20 +87,12 @@ while test $# -gt 0; do
 
 		# configuration
 
-		--config)
-			_config
-			;;
-
-		--id)
-			_id
-			;;
-
-		--set)
+		--set-config)
 			shift
 			if [ $# -gt 0 ]
 			then
 				IFS="=" read -r key value <<< "$1"
-				_set "${key}" "${value}"
+				writeConfig "${key}" "${value}"
 			else
 				out "No parameter specified"
 				exit 1
@@ -112,11 +103,21 @@ while test $# -gt 0; do
 			shift
 			if [ $# -gt 0 ]
 			then
-				_set-id "$1"
+				writeConfig "_machineIdentity" "$1"
 			else
 				out "No identity specified"
 				exit 1
 			fi
+			;;
+
+		--show-config)
+			printConfig
+			exit 0
+			;;
+
+		--show-id)
+			out $_machineIdentity
+			exit 0
 			;;
 
 		# normal use
