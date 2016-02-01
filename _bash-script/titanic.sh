@@ -13,26 +13,25 @@ out () {
 
 elementIn () {
   local e
-  for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 1; done
-  return 0
+  for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 0; done
+  return 1
 }
 
 printHelp () {
 	out "Titanic v$version"
 	out ""
-	out "Usage: ./titanic.sh [action]"
+	out "Usage: titanic [action]"
 	out ""
 	out "Configuration:"
-	out "  --set-config key=value   Set a given configuration option"
-	out "  --set-id new-id          Set the identity of this machine (see also: --show-id)"
-	out "  --show-config            Show the current local configuration"
-	out "  --show-id                Show the identity of this machine (see also: --set-id)"
+	out "  --set-config {key} {value}  Set a given configuration option"
+	out "  --show-config {key}         Show a specific value from the current local configuration"
+	out "  --show-config               Show the entire current local configuration"
 	out ""
 	out "Normal Use:"
-	out "  -s --sync                Synchronise settings on this machine"
+	out "  -s --sync                   Synchronise settings on this machine"
 	out ""
 	out "Misc:"
-	out "  --help                    Show this help text"
+	out "  -? --help                   Show this help text"
 	exit 0
 }
 
@@ -57,9 +56,9 @@ _machineIdentity="unknown"
 # write a config item to the file
 writeConfig () { # 1: key; 2: value
 	# check element name
-	if elementIn "${1}" "${configKeys[@]}"
+	if ! elementIn "${1}" "${configKeys[@]}"
 	then
-		out "${1} is not a valid configuration key"
+		out "ERROR: ${1} is not a valid configuration key"
 		exit 1
 	fi
 
@@ -69,12 +68,31 @@ writeConfig () { # 1: key; 2: value
 	# remove the old key and re-write it
 	cat "${configFile}.bak" | grep -v "^_${1}=" > "${configFile}"
 	echo "_${1}=${2}" >> "${configFile}"
+
+	# finish
 	exit 0
 }
 
 # show all config details
-printConfig () { # 1: key
-	out "machineIdentity  =  ${_machineIdentity}"
+printConfig () { # 1: key (optional)
+	if [ $# -eq 0 ]
+	then
+		# print entire config
+		out "machineIdentity  =  ${_machineIdentity}"
+	else
+		# check the key given is valid
+		if ! elementIn "${1}" "${configKeys[@]}"
+		then
+			out "ERROR: '${1}' is not a valid configuration key"
+			exit 1
+		fi
+
+		# print specific config item
+		key="_${1}"
+		out "${!key}"
+	fi
+
+	exit 0
 }
 
 ##########
@@ -95,7 +113,7 @@ _sync () {
 if [ $# -eq 0 ]
 then
 	out "Titanic v$version"
-	out "Run './titanic.sh --help' to see usage"
+	out "Run 'titanic --help' to see usage"
 	exit 0
 fi
 
@@ -107,35 +125,23 @@ while test $# -gt 0; do
 
 		--set-config)
 			shift
-			if [ $# -gt 0 ]
+			if [ $# -gt 1 ]
 			then
-				IFS="=" read -r key value <<< "$1"
-				writeConfig "${key}" "${value}"
+				writeConfig "${1}" "${2}"
 			else
-				out "No parameter specified"
-				exit 1
-			fi
-			;;
-
-		--set-id)
-			shift
-			if [ $# -gt 0 ]
-			then
-				writeConfig "machineIdentity" "$1"
-			else
-				out "No identity specified"
+				out "You must specify a key and a parameter"
 				exit 1
 			fi
 			;;
 
 		--show-config)
-			printConfig
-			exit 0
-			;;
-
-		--show-id)
-			out ${_machineIdentity}
-			exit 0
+			shift
+			if [ $# -eq 1 ]
+			then
+				printConfig "${1}"
+			else
+				printConfig
+			fi
 			;;
 
 		# normal use
@@ -146,7 +152,7 @@ while test $# -gt 0; do
 
 		# misc
 
-		--help)
+		-?|--help)
 			printHelp
 			;;
 
