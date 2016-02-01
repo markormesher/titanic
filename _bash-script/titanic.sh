@@ -3,35 +3,6 @@
 # globals and settings
 version="1.0"
 
-############
-## Config ##
-############
-
-configFolder="${HOME}/.titanic"
-configFile="${configFolder}/titanic.config"
-
-# check folder/file exists
-mkdir -p $configFolder
-touch $configFile
-
-# load default config
-_machineIdentity="unknown"
-
-# load config from file, overwriting some of the above
-. $configFile
-
-# write a config item to the file
-writeConfig () { # 1: key; 2: value
-	# TODO: actually write to the file
-	out "Set $1 as $2"
-	exit 0
-}
-
-# show all config details
-printConfig () { # 1: key
-	out "machineIdentity  =  ${_machineIdentity}"
-}
-
 #############
 ## Helpers ##
 #############
@@ -40,7 +11,13 @@ out () {
 	echo "  $1"
 }
 
-_help () {
+elementIn () {
+  local e
+  for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 1; done
+  return 0
+}
+
+printHelp () {
 	out "Titanic v$version"
 	out ""
 	out "Usage: ./titanic.sh [action]"
@@ -57,6 +34,47 @@ _help () {
 	out "Misc:"
 	out "  --help                    Show this help text"
 	exit 0
+}
+
+############
+## Config ##
+############
+
+configFolder="${HOME}/.titanic"
+configFile="${configFolder}/titanic.config"
+
+# check folder/file exists
+mkdir -p "${configFolder}"
+touch "${configFile}"
+
+# load default config
+configKeys=("machineIdentity")
+_machineIdentity="unknown"
+
+# load config from file, overwriting some of the above
+. ${configFile}
+
+# write a config item to the file
+writeConfig () { # 1: key; 2: value
+	# check element name
+	if elementIn "${1}" "${configKeys[@]}"
+	then
+		out "${1} is not a valid configuration key"
+		exit 1
+	fi
+
+	# make a backup of the config file
+	mv "${configFile}" "${configFile}.bak"
+
+	# remove the old key and re-write it
+	cat "${configFile}.bak" | grep -v "^_${1}=" > "${configFile}"
+	echo "_${1}=${2}" >> "${configFile}"
+	exit 0
+}
+
+# show all config details
+printConfig () { # 1: key
+	out "machineIdentity  =  ${_machineIdentity}"
 }
 
 ##########
@@ -103,7 +121,7 @@ while test $# -gt 0; do
 			shift
 			if [ $# -gt 0 ]
 			then
-				writeConfig "_machineIdentity" "$1"
+				writeConfig "machineIdentity" "$1"
 			else
 				out "No identity specified"
 				exit 1
@@ -116,7 +134,7 @@ while test $# -gt 0; do
 			;;
 
 		--show-id)
-			out $_machineIdentity
+			out ${_machineIdentity}
 			exit 0
 			;;
 
@@ -129,7 +147,7 @@ while test $# -gt 0; do
 		# misc
 
 		--help)
-			_help
+			printHelp
 			;;
 
 		*)
