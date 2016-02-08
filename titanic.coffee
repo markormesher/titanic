@@ -18,7 +18,7 @@ log = rfr('./helpers/log')
 #  Database connections  #
 ##########################
 
-mongoose.connect('mongodb://localhost/titanic');
+mongoose.connect('mongodb://localhost:27017/titanic');
 
 ############
 #  Routes  #
