@@ -3,6 +3,29 @@
 # globals and settings
 version="1.0"
 
+############
+## Config ##
+############
+
+configFolder="${HOME}/.titanic"
+configFile="${configFolder}/titanic.config"
+scriptsFile="${configFolder}/titanic-scripts"
+
+# check folder/file exists
+mkdir -p "${configFolder}"
+touch "${configFile}"
+touch "${scriptsFile}"
+
+# load default config
+configKeys=("serverPath" "machineIdentity" "hookFile" "hostsFile")
+_serverPath="unknown"
+_machineIdentity="unknown"
+_hookFile="${HOME}/.bashrc"
+_hostsFile="/etc/hosts"
+
+# load config from file, overwriting some of the above
+. ${configFile}
+
 #############
 ## Helpers ##
 #############
@@ -36,28 +59,18 @@ printHelp () {
 	exit 0
 }
 
-############
-## Config ##
-############
+# check init
+checkInit () {
+	if [ ! -e "${_hookFile}" ] || ! grep -Fxq "# START TITANIC" "${_hookFile}";
+	then
+		out "ERROR: Titanic has not been initialised"
+		exit 1
+	fi
+}
 
-configFolder="${HOME}/.titanic"
-configFile="${configFolder}/titanic.config"
-scriptsFile="${configFolder}/titanic-scripts"
-
-# check folder/file exists
-mkdir -p "${configFolder}"
-touch "${configFile}"
-touch "${scriptsFile}"
-
-# load default config
-configKeys=("serverPath" "machineIdentity" "hookFile" "hostsFile")
-_serverPath="unknown"
-_machineIdentity="unknown"
-_hookFile="${HOME}/.bashrc"
-_hostsFile="/etc/hosts"
-
-# load config from file, overwriting some of the above
-. ${configFile}
+#################
+## More Config ##
+#################
 
 init () {
 	# check whether an init file exists
@@ -68,7 +81,7 @@ init () {
 	fi
 
 	# intro
-	out "Welcome to Titanic! ${version}"
+	out "Welcome to Titanic v${version}"
 	out "Please answer the following questions to complete setup:"
 	out ""
 
@@ -127,6 +140,8 @@ writeConfig () { # 1: key; 2: value
 
 # show all config details
 printConfig () { # 1: key (optional)
+	checkInit
+
 	if [ $# -eq 0 ]
 	then
 		# print entire config
@@ -153,7 +168,8 @@ printConfig () { # 1: key (optional)
 ##########
 
 _sync () {
-	# todo
+	checkInit
+
 	out "Sync"
 }
 
