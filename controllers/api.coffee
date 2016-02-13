@@ -9,6 +9,7 @@ async = require('async')
 # managers
 DeviceManager = rfr('./managers/devices')
 AliasManager = rfr('./managers/aliases')
+BashFunctionManager = rfr('./managers/bash-functions')
 BashShortcutManager = rfr('./managers/bash-shortcuts')
 
 ##############
@@ -23,20 +24,11 @@ router.get('/', (req, res) ->
 		endpoints: [
 			'/aliases'
 			'/aliases/{hostname}'
+			'/bash-functions'
 			'/bash-shortcuts'
 			'/devices'
 		]
 	})
-)
-
-router.get('/devices', (req, res) ->
-	DeviceManager.get((err, devices) ->
-		if err
-			res.status(500)
-			res.end();
-		else
-			res.json(devices)
-	)
 )
 
 router.get('/aliases', (req, res) ->
@@ -120,6 +112,16 @@ router.get('/aliases/:fromHostName', (req, res) ->
 	)
 )
 
+router.get('/bash-functions/', (req, res) ->
+	BashFunctionManager.get((err, functions) ->
+		if err
+			res.status(500)
+			res.end();
+		else
+			res.json(functions)
+	)
+)
+
 router.get('/bash-shortcuts/', (req, res) ->
 	BashShortcutManager.get((err, shortcuts) ->
 		if err
@@ -127,6 +129,16 @@ router.get('/bash-shortcuts/', (req, res) ->
 			res.end();
 		else
 			res.json(shortcuts)
+	)
+)
+
+router.get('/devices', (req, res) ->
+	DeviceManager.get((err, devices) ->
+		if err
+			res.status(500)
+			res.end();
+		else
+			res.json(devices)
 	)
 )
 
