@@ -1,0 +1,50 @@
+extends ../_shared/page-layout
+include ../_mixins/forms
+include ../_mixins/plugins
+
+block page-head
+
+	link(rel = 'stylesheet', href = '/_shared/css/forms.css')
+
+block page-body
+
+	- func = func || {}
+
+	div.portlet
+		div.portlet-title
+			div.caption
+				span.caption-subject.text-uppercase= _.title
+
+		div.portlet-body
+
+			form(action = '/bash-functions/edit/' + (func._id || 0), method = 'post')
+
+				+form_fieldset
+					+form_label('name', 'Name')
+					+form_textInput('name', func.name, {
+						'data-validation': 'required alphanumeric',
+						'data-validation-allowing': '._-'
+					})
+
+				+form_fieldset
+					+form_label('code', 'Code')
+					+form_longTextInput('code', func.code, {
+						'data-validation': 'required',
+						rows: 3
+					})
+
+				+form_fieldset
+					+form_switchCheckBox('available_internal', 'Available to internal devices', {
+						checked: func.available_internal
+					})
+				+form_fieldset
+					+form_switchCheckBox('available_external', 'Available to external devices', {
+						checked: func.available_external
+					})
+
+				+form_fieldset
+					+form_button('Save', 'save', {'class': 'btn-primary'})
+
+block scripts
+	script(src = '/_shared/js/forms.js')
+	+plugin_validation
