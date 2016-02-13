@@ -170,7 +170,7 @@ printConfig () { # 1: key (optional)
 _sync () {
 	checkInit
 
-	out "Sync"
+	wget -qO- "${_serverPath}/api/bash-shortcuts"
 }
 
 #######################
