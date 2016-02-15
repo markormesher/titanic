@@ -35,7 +35,7 @@ router.get('/aliases', (req, res) ->
 	async.waterfall(
 		[
 			# get devices
-			(c) -> DeviceManager.get((err, devices) ->
+			(c) -> DeviceManager.get({}, (err, devices) ->
 				if (err) then return c(err, null)
 
 				deviceMap = {}
@@ -76,7 +76,7 @@ router.get('/aliases/:fromHostName', (req, res) ->
 	async.waterfall(
 		[
 			# get devices
-			(c) -> DeviceManager.get((err, devices) ->
+			(c) -> DeviceManager.get({}, (err, devices) ->
 				if (err) then return c(err, null)
 
 				deviceMap = {}
@@ -112,31 +112,52 @@ router.get('/aliases/:fromHostName', (req, res) ->
 	)
 )
 
-router.get('/bash-functions/', (req, res) ->
-	BashFunctionManager.get((err, functions) ->
+router.get('/bash-functions', (req, res) ->
+	BashFunctionManager.get(req.query, (err, functions) ->
 		if err
 			res.status(500)
-			res.end();
+			res.send('ERROR')
+			res.end()
 		else
-			res.json(functions)
+			if req.query.format and req.query.format == 'bash'
+				# format as bash script
+				output = ''
+				for f in functions
+					output += 'function ' + f.name + ' {\n' + f.code + '\n}\n'
+				res.send(output)
+				res.end();
+			else
+				# return as JSON
+				res.json(functions)
 	)
 )
 
-router.get('/bash-shortcuts/', (req, res) ->
-	BashShortcutManager.get((err, shortcuts) ->
+router.get('/bash-shortcuts', (req, res) ->
+	BashShortcutManager.get(req.query, (err, shortcuts) ->
 		if err
 			res.status(500)
-			res.end();
+			res.send('ERROR')
+			res.end()
 		else
-			res.json(shortcuts)
+			if req.query.format and req.query.format == 'bash'
+				# format as bash script
+				output = ''
+				for s in shortcuts
+					output += 'alias ' + s.short_command + '=\'' + s.full_command + '\'\n'
+				res.send(output)
+				res.end();
+			else
+				# return as JSON
+				res.json(shortcuts)
 	)
 )
 
 router.get('/devices', (req, res) ->
-	DeviceManager.get((err, devices) ->
+	DeviceManager.get(req.query, (err, devices) ->
 		if err
 			res.status(500)
-			res.end();
+			res.send('ERROR')
+			res.end()
 		else
 			res.json(devices)
 	)
