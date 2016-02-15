@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # globals and settings
-version="1.0"
+version="0.1"
 
 ############
 ## Config ##
@@ -170,13 +170,28 @@ printConfig () { # 1: key (optional)
 sync () {
 	checkInit
 
+	# TODO: download aliases
+	out "NOTE: This version of Titanic does not support aliases yet"
+
 	# download shortcuts
 	out "Downloading Bash shortcuts..."
-	wget -qO- "${_serverPath}/api/bash-shortcuts?format=bash&id=${_machineIdentity}" | tr -d '\r' > "${scriptsFile}"
+	shortcuts=$(wget -qO- "${_serverPath}/api/bash-shortcuts?format=bash&for_device_name=${_machineIdentity}" | tr -d '\r')
+	if [ "${shortcuts}" == "ERROR" ]
+	then
+		out "ERROR: Could not download Bash shortcuts"
+	fi
 
 	# download functions
 	out "Downloading Bash functions..."
-	wget -qO- "${_serverPath}/api/bash-functions?format=bash&id=${_machineIdentity}" | tr -d '\r' >> "${scriptsFile}"
+	functions=$(wget -qO- "${_serverPath}/api/bash-functions?format=bash&for_device_name=${_machineIdentity}" | tr -d '\r')
+	if [ "${functions}" == "ERROR" ]
+	then
+		out "ERROR: Could not download Bash shortcuts"
+	fi
+
+	# write to file
+	echo "${shortcuts}" > "${scriptsFile}"
+	echo "${functions}" >> "${scriptsFile}"
 
 	out "Done! Please re-start your shell, or run this command:"
 	out ""
