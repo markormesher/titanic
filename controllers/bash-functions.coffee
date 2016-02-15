@@ -18,7 +18,7 @@ router = express.Router();
 
 router.get('/', (req, res) ->
 	# get all functions
-	FunctionManager.get((err, functions) ->
+	FunctionManager.get({}, (err, functions) ->
 		# render output
 		res.render('bash-functions/index', {
 			_: {
@@ -45,15 +45,16 @@ router.get('/edit/:functionId', (req, res) ->
 	functionId = req.params.functionId
 
 	# find function
-	FunctionManager.get(functionId, (err, func) ->
+	FunctionManager.get({id: functionId}, (err, funcs) ->
 	# check for function
-		if err or func == null
+		if err or funcs == []
 			req.flash('error', 'Sorry, that function couldn\'t be loaded!')
 			res.writeHead(302, {Location: '/bash-functions'})
 			res.end()
 			return
 
 		# render output
+		func = funcs[0]
 		res.render('bash-functions/edit', {
 			_: {
 				title: 'Edit Function: ' + func.name

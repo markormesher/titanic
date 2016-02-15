@@ -1,36 +1,46 @@
 rfr = require('rfr')
 mongoose = require('mongoose')
+async = require('async')
 Device = rfr('./models/device')
 
 module.exports = {
 
-	# get all devices (no ID) or one device (with ID)
-	get: (id, callback) ->
-		# calls without ID
-		if typeof id == 'function'
-			callback = id
-			id = null
+	# get an array of devices matching the given query (can be {} to get all devices)
+	get: (query, callback) ->
+		# build search query, then execute it
+		async.waterfall(
+			[
+				# start with basic non-deleted search query
+				(c) ->
+					c(null, {is_deleted: {$in: [null, false]}})
 
-		# build search query
-		query = {is_deleted: {$in: [null, false]}}
-		if id != null then query['_id'] = id
+				# is there an ID to add?
+				(searchQuery, c) ->
+					if query.hasOwnProperty('id') && query.id
+						searchQuery._id = query.id
+					c(null, searchQuery)
 
-		# run query
-		Device.find(query).sort({hostname: 'asc'}).exec((err, result) ->
-			# errors
-			if err
-				callback(err, null)
-				return
+				# is there a name to add?
+				(searchQuery, c) ->
+					if query.hasOwnProperty('name') && query.name
+						searchQuery.hostname = query.name
+					c(null, searchQuery)
 
-			# convert to objects
-			for r, i in result
-				result[i] = r.toObject()
+				# run query
+				(searchQuery, c) ->
+					Device.find(searchQuery).sort({hostname: 'asc'}).exec((err, result) ->
+						# errors
+						if err then return c(err)
 
-			# result
-			if id != null
-				if result.length == 1 then callback(null, result[0]) else callback(null, null)
-			else
-				callback(null, result)
+						# convert to objects
+						for r, i in result
+							result[i] = r.toObject()
+
+						# result
+						callback(null, result)
+					)
+			],
+			() -> callback('Could not load devices')
 		)
 
 	createOrUpdate: (id, device, callback) ->

@@ -1,36 +1,69 @@
 rfr = require('rfr')
 mongoose = require('mongoose')
+async = require('async')
 BashFunction = rfr('./models/bash-function')
+DeviceManager = rfr('./managers/devices')
 
 module.exports = {
 
-	# get all functions (no ID) or one function (with ID)
-	get: (id, callback) ->
-		# calls without ID
-		if typeof id == 'function'
-			callback = id
-			id = null
+	# get an array of functions matching the given query (can be {} to get all functions)
+	get: (query, callback) ->
+		# build search query, then execute it
+		async.waterfall(
+			[
+				# start with basic non-deleted search query
+				(c) ->
+					c(null, {is_deleted: {$in: [null, false]}})
 
-		# build search query
-		query = {is_deleted: {$in: [null, false]}}
-		if id != null then query['_id'] = id
+				# is there an ID to add?
+				(searchQuery, c) ->
+					if query.hasOwnProperty('id') && query.id
+						searchQuery._id = query.id
+					c(null, searchQuery)
 
-		# run query
-		BashFunction.find(query).sort({name: 'asc'}).exec((err, result) ->
-			# errors
-			if err
-				callback(err, null)
-				return
+				# is there a device id or name passed?
+				(searchQuery, c) ->
+					if (query.hasOwnProperty('for_device') && query.for_device) || (query.hasOwnProperty('for_device_name') && query.for_device_name)
+						# build search query
+						q = {}
+						if (query.hasOwnProperty('for_device'))
+							q.id = query.for_device
+						else
+							q.name = query.for_device_name
 
-			# convert to objects
-			for r, i in result
-				result[i] = r.toObject()
+						# find device
+						DeviceManager.get(q, (err, devices) ->
+							# errors
+							if err || !devices || !devices.length then return c(err)
 
-			# result
-			if id != null
-				if result.length == 1 then callback(null, result[0]) else callback(null, null)
-			else
-				callback(null, result)
+							# add internal/external restrictions
+							device = devices[0]
+							if device.location == 'internal'
+								searchQuery['available_internal'] = true
+							else
+								searchQuery['available_external'] = true
+
+							# continue
+							c(null, searchQuery)
+						)
+					else
+						c(null, searchQuery)
+
+				# run query
+				(searchQuery, c) ->
+					BashFunction.find(searchQuery).sort({name: 'asc'}).exec((err, result) ->
+						# errors
+						if err then return c(err)
+
+						# convert to objects
+						for r, i in result
+							result[i] = r.toObject()
+
+						# result
+						callback(null, result)
+					)
+			],
+			() -> callback('Could not load functions')
 		)
 
 	createOrUpdate: (id, func, callback) ->

@@ -22,7 +22,7 @@ router.get('/', (req, res) ->
 	# get all devices and aliases
 	async.parallel(
 		{
-			devices: (c) -> DeviceManager.get(c)
+			devices: (c) -> DeviceManager.get({}, c)
 			aliases: (c) -> AliasManager.get(c)
 		},
 		(err, results) ->
@@ -62,8 +62,8 @@ router.get('/edit/:deviceId', (req, res) ->
 	# find device and aliases
 	async.parallel(
 		{
-			devices: (c) -> DeviceManager.get(c)
-			device: (c) -> DeviceManager.get(deviceId, c)
+			devices: (c) -> DeviceManager.get({}, c)
+			device: (c) -> DeviceManager.get({id: deviceId}, c)
 			aliases: (c) -> AliasManager.get(deviceId, c)
 		},
 		(err, results) ->
@@ -76,6 +76,7 @@ router.get('/edit/:deviceId', (req, res) ->
 				res.writeHead(302, {Location: '/aliases'})
 				res.end()
 				return
+			device = device[0]
 
 			# convert aliases to true/false 2D array
 			aliasMap = {}
