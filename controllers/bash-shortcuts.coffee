@@ -18,7 +18,7 @@ router = express.Router();
 
 router.get('/', (req, res) ->
 	# get all shortcuts
-	ShortcutManager.get((err, shortcuts) ->
+	ShortcutManager.get({}, (err, shortcuts) ->
 		# render output
 		res.render('bash-shortcuts/index', {
 			_: {
@@ -34,6 +34,7 @@ router.get('/create', (req, res) ->
 	# render output
 	res.render('bash-shortcuts/edit', {
 		_: {
+
 			title: 'Create Shortcut'
 			activePage: 'bash-shortcuts'
 		}
@@ -45,15 +46,16 @@ router.get('/edit/:shortcutId', (req, res) ->
 	shortcutId = req.params.shortcutId
 
 	# find shortcut
-	ShortcutManager.get(shortcutId, (err, shortcut) ->
+	ShortcutManager.get({id: shortcutId}, (err, shortcuts) ->
 	# check for shortcut
-		if err or shortcut == null
+		if err or shortcuts == []
 			req.flash('error', 'Sorry, that shortcut couldn\'t be loaded!')
 			res.writeHead(302, {Location: '/bash-shortcuts'})
 			res.end()
 			return
 
 		# render output
+		shortcut = shortcuts[0]
 		res.render('bash-shortcuts/edit', {
 			_: {
 				title: 'Edit Shortcut: ' + shortcut.short_command

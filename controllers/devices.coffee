@@ -19,7 +19,7 @@ router = express.Router();
 
 router.get('/', (req, res) ->
 	# get all devices
-	DeviceManager.get((err, devices) ->
+	DeviceManager.get({}, (err, devices) ->
 		# render output
 		res.render('devices/index', {
 			_: {
@@ -47,15 +47,16 @@ router.get('/edit/:deviceId', (req, res) ->
 	deviceId = req.params.deviceId
 
 	# find device
-	DeviceManager.get(deviceId, (err, device) ->
+	DeviceManager.get({id: deviceId}, (err, devices) ->
 		# check for device
-		if err or device == null
+		if err or devices == []
 			req.flash('error', 'Sorry, that device couldn\'t be loaded!')
 			res.writeHead(302, {Location: '/devices'})
 			res.end()
 			return
 
 		# render output
+		device = devices[0]
 		res.render('devices/edit', {
 			_: {
 				title: 'Edit Device: ' + device.hostname

@@ -35,7 +35,7 @@ router.get('/aliases', (req, res) ->
 	async.waterfall(
 		[
 			# get devices
-			(c) -> DeviceManager.get((err, devices) ->
+			(c) -> DeviceManager.get({}, (err, devices) ->
 				if (err) then return c(err, null)
 
 				deviceMap = {}
@@ -76,7 +76,7 @@ router.get('/aliases/:fromHostName', (req, res) ->
 	async.waterfall(
 		[
 			# get devices
-			(c) -> DeviceManager.get((err, devices) ->
+			(c) -> DeviceManager.get({}, (err, devices) ->
 				if (err) then return c(err, null)
 
 				deviceMap = {}
@@ -112,11 +112,12 @@ router.get('/aliases/:fromHostName', (req, res) ->
 	)
 )
 
-router.get('/bash-functions/', (req, res) ->
-	BashFunctionManager.get((err, functions) ->
+router.get('/bash-functions', (req, res) ->
+	BashFunctionManager.get(req.query, (err, functions) ->
 		if err
 			res.status(500)
-			res.end();
+			res.send('ERROR')
+			res.end()
 		else
 			if req.query.format and req.query.format == 'bash'
 				# format as bash script
@@ -131,11 +132,12 @@ router.get('/bash-functions/', (req, res) ->
 	)
 )
 
-router.get('/bash-shortcuts/', (req, res) ->
-	BashShortcutManager.get((err, shortcuts) ->
+router.get('/bash-shortcuts', (req, res) ->
+	BashShortcutManager.get(req.query, (err, shortcuts) ->
 		if err
 			res.status(500)
-			res.end();
+			res.send('ERROR')
+			res.end()
 		else
 			if req.query.format and req.query.format == 'bash'
 				# format as bash script
@@ -151,10 +153,11 @@ router.get('/bash-shortcuts/', (req, res) ->
 )
 
 router.get('/devices', (req, res) ->
-	DeviceManager.get((err, devices) ->
+	DeviceManager.get(req.query, (err, devices) ->
 		if err
 			res.status(500)
-			res.end();
+			res.send('ERROR')
+			res.end()
 		else
 			res.json(devices)
 	)
