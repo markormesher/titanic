@@ -167,7 +167,7 @@ printConfig () { # 1: key (optional)
 ## Sync ##
 ##########
 
-_sync () {
+sync () {
 	checkInit
 
 	# download shortcuts
@@ -179,7 +179,9 @@ _sync () {
 	wget -qO- "${_serverPath}/api/bash-functions?format=bash" | tr -d '\r' >> "${scriptsFile}"
 
 	out "Done! Please re-start your shell, or run this command:"
+	out ""
 	out "  source \"${_hookFile}\""
+	out ""
 }
 
 #######################
@@ -200,12 +202,12 @@ while test $# -gt 0; do
 
 		# configuration
 
-		--init)
+		init)
 			init
 			exit 0
 		;;
 
-		--set-config)
+		set-config)
 			shift
 			if [ $# -gt 1 ]
 			then
@@ -217,7 +219,7 @@ while test $# -gt 0; do
 			fi
 			;;
 
-		--show-config)
+		show-config)
 			shift
 			if [ $# -eq 1 ]
 			then
@@ -231,14 +233,14 @@ while test $# -gt 0; do
 
 		# normal use
 
-		-s|--sync)
-			_sync
+		s|sync)
+			sync
 			exit 0
 			;;
 
 		# misc
 
-		-?|--help)
+		-?|help)
 			printHelp
 			exit 0
 			;;
