@@ -1,0 +1,48 @@
+extends ../_shared/page-layout
+include ../_mixins/plugins
+include ../_mixins/forms
+
+mixin function(f)
+	div.function-row
+		- trimmed = f.code.length > 80 ? f.code.substr(0, 77) + '...' : f.code
+		p
+			= f.name
+			br
+			span= trimmed
+		p.buttons.btn-group
+			+form_buttonLink('Edit', 'edit', '/bash-functions/edit/' + f._id, {
+				'class': 'btn-warning'
+			})
+			+form_buttonLink('Delete', 'trash', '/bash-functions/delete/' + f._id, {
+				'class': 'btn-danger delete-button',
+				'data-name': f.name,
+				'data-id': f._id.toString()
+			})
+
+block page-head
+
+	link(rel = 'stylesheet', href = '/bash-functions/css/list.css')
+
+block page-body
+
+	div.portlet
+		div.portlet-title
+			div.caption
+				span.caption-subject.text-uppercase Bash Functions
+			div.actions
+				a(href = '/bash-functions/create', class = 'btn')
+					i.fa.fa-plus
+					| &nbsp;&nbsp;
+					| Create Function
+
+		div.portlet-body
+
+			if functions.length == 0
+				p.text-muted.text-center There are no registered functions!
+
+			each f in functions
+				+function(f)
+
+block scripts
+	+plugin_bootbox
+	script(src = '/bash-functions/js/delete.js')

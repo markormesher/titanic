@@ -18,7 +18,7 @@ log = rfr('./helpers/log')
 #  Database connections  #
 ##########################
 
-mongoose.connect('mongodb://localhost/titanic');
+mongoose.connect('mongodb://localhost:27017/titanic');
 
 ############
 #  Routes  #
@@ -52,6 +52,7 @@ routes = {
 	'aliases': rfr('./controllers/aliases')
 	'api': rfr('./controllers/api')
 	'bash-shortcuts': rfr('./controllers/bash-shortcuts')
+	'bash-functions': rfr('./controllers/bash-functions')
 	'dashboard': rfr('./controllers/dashboard')
 	'devices': rfr('./controllers/devices')
 };

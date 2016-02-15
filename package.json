@@ -1,6 +1,6 @@
 {
   "name": "titanic",
-  "version": "1.0",
+  "version": "1.2.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
@@ -21,11 +21,5 @@
     "mongoose": "^4.2.7",
     "node-sass-middleware": "^0.9.7",
     "rfr": "~1.2.2"
-  },
-  "devDependencies": {
-    "fs": "0.0.2",
-    "gulp": "^3.9.0",
-    "gulp-ssh": "^0.5.3",
-    "gulp-util": "^3.0.7"
   }
 }

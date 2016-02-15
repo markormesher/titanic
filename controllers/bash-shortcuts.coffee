@@ -5,11 +5,10 @@
 express = require('express')
 rfr = require('rfr')
 async = require('async')
-mongoose = require('mongoose')
 log = rfr('./helpers/log')
 
-# models
-BashShortcut = rfr('./models/bash-shortcut')
+# managers
+ShortcutManager = rfr('./managers/bash-shortcuts')
 
 ##############
 #  Mappings  #
@@ -19,7 +18,7 @@ router = express.Router();
 
 router.get('/', (req, res) ->
 	# get all shortcuts
-	BashShortcut.find({}).sort({short_command: 'asc'}).exec((err, shortcuts) ->
+	ShortcutManager.get((err, shortcuts) ->
 		# render output
 		res.render('bash-shortcuts/index', {
 			_: {
@@ -46,15 +45,13 @@ router.get('/edit/:shortcutId', (req, res) ->
 	shortcutId = req.params.shortcutId
 
 	# find shortcut
-	BashShortcut.find({_id: shortcutId}).exec((err, shortcut) ->
+	ShortcutManager.get(shortcutId, (err, shortcut) ->
 	# check for shortcut
-		if err
+		if err or shortcut == null
 			req.flash('error', 'Sorry, that shortcut couldn\'t be loaded!')
 			res.writeHead(302, {Location: '/bash-shortcuts'})
 			res.end()
 			return
-		else
-			shortcut = shortcut[0]
 
 		# render output
 		res.render('bash-shortcuts/edit', {
@@ -70,31 +67,25 @@ router.get('/edit/:shortcutId', (req, res) ->
 router.post('/edit/:shortcutId', (req, res) ->
 	# get parameters
 	shortcutId = req.params.shortcutId
-	if shortcutId == null || shortcutId == 0 || shortcutId == '0' then shortcutId = false
 	shortcut = req.body
 
 	# normalise booleans
 	shortcut.available_internal = shortcut.available_internal == '1'
 	shortcut.available_external = shortcut.available_external == '1'
 
-	# build create/edit query
-	query = {
-		_id: (if shortcutId then shortcutId else mongoose.Types.ObjectId())
-	}
-
 	# save in DB
-	BashShortcut.update(query, shortcut, {upsert: true}, (err) ->
+	ShortcutManager.createOrUpdate(shortcutId, shortcut, (err, shortcutId, createdNew) ->
 		# forward to list
 		if err
-			log.error('Failed to update shortcut (' + query._id + ')')
+			log.error('Failed to update shortcut ' + shortcutId)
 			req.flash('error', 'Sorry, something went wrong!')
 		else
-			if shortcutId
-				log.event('Edited shortcut (' + query._id + ')')
-				req.flash('success', 'Your changes were saved!')
-			else
-				log.event('Created shortcut (' + query._id + ')')
+			if createdNew
+				log.event('Created shortcut ' + shortcutId)
 				req.flash('success', 'The shortcut <strong>' + shortcut.short_command + '</strong> was created!')
+			else
+				log.event('Edited shortcut ' + shortcutId)
+				req.flash('success', 'Your changes were saved!')
 
 		res.writeHead(302, {Location: '/bash-shortcuts'})
 		res.end()
@@ -106,12 +97,12 @@ router.get('/delete/:shortcutId', (req, res) ->
 	shortcutId = req.params.shortcutId
 
 	# delete shortcut
-	BashShortcut.remove({_id: shortcutId}, (err) ->
+	ShortcutManager.delete(shortcutId, (err) ->
 		if err
-			log.error('Failed to delete shortcut (' + deviceId + ')')
+			log.error('Failed to delete shortcut ' + shortcutId)
 			req.flash('error', 'Sorry, something went wrong!')
 		else
-			log.event('Deleted shortcut (' + deviceId + ')')
+			log.event('Deleted shortcut ' + shortcutId)
 			req.flash('info', 'Shortcut deleted.')
 
 		res.writeHead(302, {Location: '/bash-shortcuts'})

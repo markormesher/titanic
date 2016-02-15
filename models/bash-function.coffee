@@ -1,12 +1,12 @@
 mongoose = require('mongoose')
 module.exports = mongoose.model(
-	'BashShortcut',
+	'BashFunction',
 	{
-		short_command: {
+		name: {
 			type: String
 			required: true
 		}
-		full_command: {
+		code: {
 			type: String
 			required: true
 		}
