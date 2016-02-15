@@ -170,7 +170,16 @@ printConfig () { # 1: key (optional)
 _sync () {
 	checkInit
 
-	wget -qO- "${_serverPath}/api/bash-shortcuts"
+	# download shortcuts
+	out "Downloading Bash shortcuts..."
+	wget -qO- "${_serverPath}/api/bash-shortcuts?format=bash" | tr -d '\r' > "${scriptsFile}"
+
+	# download functions
+	out "Downloading Bash functions..."
+	wget -qO- "${_serverPath}/api/bash-functions?format=bash" | tr -d '\r' >> "${scriptsFile}"
+
+	out "Done! Please re-start your shell, or run this command:"
+	out "  source \"${_hookFile}\""
 }
 
 #######################

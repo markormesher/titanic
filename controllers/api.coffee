@@ -123,7 +123,7 @@ router.get('/bash-functions/', (req, res) ->
 				output = ''
 				for f in functions
 					output += 'function ' + f.name + ' {\n' + f.code + '\n}\n'
-				res.send(output.trim())
+				res.send(output)
 				res.end();
 			else
 				# return as JSON
@@ -142,7 +142,7 @@ router.get('/bash-shortcuts/', (req, res) ->
 				output = ''
 				for s in shortcuts
 					output += 'alias ' + s.short_command + '=\'' + s.full_command + '\'\n'
-				res.send(output.trim())
+				res.send(output)
 				res.end();
 			else
 				# return as JSON
