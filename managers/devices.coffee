@@ -36,8 +36,6 @@ module.exports = {
 						for r, i in result
 							result[i] = r.toObject()
 
-						console.log(result)
-
 						# result
 						callback(null, result)
 					)
