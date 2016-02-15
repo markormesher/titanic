@@ -172,11 +172,11 @@ sync () {
 
 	# download shortcuts
 	out "Downloading Bash shortcuts..."
-	wget -qO- "${_serverPath}/api/bash-shortcuts?format=bash" | tr -d '\r' > "${scriptsFile}"
+	wget -qO- "${_serverPath}/api/bash-shortcuts?format=bash&id=${_machineIdentity}" | tr -d '\r' > "${scriptsFile}"
 
 	# download functions
 	out "Downloading Bash functions..."
-	wget -qO- "${_serverPath}/api/bash-functions?format=bash" | tr -d '\r' >> "${scriptsFile}"
+	wget -qO- "${_serverPath}/api/bash-functions?format=bash&id=${_machineIdentity}" | tr -d '\r' >> "${scriptsFile}"
 
 	out "Done! Please re-start your shell, or run this command:"
 	out ""
