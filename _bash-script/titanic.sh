@@ -46,16 +46,16 @@ printHelp () {
 	out "Usage: titanic [action]"
 	out ""
 	out "Configuration:"
-	out "  --init                      Set up the initial files and this machine's identity"
-	out "  --set-config {key} {value}  Set a given configuration option"
-	out "  --show-config {key}         Show a specific value from the current local configuration"
-	out "  --show-config               Show the entire current local configuration"
+	out "  init                      Set up the initial files and this machine's identity"
+	out "  set-config {key} {value}  Set a given configuration option"
+	out "  show-config {key}         Show a specific value from the current local configuration"
+	out "  show-config               Show the entire current local configuration"
 	out ""
 	out "Normal Use:"
-	out "  -s --sync                   Synchronise settings on this machine"
+	out "  s | sync                  Synchronise settings on this machine"
 	out ""
 	out "Misc:"
-	out "  -? --help                   Show this help text"
+	out "  -? | help                 Show this help text"
 	exit 0
 }
 
