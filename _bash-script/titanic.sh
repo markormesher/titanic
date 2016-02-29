@@ -170,8 +170,8 @@ printConfig () { # 1: key (optional)
 sync () {
 	checkInit
 
-	# TODO: download aliases
-	out "NOTE: This version of Titanic does not support aliases yet"
+	# check for sudo rights
+	sudo -v
 
 	# download shortcuts
 	out "Downloading Bash shortcuts..."
@@ -179,6 +179,7 @@ sync () {
 	if [ "${shortcuts}" == "ERROR" ]
 	then
 		out "ERROR: Could not download Bash shortcuts"
+		exit 1
 	fi
 
 	# download functions
@@ -187,11 +188,25 @@ sync () {
 	if [ "${functions}" == "ERROR" ]
 	then
 		out "ERROR: Could not download Bash shortcuts"
+		exit 1
 	fi
 
-	# write to file
+	# write to scripts file
 	echo "${shortcuts}" > "${scriptsFile}"
 	echo "${functions}" >> "${scriptsFile}"
+
+	# download aliases
+	out "Downloading hostname aliases..."
+	aliases=$(wget -qO- "${_serverPath}/api/aliases/${_machineIdentity}?format=bash" | tr -d '\r')
+	if [ "${aliases}" == "ERROR" ]
+	then
+		out "ERROR: Could not download hostname aliases"
+		exit 1
+	fi
+
+	# write aliases to file
+	sudo sed -i "/# START TITANIC/,/# END TITANIC/d" "${_hostsFile}"
+	printf "# START TITANIC\n${aliases}\n# END TITANIC\n" | sudo tee -a "${_hostsFile}" > /dev/null
 
 	out "Done! Please re-start your shell, or run this command:"
 	out ""
