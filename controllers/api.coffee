@@ -111,8 +111,8 @@ router.get('/aliases/:fromHostName', (req, res) ->
 				if req.query.format and req.query.format == 'bash'
 					# format as bash script
 					output = ''
-					for key, value of result
-						output += key + ' ' + value + '\n'
+					for hostname, ip of result
+						output += ip + ' ' + hostname + '\n'
 					res.send(output)
 					res.end();
 				else
