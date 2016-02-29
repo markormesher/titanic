@@ -108,7 +108,16 @@ router.get('/aliases/:fromHostName', (req, res) ->
 				res.status(if err == 'no device' then 404 else 500)
 				res.end()
 			else
-				res.json(result)
+				if req.query.format and req.query.format == 'bash'
+					# format as bash script
+					output = ''
+					for key, value of result
+						output += key + ' ' + value + '\n'
+					res.send(output)
+					res.end();
+				else
+					# return as JSON
+					res.json(result)
 	)
 )
 
