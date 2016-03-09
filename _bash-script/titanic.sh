@@ -173,6 +173,10 @@ sync () {
 	# check for sudo rights
 	sudo -v
 
+	# intro message
+	out "Titanic is syncing..."
+	out ""
+
 	# download shortcuts
 	out "Downloading Bash shortcuts..."
 	shortcuts=$(wget -qO- "${_serverPath}/api/bash-shortcuts?format=bash&for_device_name=${_machineIdentity}" | tr -d '\r')
