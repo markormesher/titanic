@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # globals and settings
-version="0.1"
+version="1.4.1"
 
 ############
 ## Config ##
@@ -172,6 +172,10 @@ sync () {
 
 	# check for sudo rights
 	sudo -v
+
+	# intro message
+	out "Titanic is syncing..."
+	out ""
 
 	# download shortcuts
 	out "Downloading Bash shortcuts..."
