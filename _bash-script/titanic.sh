@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # globals and settings
-version="0.1"
+version="1.4.1"
 
 ############
 ## Config ##
