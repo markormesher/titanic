@@ -7,6 +7,7 @@ rfr = require('rfr')
 async = require('async')
 log = rfr('./helpers/log')
 c = rfr('./helpers/constants')
+auth = rfr('./helpers/auth')
 
 # managers
 DeviceManager = rfr('./managers/devices')
@@ -17,7 +18,7 @@ DeviceManager = rfr('./managers/devices')
 
 router = express.Router();
 
-router.get('/', (req, res) ->
+router.get('/', auth.checkAndRefuse, (req, res) ->
 	DeviceManager.get({}, (err, devices) ->
 		res.render('devices/index', {
 			_: {
@@ -30,7 +31,7 @@ router.get('/', (req, res) ->
 	)
 )
 
-router.get('/create', (req, res) ->
+router.get('/create', auth.checkAndRefuse, (req, res) ->
 	res.render('devices/edit', {
 		_: {
 			title: 'Create Device'
@@ -40,7 +41,7 @@ router.get('/create', (req, res) ->
 	})
 )
 
-router.get('/edit/:deviceId', (req, res) ->
+router.get('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 	deviceId = req.params.deviceId
 
 	# find device
@@ -63,7 +64,7 @@ router.get('/edit/:deviceId', (req, res) ->
 	)
 )
 
-router.post('/edit/:deviceId', (req, res) ->
+router.post('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 	deviceId = req.params.deviceId
 	device = req.body
 
@@ -84,7 +85,7 @@ router.post('/edit/:deviceId', (req, res) ->
 	)
 )
 
-router.get('/delete/:deviceId', (req, res) ->
+router.get('/delete/:deviceId', auth.checkAndRefuse, (req, res) ->
 	deviceId = req.params.deviceId
 
 	DeviceManager.delete(deviceId, (err) ->

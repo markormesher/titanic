@@ -7,6 +7,7 @@ rfr = require('rfr')
 async = require('async')
 c = rfr('./helpers/constants')
 log = rfr('./helpers/log')
+auth = rfr('./helpers/auth')
 
 # managers
 DeviceManager = rfr('./managers/devices')
@@ -18,7 +19,7 @@ AliasManager = rfr('./managers/aliases')
 
 router = express.Router();
 
-router.get('/', (req, res) ->
+router.get('/', auth.checkAndRefuse, (req, res) ->
 	async.parallel(
 		{
 			devices: (c) -> DeviceManager.get({}, c)
@@ -54,7 +55,7 @@ router.get('/', (req, res) ->
 	)
 )
 
-router.get('/edit/:deviceId', (req, res) ->
+router.get('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 	deviceId = req.params.deviceId
 
 	async.parallel(
@@ -115,7 +116,7 @@ router.get('/edit/:deviceId', (req, res) ->
 	)
 )
 
-router.post('/edit/:deviceId', (req, res) ->
+router.post('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 	deviceId = req.params.deviceId
 	aliases = req.body
 

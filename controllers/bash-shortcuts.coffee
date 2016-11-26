@@ -6,6 +6,7 @@ express = require('express')
 rfr = require('rfr')
 async = require('async')
 log = rfr('./helpers/log')
+auth = rfr('./helpers/auth')
 
 # managers
 ShortcutManager = rfr('./managers/bash-shortcuts')
@@ -16,7 +17,7 @@ ShortcutManager = rfr('./managers/bash-shortcuts')
 
 router = express.Router();
 
-router.get('/', (req, res) ->
+router.get('/', auth.checkAndRefuse, (req, res) ->
 	ShortcutManager.get({}, (err, shortcuts) ->
 		res.render('bash-shortcuts/index', {
 			_: {
@@ -28,7 +29,7 @@ router.get('/', (req, res) ->
 	)
 )
 
-router.get('/create', (req, res) ->
+router.get('/create', auth.checkAndRefuse, (req, res) ->
 	res.render('bash-shortcuts/edit', {
 		_: {
 			title: 'Create Shortcut'
@@ -37,7 +38,7 @@ router.get('/create', (req, res) ->
 	})
 )
 
-router.get('/edit/:shortcutId', (req, res) ->
+router.get('/edit/:shortcutId', auth.checkAndRefuse, (req, res) ->
 	shortcutId = req.params.shortcutId
 
 	ShortcutManager.get({id: shortcutId}, (err, shortcuts) ->
@@ -59,7 +60,7 @@ router.get('/edit/:shortcutId', (req, res) ->
 	)
 )
 
-router.post('/edit/:shortcutId', (req, res) ->
+router.post('/edit/:shortcutId', auth.checkAndRefuse, (req, res) ->
 	shortcutId = req.params.shortcutId
 	shortcut = req.body
 
@@ -85,7 +86,7 @@ router.post('/edit/:shortcutId', (req, res) ->
 	)
 )
 
-router.get('/delete/:shortcutId', (req, res) ->
+router.get('/delete/:shortcutId', auth.checkAndRefuse, (req, res) ->
 	shortcutId = req.params.shortcutId
 
 	ShortcutManager.delete(shortcutId, (err) ->

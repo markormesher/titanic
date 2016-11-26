@@ -6,6 +6,7 @@ express = require('express')
 rfr = require('rfr')
 async = require('async')
 log = rfr('./helpers/log')
+auth = rfr('./helpers/auth')
 
 # managers
 FunctionManager = rfr('./managers/bash-functions')
@@ -16,7 +17,7 @@ FunctionManager = rfr('./managers/bash-functions')
 
 router = express.Router();
 
-router.get('/', (req, res) ->
+router.get('/', auth.checkAndRefuse, (req, res) ->
 	FunctionManager.get({}, (err, functions) ->
 		res.render('bash-functions/index', {
 			_: {
@@ -28,7 +29,7 @@ router.get('/', (req, res) ->
 	)
 )
 
-router.get('/create', (req, res) ->
+router.get('/create', auth.checkAndRefuse, (req, res) ->
 	res.render('bash-functions/edit', {
 		_: {
 			title: 'Create Function'
@@ -37,7 +38,7 @@ router.get('/create', (req, res) ->
 	})
 )
 
-router.get('/edit/:functionId', (req, res) ->
+router.get('/edit/:functionId', auth.checkAndRefuse, (req, res) ->
 	functionId = req.params.functionId
 
 	FunctionManager.get({ id: functionId }, (err, funcs) ->
@@ -58,7 +59,7 @@ router.get('/edit/:functionId', (req, res) ->
 	)
 )
 
-router.post('/edit/:functionId', (req, res) ->
+router.post('/edit/:functionId', auth.checkAndRefuse, (req, res) ->
 	functionId = req.params.functionId
 	func = req.body
 
@@ -84,7 +85,7 @@ router.post('/edit/:functionId', (req, res) ->
 	)
 )
 
-router.get('/delete/:functionId', (req, res) ->
+router.get('/delete/:functionId', auth.checkAndRefuse, (req, res) ->
 	functionId = req.params.functionId
 
 	FunctionManager.delete(functionId, (err) ->

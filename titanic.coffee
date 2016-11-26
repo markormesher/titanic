@@ -12,8 +12,10 @@ cookieParser = require('cookie-parser')
 session = require('express-session')
 flash = require('express-flash')
 rfr = require('rfr')
+passport = require('passport')
 log = rfr('./helpers/log')
 c = rfr('./helpers/constants')
+auth = rfr('./helpers/auth')
 pJson = rfr('./package.json')
 
 ##########################
@@ -46,10 +48,17 @@ app.use(session({
 }))
 app.use(flash())
 
+# auth config
+rfr('./helpers/passport-config')(passport)
+app.use(passport.initialize())
+app.use(passport.session())
+app.use(auth.checkOnly)
+
 routes = {
 	'': rfr('./controllers/core')
 	'aliases': rfr('./controllers/aliases')
 	'api': rfr('./controllers/api')
+	'auth': rfr('./controllers/auth')
 	'bash-shortcuts': rfr('./controllers/bash-shortcuts')
 	'bash-functions': rfr('./controllers/bash-functions')
 	'dashboard': rfr('./controllers/dashboard')

@@ -21,14 +21,17 @@ block body
 						span.caption-subject.text-uppercase Activity Stream
 
 				div.portlet-body.activity-stream
-					if eventsError != null
-						p.error Activity log failed to load.
-					else
-						if events.length == 0
-							p.none No activity yet!
+					if (locals.user)
+						if eventsError != null
+							p.error Activity log failed to load.
 						else
-							for e in events
-								p
-									span.timestamp= e['timestamp']
-									| &nbsp;&nbsp;&nbsp;
-									span(class=e['type'])= e['message']
+							if events.length == 0
+								p.none No activity yet!
+							else
+								for e in events
+									p
+										span.timestamp= e['timestamp']
+										| &nbsp;&nbsp;&nbsp;
+										span(class=e['type'])= e['message']
+					else
+						p.none You're not logged in!
