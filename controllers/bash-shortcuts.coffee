@@ -17,9 +17,7 @@ ShortcutManager = rfr('./managers/bash-shortcuts')
 router = express.Router();
 
 router.get('/', (req, res) ->
-	# get all shortcuts
 	ShortcutManager.get({}, (err, shortcuts) ->
-		# render output
 		res.render('bash-shortcuts/index', {
 			_: {
 				title: 'Bash Shortcuts'
@@ -31,10 +29,8 @@ router.get('/', (req, res) ->
 )
 
 router.get('/create', (req, res) ->
-	# render output
 	res.render('bash-shortcuts/edit', {
 		_: {
-
 			title: 'Create Shortcut'
 			activePage: 'bash-shortcuts'
 		}
@@ -42,12 +38,9 @@ router.get('/create', (req, res) ->
 )
 
 router.get('/edit/:shortcutId', (req, res) ->
-	# get parameters
 	shortcutId = req.params.shortcutId
 
-	# find shortcut
 	ShortcutManager.get({id: shortcutId}, (err, shortcuts) ->
-	# check for shortcut
 		if err or shortcuts == []
 			req.flash('error', 'Sorry, that shortcut couldn\'t be loaded!')
 			res.writeHead(302, {Location: '/bash-shortcuts'})
@@ -67,7 +60,6 @@ router.get('/edit/:shortcutId', (req, res) ->
 )
 
 router.post('/edit/:shortcutId', (req, res) ->
-	# get parameters
 	shortcutId = req.params.shortcutId
 	shortcut = req.body
 
@@ -75,7 +67,6 @@ router.post('/edit/:shortcutId', (req, res) ->
 	shortcut.available_internal = shortcut.available_internal == '1'
 	shortcut.available_external = shortcut.available_external == '1'
 
-	# save in DB
 	ShortcutManager.createOrUpdate(shortcutId, shortcut, (err, shortcutId, createdNew) ->
 		# forward to list
 		if err
@@ -95,10 +86,8 @@ router.post('/edit/:shortcutId', (req, res) ->
 )
 
 router.get('/delete/:shortcutId', (req, res) ->
-	# get parameters
 	shortcutId = req.params.shortcutId
 
-	# delete shortcut
 	ShortcutManager.delete(shortcutId, (err) ->
 		if err
 			log.error('Failed to delete shortcut ' + shortcutId)

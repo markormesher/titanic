@@ -1,4 +1,4 @@
-extends ../_shared/page-layout
+extends ../_shared/page-layout.pug
 include ../_mixins/forms
 include ../_mixins/plugins
 
@@ -8,7 +8,7 @@ block page-head
 
 block page-body
 
-	- shortcut = shortcut || {}
+	- func = func || {}
 
 	div.portlet
 		div.portlet-title
@@ -17,29 +17,29 @@ block page-body
 
 		div.portlet-body
 
-			form(action = '/bash-shortcuts/edit/' + (shortcut._id || 0), method = 'post')
+			form(action = '/bash-functions/edit/' + (func._id || 0), method = 'post')
 
 				+form_fieldset
-					+form_label('short_command', 'Short Command')
-					+form_textInput('short_command', shortcut.short_command, {
+					+form_label('name', 'Name')
+					+form_textInput('name', func.name, {
 						'data-validation': 'required alphanumeric',
 						'data-validation-allowing': '._-'
 					})
 
 				+form_fieldset
-					+form_label('full_command', 'Full Command')
-					+form_longTextInput('full_command', shortcut.full_command, {
+					+form_label('code', 'Code')
+					+form_longTextInput('code', func.code, {
 						'data-validation': 'required',
 						rows: 3
 					})
 
 				+form_fieldset
 					+form_switchCheckBox('available_internal', 'Available to internal devices', {
-						checked: shortcut.available_internal
+						checked: func.available_internal
 					})
 				+form_fieldset
 					+form_switchCheckBox('available_external', 'Available to external devices', {
-						checked: shortcut.available_external
+						checked: func.available_external
 					})
 
 				+form_fieldset

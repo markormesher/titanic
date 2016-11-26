@@ -16,7 +16,6 @@ LogEvent = rfr('./models/log-event')
 router = express.Router()
 
 router.get('/', (req, res) ->
-	# get all log events, in descending order
 	LogEvent.find({}).sort({timestamp: 'desc'}).exec((err, events) ->
 
 		# convert date format
@@ -28,7 +27,6 @@ router.get('/', (req, res) ->
 			}
 		)
 
-		# render
 		res.render('dashboard/index', {
 			_: {
 				title: 'Dashboard'

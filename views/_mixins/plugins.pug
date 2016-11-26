@@ -7,7 +7,9 @@ mixin plugin_validation
 		$.validate({
 			'inputParentClassOnSuccess': false
 		});
-		$('.btn').click(function() {$(this).validate();})
+		$('.btn').click(function () {
+			$(this).validate();
+		})
 
 mixin plugin_toastrListener(_)
 	script(type = 'text/javascript').

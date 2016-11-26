@@ -15,20 +15,17 @@ module.exports = {
 		if query == null
 			query = {}
 		else if typeof query == 'string'
-			query = {$or:[{from_device: query}, {to_device: query}]}
+			query = {$or: [{from_device: query}, {to_device: query}]}
 
 		# run query
 		Alias.find(query).exec((err, result) ->
-			# errors
 			if err
 				callback(err, null)
 				return
 
-			# convert to objects
 			for r, i in result
 				result[i] = r.toObject()
 
-			# result
 			callback(null, result)
 		)
 

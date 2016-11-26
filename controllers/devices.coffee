@@ -18,9 +18,7 @@ DeviceManager = rfr('./managers/devices')
 router = express.Router();
 
 router.get('/', (req, res) ->
-	# get all devices
 	DeviceManager.get({}, (err, devices) ->
-		# render output
 		res.render('devices/index', {
 			_: {
 				title: 'Devices'
@@ -43,19 +41,16 @@ router.get('/create', (req, res) ->
 )
 
 router.get('/edit/:deviceId', (req, res) ->
-	# get parameters
 	deviceId = req.params.deviceId
 
 	# find device
 	DeviceManager.get({id: deviceId}, (err, devices) ->
-		# check for device
 		if err or devices == []
 			req.flash('error', 'Sorry, that device couldn\'t be loaded!')
 			res.writeHead(302, {Location: '/devices'})
 			res.end()
 			return
 
-		# render output
 		device = devices[0]
 		res.render('devices/edit', {
 			_: {
@@ -69,13 +64,10 @@ router.get('/edit/:deviceId', (req, res) ->
 )
 
 router.post('/edit/:deviceId', (req, res) ->
-	# get parameters
 	deviceId = req.params.deviceId
 	device = req.body
 
-	# save in DB
 	DeviceManager.createOrUpdate(deviceId, device, (err, deviceId, createdNew) ->
-		# forward to list
 		if err
 			log.error('Failed to update device ' + deviceId)
 			req.flash('error', 'Sorry, something went wrong!')
@@ -93,10 +85,8 @@ router.post('/edit/:deviceId', (req, res) ->
 )
 
 router.get('/delete/:deviceId', (req, res) ->
-	# get parameters
 	deviceId = req.params.deviceId
 
-	# delete device
 	DeviceManager.delete(deviceId, (err) ->
 		if err
 			log.error('Failed to delete device ' + deviceId)

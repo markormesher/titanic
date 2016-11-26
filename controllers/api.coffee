@@ -70,7 +70,6 @@ router.get('/aliases', (req, res) ->
 )
 
 router.get('/aliases/:fromHostName', (req, res) ->
-	# get parameters
 	fromHostName = req.params.fromHostName
 
 	async.waterfall(
@@ -93,7 +92,7 @@ router.get('/aliases/:fromHostName', (req, res) ->
 				c('no device')
 
 			# get alias list
-			(deviceMap, fromDeviceId, c) -> AliasManager.get({from_device: fromDeviceId}, (err, aliases) ->
+			(deviceMap, fromDeviceId, c) -> AliasManager.get({ from_device: fromDeviceId }, (err, aliases) ->
 				out = {}
 				for a in aliases
 					toHostName = deviceMap[a.to_device].hostname

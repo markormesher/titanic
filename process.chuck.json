@@ -1,0 +1,9 @@
+{
+	"apps": [
+		{
+			"name": "easymaps-server",
+			"cwd": "/var/node/titanic.markormesher.co.uk/",
+			"script": "./titanic.js"
+		}
+	]
+}

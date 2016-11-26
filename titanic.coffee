@@ -13,6 +13,8 @@ session = require('express-session')
 flash = require('express-flash')
 rfr = require('rfr')
 log = rfr('./helpers/log')
+c = rfr('./helpers/constants')
+pJson = rfr('./package.json')
 
 ##########################
 #  Database connections  #
@@ -24,10 +26,8 @@ mongoose.connect('mongodb://localhost:27017/titanic');
 #  Routes  #
 ############
 
-# start app
 app = express()
 
-# middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(coffeeMiddleware({
 	src: __dirname + '/assets'
@@ -46,7 +46,6 @@ app.use(session({
 }))
 app.use(flash())
 
-# pull routes from routes folder
 routes = {
 	'': rfr('./controllers/core')
 	'aliases': rfr('./controllers/aliases')
@@ -68,21 +67,19 @@ app.use('/favicon.ico', (req, res) -> res.end())
 ###########
 
 app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'jade')
+app.set('view engine', 'pug')
 app.use(express.static(path.join(__dirname, 'public')))
 
 ####################
 #  Error handlers  #
 ####################
 
-# catch 404 and forward to error handler
 app.use((req, res, next) ->
 	err = new Error('Not Found')
 	err.status = 404
 	next(err)
 )
 
-# general error handler
 app.use((error, req, res, next) ->
 	res.status(error.status || 500)
 	res.render('core/error', {
@@ -99,4 +96,5 @@ app.use((error, req, res, next) ->
 #  Start!  #
 ############
 
-server = app.listen(3000)
+app.listen(c.PORT)
+console.log("#{pJson.name} is listening on port #{c.PORT}")
