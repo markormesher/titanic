@@ -9,6 +9,10 @@ mixin form_textInput(field, value, attrs)
 	- attrs = attrs || {}
 	input.form-control(type = 'text', id = field, name = field, value = value)&attributes(attrs)
 
+mixin form_passwordInput(field, attrs)
+	- attrs = attrs || {}
+	input.form-control(type = 'password', id = field, name = field)&attributes(attrs)
+
 mixin form_longTextInput(field, value, attrs)
 	- attrs = attrs || {}
 	textarea.form-control(id = field, name = field)&attributes(attrs)= value

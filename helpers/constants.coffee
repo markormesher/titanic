@@ -1,4 +1,6 @@
 module.exports = {
+	PORT: 3000
+
 	DEVICE_TYPES: {
 		server: {
 			value: 'server'

@@ -1,25 +1,27 @@
 {
   "name": "titanic",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "async": "^1.5.0",
-    "body-parser": "^1.14.1",
+    "async": "^2.1.4",
+    "body-parser": "^1.15.2",
     "coffee-middleware": "^0.3.0",
-    "coffee-script": "^1.10.0",
-    "cookie-parser": "^1.4.0",
-    "express": "~4.13.1",
+    "coffee-script": "^1.11.1",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.14.0",
     "express-flash": "0.0.2",
-    "express-session": "^1.12.1",
-    "jade": "~1.11.0",
-    "kerberos": "0.0.17",
-    "moment": "^2.10.6",
-    "mongodb": "^2.0.49",
-    "mongoose": "^4.2.7",
-    "node-sass-middleware": "^0.9.7",
-    "rfr": "~1.2.2"
+    "express-session": "^1.14.2",
+    "kerberos": "0.0.22",
+    "moment": "^2.17.0",
+    "mongodb": "^2.2.11",
+    "mongoose": "^4.7.0",
+    "node-sass-middleware": "^0.10.0",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "pug": "^2.0.0-alpha7",
+    "rfr": "^1.2.3"
   }
 }

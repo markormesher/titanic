@@ -1,4 +1,4 @@
-extends ../_shared/page-layout
+extends ../_shared/page-layout.pug
 include ../_mixins/forms
 include ../_mixins/plugins
 
@@ -49,7 +49,7 @@ block page-body
 					})
 
 				+form_fieldset
-					+form_button('Save', 'save', {'class': 'btn-primary'})
+					+form_button('Save', 'save', {'class': 'btn-success'})
 
 block scripts
 	+plugin_validation

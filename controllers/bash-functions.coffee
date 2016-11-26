@@ -6,6 +6,7 @@ express = require('express')
 rfr = require('rfr')
 async = require('async')
 log = rfr('./helpers/log')
+auth = rfr('./helpers/auth')
 
 # managers
 FunctionManager = rfr('./managers/bash-functions')
@@ -16,10 +17,8 @@ FunctionManager = rfr('./managers/bash-functions')
 
 router = express.Router();
 
-router.get('/', (req, res) ->
-	# get all functions
+router.get('/', auth.checkAndRefuse, (req, res) ->
 	FunctionManager.get({}, (err, functions) ->
-		# render output
 		res.render('bash-functions/index', {
 			_: {
 				title: 'Bash Functions'
@@ -30,8 +29,7 @@ router.get('/', (req, res) ->
 	)
 )
 
-router.get('/create', (req, res) ->
-	# render output
+router.get('/create', auth.checkAndRefuse, (req, res) ->
 	res.render('bash-functions/edit', {
 		_: {
 			title: 'Create Function'
@@ -40,20 +38,16 @@ router.get('/create', (req, res) ->
 	})
 )
 
-router.get('/edit/:functionId', (req, res) ->
-	# get parameters
+router.get('/edit/:functionId', auth.checkAndRefuse, (req, res) ->
 	functionId = req.params.functionId
 
-	# find function
-	FunctionManager.get({id: functionId}, (err, funcs) ->
-	# check for function
+	FunctionManager.get({ id: functionId }, (err, funcs) ->
 		if err or funcs == []
 			req.flash('error', 'Sorry, that function couldn\'t be loaded!')
-			res.writeHead(302, {Location: '/bash-functions'})
+			res.writeHead(302, { Location: '/bash-functions' })
 			res.end()
 			return
 
-		# render output
 		func = funcs[0]
 		res.render('bash-functions/edit', {
 			_: {
@@ -65,8 +59,7 @@ router.get('/edit/:functionId', (req, res) ->
 	)
 )
 
-router.post('/edit/:functionId', (req, res) ->
-	# get parameters
+router.post('/edit/:functionId', auth.checkAndRefuse, (req, res) ->
 	functionId = req.params.functionId
 	func = req.body
 
@@ -74,7 +67,6 @@ router.post('/edit/:functionId', (req, res) ->
 	func.available_internal = func.available_internal == '1'
 	func.available_external = func.available_external == '1'
 
-	# save in DB
 	FunctionManager.createOrUpdate(functionId, func, (err, functionId, createdNew) ->
 		# forward to list
 		if err
@@ -88,16 +80,14 @@ router.post('/edit/:functionId', (req, res) ->
 				log.event('Edited function ' + functionId)
 				req.flash('success', 'Your changes were saved!')
 
-		res.writeHead(302, {Location: '/bash-functions'})
+		res.writeHead(302, { Location: '/bash-functions' })
 		res.end()
 	)
 )
 
-router.get('/delete/:functionId', (req, res) ->
-	# get parameters
+router.get('/delete/:functionId', auth.checkAndRefuse, (req, res) ->
 	functionId = req.params.functionId
 
-	# delete function
 	FunctionManager.delete(functionId, (err) ->
 		if err
 			log.error('Failed to delete function ' + functionId)
@@ -106,7 +96,7 @@ router.get('/delete/:functionId', (req, res) ->
 			log.event('Deleted function ' + functionId)
 			req.flash('info', 'Function deleted.')
 
-		res.writeHead(302, {Location: '/bash-functions'})
+		res.writeHead(302, { Location: '/bash-functions' })
 		res.end()
 	)
 )

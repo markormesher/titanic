@@ -8,7 +8,6 @@ module.exports = {
 
 	# get an array of functions matching the given query (can be {} to get all functions)
 	get: (query, callback) ->
-		# build search query, then execute it
 		async.waterfall(
 			[
 				# start with basic non-deleted search query
@@ -33,7 +32,6 @@ module.exports = {
 
 						# find device
 						DeviceManager.get(q, (err, devices) ->
-							# errors
 							if err || !devices || !devices.length then return c(err)
 
 							# add internal/external restrictions
@@ -43,7 +41,6 @@ module.exports = {
 							else
 								searchQuery['available_external'] = true
 
-							# continue
 							c(null, searchQuery)
 						)
 					else
@@ -52,14 +49,11 @@ module.exports = {
 				# run query
 				(searchQuery, c) ->
 					BashFunction.find(searchQuery).sort({name: 'asc'}).exec((err, result) ->
-						# errors
 						if err then return c(err)
 
-						# convert to objects
 						for r, i in result
 							result[i] = r.toObject()
 
-						# result
 						callback(null, result)
 					)
 			],
@@ -73,7 +67,6 @@ module.exports = {
 			_id: (if id then id else mongoose.Types.ObjectId())
 		}
 
-		# update/insert
 		BashFunction.update(query, func, {upsert: true}, (err) -> callback(err, query._id, !id))
 
 	delete: (id, callback) ->

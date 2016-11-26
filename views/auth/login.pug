@@ -1,0 +1,27 @@
+extends ../_shared/page-layout
+include ../_mixins/forms
+
+block page-body
+
+	div.portlet
+		div.portlet-title
+			div.caption
+				span.caption-subject.text-uppercase= _.title
+
+		div.portlet-body
+
+			form(action = '/auth/login', method = 'post')
+
+				+form_fieldset
+					+form_label('username', 'Username')
+					+form_textInput('username', '', {
+						'data-validation': 'required alphanumeric',
+						'data-validation-allowing': '._-'
+					})
+
+				+form_fieldset
+					+form_label('password', 'Password')
+					+form_passwordInput('password')
+
+				+form_fieldset
+					+form_button('Login', 'key', {'class': 'btn-success'})

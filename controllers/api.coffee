@@ -5,6 +5,7 @@
 express = require('express')
 rfr = require('rfr')
 async = require('async')
+auth = rfr('./helpers/auth')
 
 # managers
 DeviceManager = rfr('./managers/devices')
@@ -18,7 +19,7 @@ BashShortcutManager = rfr('./managers/bash-shortcuts')
 
 router = express.Router();
 
-router.get('/', (req, res) ->
+router.get('/', auth.checkAndRefuse, (req, res) ->
 	res.json({
 		message: 'Titanic API'
 		endpoints: [
@@ -31,7 +32,7 @@ router.get('/', (req, res) ->
 	})
 )
 
-router.get('/aliases', (req, res) ->
+router.get('/aliases', auth.checkAndRefuse, (req, res) ->
 	async.waterfall(
 		[
 			# get devices
@@ -69,8 +70,7 @@ router.get('/aliases', (req, res) ->
 	)
 )
 
-router.get('/aliases/:fromHostName', (req, res) ->
-	# get parameters
+router.get('/aliases/:fromHostName', auth.checkAndRefuse, (req, res) ->
 	fromHostName = req.params.fromHostName
 
 	async.waterfall(
@@ -93,7 +93,7 @@ router.get('/aliases/:fromHostName', (req, res) ->
 				c('no device')
 
 			# get alias list
-			(deviceMap, fromDeviceId, c) -> AliasManager.get({from_device: fromDeviceId}, (err, aliases) ->
+			(deviceMap, fromDeviceId, c) -> AliasManager.get({ from_device: fromDeviceId }, (err, aliases) ->
 				out = {}
 				for a in aliases
 					toHostName = deviceMap[a.to_device].hostname
@@ -121,7 +121,7 @@ router.get('/aliases/:fromHostName', (req, res) ->
 	)
 )
 
-router.get('/bash-functions', (req, res) ->
+router.get('/bash-functions', auth.checkAndRefuse, (req, res) ->
 	BashFunctionManager.get(req.query, (err, functions) ->
 		if err
 			res.status(500)
@@ -141,7 +141,7 @@ router.get('/bash-functions', (req, res) ->
 	)
 )
 
-router.get('/bash-shortcuts', (req, res) ->
+router.get('/bash-shortcuts', auth.checkAndRefuse, (req, res) ->
 	BashShortcutManager.get(req.query, (err, shortcuts) ->
 		if err
 			res.status(500)
@@ -161,7 +161,7 @@ router.get('/bash-shortcuts', (req, res) ->
 	)
 )
 
-router.get('/devices', (req, res) ->
+router.get('/devices', auth.checkAndRefuse, (req, res) ->
 	DeviceManager.get(req.query, (err, devices) ->
 		if err
 			res.status(500)

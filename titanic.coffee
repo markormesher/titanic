@@ -12,7 +12,11 @@ cookieParser = require('cookie-parser')
 session = require('express-session')
 flash = require('express-flash')
 rfr = require('rfr')
+passport = require('passport')
 log = rfr('./helpers/log')
+c = rfr('./helpers/constants')
+auth = rfr('./helpers/auth')
+pJson = rfr('./package.json')
 
 ##########################
 #  Database connections  #
@@ -24,10 +28,8 @@ mongoose.connect('mongodb://localhost:27017/titanic');
 #  Routes  #
 ############
 
-# start app
 app = express()
 
-# middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(coffeeMiddleware({
 	src: __dirname + '/assets'
@@ -46,11 +48,17 @@ app.use(session({
 }))
 app.use(flash())
 
-# pull routes from routes folder
+# auth config
+rfr('./helpers/passport-config')(passport)
+app.use(passport.initialize())
+app.use(passport.session())
+app.use(auth.checkOnly)
+
 routes = {
 	'': rfr('./controllers/core')
 	'aliases': rfr('./controllers/aliases')
 	'api': rfr('./controllers/api')
+	'auth': rfr('./controllers/auth')
 	'bash-shortcuts': rfr('./controllers/bash-shortcuts')
 	'bash-functions': rfr('./controllers/bash-functions')
 	'dashboard': rfr('./controllers/dashboard')
@@ -68,21 +76,19 @@ app.use('/favicon.ico', (req, res) -> res.end())
 ###########
 
 app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'jade')
+app.set('view engine', 'pug')
 app.use(express.static(path.join(__dirname, 'public')))
 
 ####################
 #  Error handlers  #
 ####################
 
-# catch 404 and forward to error handler
 app.use((req, res, next) ->
 	err = new Error('Not Found')
 	err.status = 404
 	next(err)
 )
 
-# general error handler
 app.use((error, req, res, next) ->
 	res.status(error.status || 500)
 	res.render('core/error', {
@@ -99,4 +105,5 @@ app.use((error, req, res, next) ->
 #  Start!  #
 ############
 
-server = app.listen(3000)
+app.listen(c.PORT)
+console.log("#{pJson.name} is listening on port #{c.PORT}")

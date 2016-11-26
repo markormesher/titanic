@@ -5,9 +5,8 @@ Device = rfr('./models/device')
 
 module.exports = {
 
-	# get an array of devices matching the given query (can be {} to get all devices)
+# get an array of devices matching the given query (can be {} to get all devices)
 	get: (query, callback) ->
-		# build search query, then execute it
 		async.waterfall(
 			[
 				# start with basic non-deleted search query
@@ -29,14 +28,11 @@ module.exports = {
 				# run query
 				(searchQuery, c) ->
 					Device.find(searchQuery).sort({hostname: 'asc'}).exec((err, result) ->
-						# errors
 						if err then return c(err)
 
-						# convert to objects
 						for r, i in result
 							result[i] = r.toObject()
 
-						# result
 						callback(null, result)
 					)
 			],
@@ -50,7 +46,6 @@ module.exports = {
 			_id: (if id then id else mongoose.Types.ObjectId())
 		}
 
-		# update/insert
 		Device.update(query, device, {upsert: true}, (err) -> callback(err, query._id, !id))
 
 	delete: (id, callback) ->

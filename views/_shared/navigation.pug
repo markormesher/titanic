@@ -1,0 +1,32 @@
+div.portlet
+	div.portlet-title
+		div.caption
+			span.caption-subject.text-uppercase Navigation
+
+	div.portlet-body
+		ul.navigation
+			if (locals.user)
+				li: a(href = '/', class = (_.activePage == 'dashboard' ? 'active' : ''))
+					i.fa.fa-fw.fa-tv
+					span Dashboard
+
+				li: a(href = '/devices', class = (_.activePage == 'devices' ? 'active' : ''))
+					i.fa.fa-fw.fa-server
+					span Devices
+
+				li: a(href = '/aliases', class = (_.activePage == 'aliases' ? 'active' : ''))
+					i.fa.fa-fw.fa-link
+					span Aliases
+
+				li: a(href = '/bash-shortcuts', class = (_.activePage == 'bash-shortcuts' ? 'active' : ''))
+					i.fa.fa-fw.fa-share
+					span Bash Shortcuts
+
+				li: a(href = '/bash-functions', class = (_.activePage == 'bash-functions' ? 'active' : ''))
+					i.fa.fa-fw.fa-code
+					span Bash Functions
+			else
+				li: a(href = '/auth/login', class = (_.activePage == 'auth' ? 'active' : ''))
+					i.fa.fa-fw.fa-key
+					span Login
+

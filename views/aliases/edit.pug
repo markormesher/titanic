@@ -1,4 +1,4 @@
-extends ../_shared/page-layout
+extends ../_shared/page-layout.pug
 include ../_mixins/forms
 include ../_mixins/plugins
 
@@ -52,7 +52,7 @@ block page-body
 									+form_switchCheckBox('in_' + d._id, d.hostname + arr + device.hostname, {checked: aliasMap[d._id][device._id]})
 
 				+form_fieldset
-					+form_button('Save', 'save', {'class': 'btn-primary'})
+					+form_button('Save', 'save', {'class': 'btn-success'})
 
 block scripts
 	script(src = '/_shared/js/forms.js')

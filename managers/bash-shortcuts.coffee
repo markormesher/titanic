@@ -8,7 +8,6 @@ module.exports = {
 
 	# get an array of shortcuts matching the given query (can be {} to get all shortcuts)
 	get: (query, callback) ->
-		# build search query, then execute it
 		async.waterfall(
 			[
 				# start with basic non-deleted search query
@@ -52,14 +51,11 @@ module.exports = {
 				# run query
 				(searchQuery, c) ->
 					BashShortcut.find(searchQuery).sort({short_command: 'asc'}).exec((err, result) ->
-						# errors
 						if err then return c(err)
 
-						# convert to objects
 						for r, i in result
 							result[i] = r.toObject()
 
-						# result
 						callback(null, result)
 					)
 			],
@@ -73,7 +69,6 @@ module.exports = {
 			_id: (if id then id else mongoose.Types.ObjectId())
 		}
 
-		# update/insert
 		BashShortcut.update(query, shortcut, {upsert: true}, (err) -> callback(err, query._id, !id))
 
 	delete: (id, callback) ->

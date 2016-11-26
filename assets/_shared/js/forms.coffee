@@ -1,8 +1,7 @@
 $(document).ready(() ->
 
-	# switch checkboxes
+# switch checkboxes
 	$('.switch-checkbox').each((i, e) ->
-		# get views
 		e = $(e)
 		input = e.find('input')
 		icon = e.find('i').eq(0)
@@ -25,7 +24,6 @@ $(document).ready(() ->
 
 	# select all checkboxes
 	$('.select-all-checkboxes').each((i, e) ->
-		# get targets
 		e = $(e)
 		targets = $(e.data('target'))
 
@@ -46,5 +44,4 @@ $(document).ready(() ->
 			targets.each((i, e) -> $(e).prop('checked', newState).change())
 		)
 	)
-
 )

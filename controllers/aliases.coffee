@@ -7,6 +7,7 @@ rfr = require('rfr')
 async = require('async')
 c = rfr('./helpers/constants')
 log = rfr('./helpers/log')
+auth = rfr('./helpers/auth')
 
 # managers
 DeviceManager = rfr('./managers/devices')
@@ -18,8 +19,7 @@ AliasManager = rfr('./managers/aliases')
 
 router = express.Router();
 
-router.get('/', (req, res) ->
-	# get all devices and aliases
+router.get('/', auth.checkAndRefuse, (req, res) ->
 	async.parallel(
 		{
 			devices: (c) -> DeviceManager.get({}, c)
@@ -55,25 +55,22 @@ router.get('/', (req, res) ->
 	)
 )
 
-router.get('/edit/:deviceId', (req, res) ->
-	# get parameters
+router.get('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 	deviceId = req.params.deviceId
 
-	# find device and aliases
 	async.parallel(
 		{
 			devices: (c) -> DeviceManager.get({}, c)
-			device: (c) -> DeviceManager.get({id: deviceId}, c)
+			device: (c) -> DeviceManager.get({ id: deviceId }, c)
 			aliases: (c) -> AliasManager.get(deviceId, c)
 		},
 		(err, results) ->
-			# read results
 			{devices, device, aliases} = results
 
 			# check for device
 			if err or !device
 				req.flash('error', 'Sorry, that device\'s aliases couldn\'t be loaded!')
-				res.writeHead(302, {Location: '/aliases'})
+				res.writeHead(302, { Location: '/aliases' })
 				res.end()
 				return
 			device = device[0]
@@ -119,8 +116,7 @@ router.get('/edit/:deviceId', (req, res) ->
 	)
 )
 
-router.post('/edit/:deviceId', (req, res) ->
-	# get parameters
+router.post('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 	deviceId = req.params.deviceId
 	aliases = req.body
 
@@ -128,11 +124,10 @@ router.post('/edit/:deviceId', (req, res) ->
 	newAliases = []
 	for k, v of aliases
 		if k.substr(0, 4) == 'out_' && v == '1'
-			newAliases.push({from_device: deviceId, to_device: k.substr(4)})
+			newAliases.push({ from_device: deviceId, to_device: k.substr(4) })
 		if k.substr(0, 3) == 'in_' && v == '1'
-			newAliases.push({from_device: k.substr(3), to_device: deviceId})
+			newAliases.push({ from_device: k.substr(3), to_device: deviceId })
 
-	# update aliases
 	async.series(
 		[
 			(c) -> AliasManager.deleteAll(deviceId, c)
@@ -147,7 +142,7 @@ router.post('/edit/:deviceId', (req, res) ->
 				log.event('Edited aliases for device ' + deviceId)
 				req.flash('success', 'Your changes were saved!')
 
-			res.writeHead(302, {Location: '/aliases'})
+			res.writeHead(302, { Location: '/aliases' })
 			res.end()
 	)
 )

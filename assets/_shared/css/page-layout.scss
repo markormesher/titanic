@@ -2,9 +2,10 @@
 
 #header {
 	width: 100%;
+	height: 72px;
 	background: #eeeeee url('/_shared/images/header-bg.png') no-repeat bottom left;
 	background-size: contain;
-	padding: 8px 0 10px 100px;
+	padding: 0 0 10px 100px;
 	margin-bottom: 20px;
 
 	h1 {
@@ -13,6 +14,14 @@
 		color: $textColour;
 		font-size: 3em;
 		font-weight: normal;
+		line-height: 72px;
+		float: left;
+	}
+
+	p.auth {
+		margin: 0 10px 0 0;
+		line-height: 72px;
+		float: right;
 	}
 }
 
