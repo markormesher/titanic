@@ -5,8 +5,9 @@
 express = require('express')
 rfr = require('rfr')
 guid = require('guid')
-auth = rfr('helpers/auth')
-mysql = rfr('helpers/mysql')
+auth = rfr('./helpers/auth')
+mysql = rfr('./helpers/mysql')
+UserManager = rfr('./managers/users')
 ##############
 #  Mappings  #
 ##############
@@ -23,16 +24,9 @@ router.get('/register', (req, res) ->
 )
 
 router.post('/register', (req, res) ->
-  id = guid.create().value
   email = req.body.email
   password = req.body.password
-  hash = auth.sha256(password)
-  mysql.getConnection((conn) ->
-    query = "INSERT INTO USER(id, email, password) VALUES(?)"
-  )
-
-
-
+  UserManager.createUser(email, password)
 )
 
 module.exports = router
