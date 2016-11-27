@@ -41,7 +41,7 @@ router.get('/aliases', auth.checkAndRefuse, (req, res) ->
 
 				deviceMap = {}
 				for d in devices
-					deviceMap[d._id] = d
+					deviceMap[d.id] = d
 
 				c(err, deviceMap)
 			)
@@ -81,7 +81,7 @@ router.get('/aliases/:fromHostName', auth.checkAndRefuse, (req, res) ->
 
 				deviceMap = {}
 				for d in devices
-					deviceMap[d._id] = d
+					deviceMap[d.id] = d
 
 				c(err, deviceMap)
 			)

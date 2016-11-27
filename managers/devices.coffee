@@ -1,54 +1,41 @@
 rfr = require('rfr')
-mongoose = require('mongoose')
-async = require('async')
-Device = rfr('./models/device')
+guid = require('guid')
+mysql = rfr('./helpers/mysql')
 
-module.exports = {
+exp = {
 
-# get an array of devices matching the given query (can be {} to get all devices)
 	get: (query, callback) ->
-		async.waterfall(
-			[
-				# start with basic non-deleted search query
-				(c) ->
-					c(null, {is_deleted: {$in: [null, false]}})
-
-				# is there an ID to add?
-				(searchQuery, c) ->
-					if query.hasOwnProperty('id') && query.id
-						searchQuery._id = query.id
-					c(null, searchQuery)
-
-				# is there a name to add?
-				(searchQuery, c) ->
-					if query.hasOwnProperty('name') && query.name
-						searchQuery.hostname = query.name
-					c(null, searchQuery)
-
-				# run query
-				(searchQuery, c) ->
-					Device.find(searchQuery).sort({hostname: 'asc'}).exec((err, result) ->
-						if err then return c(err)
-
-						for r, i in result
-							result[i] = r.toObject()
-
-						callback(null, result)
-					)
-			],
-			() -> callback('Could not load devices')
+		q = mysql.makeSelectQuery('Device', { is_deleted: 0 })
+		mysql.getConnection((conn) ->
+			conn.query(q[0], q[1], (err, results) ->
+				if (err) then return callback(err)
+				return callback(null, results)
+			)
 		)
 
 	createOrUpdate: (id, device, callback) ->
-		# build query to locate new/target item
-		if id == null || id == 0 || id == '0' then id = false
-		query = {
-			_id: (if id then id else mongoose.Types.ObjectId())
-		}
+		createdNew = false
+		if (id == null || id == 0 || id == '0')
+			# insert
+			createdNew = true
+			id = guid.create().value
+			device.id = id
+			q = mysql.makeInsertQuery('Device', device)
+		else
+			# update
+			delete device.id
+			q = mysql.makeUpdateQuery('Device', device, { id: id })
 
-		Device.update(query, device, {upsert: true}, (err) -> callback(err, query._id, !id))
+		mysql.getConnection((conn) ->
+			conn.query(q[0], q[1], (err) ->
+				if (err) then return callback(err)
+				callback(null, id, createdNew)
+			)
+		)
 
 	delete: (id, callback) ->
-		Device.update({_id: id}, {is_deleted: true}, {}, (err) -> callback(err))
+		exp.createOrUpdate(id, { is_deleted: 1 }, callback)
 
 }
+
+module.exports = exp

@@ -11,13 +11,13 @@ mixin device(d)
 			br
 			span= d.ip_address
 		p.buttons.btn-group
-			+form_buttonLink('Edit', 'edit', '/devices/edit/' + d._id, {
+			+form_buttonLink('Edit', 'edit', '/devices/edit/' + d.id, {
 				'class': 'btn-warning'
 			})
-			+form_buttonLink('Delete', 'trash', '/devices/delete/' + d._id, {
+			+form_buttonLink('Delete', 'trash', '/devices/delete/' + d.id, {
 				'class': 'btn-danger delete-button',
 				'data-name': d.hostname,
-				'data-id': d._id.toString()
+				'data-id': d.id.toString()
 			})
 
 block page-head
