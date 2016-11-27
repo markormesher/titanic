@@ -11,18 +11,20 @@ sassMiddleware = require('node-sass-middleware')
 cookieParser = require('cookie-parser')
 session = require('express-session')
 flash = require('express-flash')
-rfr = require('rfr')
 passport = require('passport')
+rfr = require('rfr')
 log = rfr('./helpers/log')
 c = rfr('./helpers/constants')
 auth = rfr('./helpers/auth')
 pJson = rfr('./package.json')
+mysql = rfr('./helpers/mysql')
 
 ##########################
 #  Database connections  #
 ##########################
 
-mongoose.connect('mongodb://localhost:27017/titanic');
+mongoose.connect('mongodb://localhost:27017/titanic')
+mysql.getConnection((conn) -> console.log("MySQL connected with ID #{conn.threadId}"))
 
 ############
 #  Routes  #
