@@ -30,8 +30,8 @@ router.get('/', auth.checkAndRefuse, (req, res) ->
 			outboundAliases = {};
 			inboundAliases = {};
 			for d in results.devices
-				outboundAliases[d._id] = 0
-				inboundAliases[d._id] = 0
+				outboundAliases[d.id] = 0
+				inboundAliases[d.id] = 0
 			for a in results.aliases
 				++outboundAliases[a.from_device]
 				++inboundAliases[a.to_device]
@@ -39,8 +39,8 @@ router.get('/', auth.checkAndRefuse, (req, res) ->
 			# convert devices to objects with count
 			devices = []
 			for d in results.devices
-				d.outboundAliases = outboundAliases[d._id]
-				d.inboundAliases = inboundAliases[d._id]
+				d.outboundAliases = outboundAliases[d.id]
+				d.inboundAliases = inboundAliases[d.id]
 				devices.push(d)
 
 			# render output
