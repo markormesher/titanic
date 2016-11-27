@@ -1,0 +1,26 @@
+extends ../_shared/page-layout
+include ../_mixins/forms
+
+block page-body
+
+	div.portlet
+		div.portlet-title
+			div.caption
+				span.caption-subject.text-uppercase= _.title
+
+		div.portlet-body
+
+			form(action = '/users/register', method = 'post')
+
+				+form_fieldset
+					+form_label('email', 'Email')
+					+form_textInput('email', '', {
+						'data-validation': 'required email'
+					})
+
+				+form_fieldset
+					+form_label('password', 'Password')
+					+form_passwordInput('password')
+
+				+form_fieldset
+					+form_button('Register', 'key', {'class': 'btn-success'})
