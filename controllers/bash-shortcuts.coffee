@@ -65,8 +65,8 @@ router.post('/edit/:shortcutId', auth.checkAndRefuse, (req, res) ->
 	shortcut = req.body
 
 	# normalise booleans
-	shortcut.available_internal = shortcut.available_internal == '1'
-	shortcut.available_external = shortcut.available_external == '1'
+	shortcut.available_internal = if shortcut.available_internal == '1' then 1 else 0
+	shortcut.available_external = if shortcut.available_external == '1' then 1 else 0
 
 	ShortcutManager.createOrUpdate(shortcutId, shortcut, (err, shortcutId, createdNew) ->
 		# forward to list

@@ -64,8 +64,8 @@ router.post('/edit/:functionId', auth.checkAndRefuse, (req, res) ->
 	func = req.body
 
 	# normalise booleans
-	func.available_internal = func.available_internal == '1'
-	func.available_external = func.available_external == '1'
+	func.available_internal = if func.available_internal == '1' then 1 else 0
+	func.available_external = if func.available_external == '1' then 1 else 0
 
 	FunctionManager.createOrUpdate(functionId, func, (err, functionId, createdNew) ->
 		# forward to list

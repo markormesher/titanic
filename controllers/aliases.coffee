@@ -78,16 +78,16 @@ router.get('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 			# convert aliases to true/false 2D array
 			aliasMap = {}
 			for d1 in devices
-				aliasMap[d1._id] = {}
+				aliasMap[d1.id] = {}
 				for d2 in devices
-					aliasMap[d1._id][d2._id] = false;
+					aliasMap[d1.id][d2.id] = false;
 			for a in aliases
 				aliasMap[a.from_device][a.to_device] = true
 
 			# rule: aliases are not possible in some situations
 			aliasPossible = (from, to) ->
 				# a -> a not allowed
-				if (from._id.toString() == to._id.toString()) then return false
+				if (from.id.toString() == to.id.toString()) then return false
 
 				# ext -> int not allowed
 				if (from.location == 'external' && to.location == 'internal') then return false

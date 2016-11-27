@@ -17,7 +17,7 @@ block page-body
 
 		div.portlet-body
 
-			form(action = '/bash-shortcuts/edit/' + (shortcut._id || 0), method = 'post')
+			form(action = '/bash-shortcuts/edit/' + (shortcut.id || 0), method = 'post')
 
 				+form_fieldset
 					+form_label('short_command', 'Short Command')
@@ -35,11 +35,11 @@ block page-body
 
 				+form_fieldset
 					+form_switchCheckBox('available_internal', 'Available to internal devices', {
-						checked: shortcut.available_internal
+						checked: shortcut.available_internal == 1
 					})
 				+form_fieldset
 					+form_switchCheckBox('available_external', 'Available to external devices', {
-						checked: shortcut.available_external
+						checked: shortcut.available_external == 1
 					})
 
 				+form_fieldset

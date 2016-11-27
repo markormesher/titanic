@@ -15,10 +15,9 @@ module.exports = {
 	makeSelectQuery: (table, where) ->
 		queryStr = "SELECT * FROM #{table} WHERE 1"
 		queryValues = []
-		if (query != {})
-			for k, v of where
-				queryStr += " AND #{k} = ?"
-				queryValues.push(v)
+		for k, v of where
+			queryStr += " AND #{k} = ?"
+			queryValues.push(v)
 		queryStr += ";"
 		return [queryStr, queryValues]
 

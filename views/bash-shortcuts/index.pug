@@ -10,13 +10,13 @@ mixin shortcut(s)
 			br
 			span= trimmed
 		p.buttons.btn-group
-			+form_buttonLink('Edit', 'edit', '/bash-shortcuts/edit/' + s._id, {
+			+form_buttonLink('Edit', 'edit', '/bash-shortcuts/edit/' + s.id, {
 				'class': 'btn-warning'
 			})
-			+form_buttonLink('Delete', 'trash', '/bash-shortcuts/delete/' + s._id, {
+			+form_buttonLink('Delete', 'trash', '/bash-shortcuts/delete/' + s.id, {
 				'class': 'btn-danger delete-button',
 				'data-name': s.short_command,
-				'data-id': s._id.toString()
+				'data-id': s.id.toString()
 			})
 
 block page-head
