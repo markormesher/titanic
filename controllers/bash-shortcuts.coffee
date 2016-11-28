@@ -41,7 +41,7 @@ router.get('/create', auth.checkAndRefuse, (req, res) ->
 router.get('/edit/:shortcutId', auth.checkAndRefuse, (req, res) ->
 	shortcutId = req.params.shortcutId
 
-	ShortcutManager.get({id: shortcutId}, (err, shortcuts) ->
+	ShortcutManager.get({ id: shortcutId,}, (err, shortcuts) ->
 		if err or shortcuts == []
 			req.flash('error', 'Sorry, that shortcut couldn\'t be loaded!')
 			res.writeHead(302, {Location: '/bash-shortcuts'})

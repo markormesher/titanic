@@ -45,7 +45,7 @@ router.get('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 	deviceId = req.params.deviceId
 
 	# find device
-	DeviceManager.get({id: deviceId}, (err, devices) ->
+	DeviceManager.get({ id: deviceId,}, (err, devices) ->
 		if err or devices == []
 			req.flash('error', 'Sorry, that device couldn\'t be loaded!')
 			res.writeHead(302, {Location: '/devices'})

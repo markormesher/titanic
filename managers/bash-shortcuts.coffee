@@ -8,7 +8,7 @@ exp = {
 		# TODO: handle for_device parameter
 		delete query.for_device
 
-		q = mysql.makeSelectQuery('BashShortcut', { is_deleted: 0 })
+		q = mysql.makeSelectQuery('BashShortcut', query)
 		mysql.getConnection((conn) ->
 			conn.query(q[0], q[1], (err, results) ->
 				if (err) then return callback(err)
@@ -38,7 +38,7 @@ exp = {
 		)
 
 	delete: (id, callback) ->
-		exp.createOrUpdate(id, { is_deleted: 1 }, callback)
+		mysql.getConnection((conn) -> conn.query('DELETE FROM BashShortcut WHERE id = ?;', [id], callback))
 
 }
 

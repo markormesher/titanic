@@ -1,38 +1,43 @@
 rfr = require('rfr')
-mongoose = require('mongoose')
-Alias = rfr('./models/alias')
+guid = require('guid')
+mysql = rfr('./helpers/mysql')
 
-module.exports = {
+exp = {
 
-	# get all aliases (no ID) or aliases for one device (with ID)
-	get: (query, callback) ->
-		# calls without ID
-		if typeof query == 'function'
-			callback = query
-			query = null
-
+	get: (deviceId, callback) ->
 		# build search query
-		if query == null
+		if deviceId == null
 			query = {}
-		else if typeof query == 'string'
-			query = {$or: [{from_device: query}, {to_device: query}]}
+			values = []
+		else
+			query = "from_device = ? OR to_device = ?"
+			values = [deviceId, deviceId]
 
 		# run query
-		Alias.find(query).exec((err, result) ->
-			if err
-				callback(err, null)
-				return
-
-			for r, i in result
-				result[i] = r.toObject()
-
-			callback(null, result)
+		q = mysql.makeSelectQuery('Alias', query, values)
+		mysql.getConnection((conn) ->
+			conn.query(q[0], q[1], (err, results) ->
+				if (err) then return callback(err)
+				return callback(null, results)
+			)
 		)
 
-	create: (aliases, callback) ->
-		Alias.create(aliases, (err) -> callback(err))
+	setAliasesForDevice: (deviceId, newAliases, callback) ->
+		exp.deleteAllForDevice(deviceId, (err) ->
+			if (err) then return callback(err)
+			mysql.getConnection((conn) ->
+				for a, i in newAliases
+					a.id = guid.create().value
+					newAliases[i] = a
+				q = mysql.makeMultiInsertQuery('Alias', ['id', 'from_device', 'to_device'], newAliases)
+				conn.query(q[0], q[1], callback)
+			)
+		)
 
-	deleteAll: (deviceId, callback) ->
-		Alias.find().or([{from_device: deviceId}, {to_device: deviceId}]).remove((err) -> callback(err))
-
+	deleteAllForDevice: (deviceId, callback) ->
+		mysql.getConnection((conn) ->
+			conn.query('DELETE FROM Alias WHERE from_device = ? OR to_device = ?;', [deviceId, deviceId], callback)
+		)
 }
+
+module.exports = exp

@@ -41,7 +41,7 @@ router.get('/create', auth.checkAndRefuse, (req, res) ->
 router.get('/edit/:functionId', auth.checkAndRefuse, (req, res) ->
 	functionId = req.params.functionId
 
-	FunctionManager.get({ id: functionId }, (err, funcs) ->
+	FunctionManager.get({ id: functionId,}, (err, funcs) ->
 		if err or funcs == []
 			req.flash('error', 'Sorry, that function couldn\'t be loaded!')
 			res.writeHead(302, { Location: '/bash-functions' })

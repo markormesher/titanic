@@ -23,7 +23,7 @@ router.get('/', auth.checkAndRefuse, (req, res) ->
 	async.parallel(
 		{
 			devices: (c) -> DeviceManager.get({}, c)
-			aliases: (c) -> AliasManager.get(c)
+			aliases: (c) -> AliasManager.get(null, c)
 		},
 		(err, results) ->
 			# count aliases
@@ -61,7 +61,7 @@ router.get('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 	async.parallel(
 		{
 			devices: (c) -> DeviceManager.get({}, c)
-			device: (c) -> DeviceManager.get({ id: deviceId }, c)
+			device: (c) -> DeviceManager.get({ id: deviceId,}, c)
 			aliases: (c) -> AliasManager.get(deviceId, c)
 		},
 		(err, results) ->
@@ -120,6 +120,8 @@ router.post('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 	deviceId = req.params.deviceId
 	aliases = req.body
 
+	console.log(req.body)
+
 	# build new aliases
 	newAliases = []
 	for k, v of aliases
@@ -128,22 +130,16 @@ router.post('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 		if k.substr(0, 3) == 'in_' && v == '1'
 			newAliases.push({ from_device: k.substr(3), to_device: deviceId })
 
-	async.series(
-		[
-			(c) -> AliasManager.deleteAll(deviceId, c)
-			(c) -> AliasManager.create(newAliases, c)
-		],
-		(err) ->
-			# send back to list
-			if err
-				log.error('Failed to update aliases for device ' + deviceId)
-				req.flash('error', 'Sorry, something went wrong!')
-			else
-				log.event('Edited aliases for device ' + deviceId)
-				req.flash('success', 'Your changes were saved!')
+	AliasManager.setAliasesForDevice(deviceId, newAliases, (err) ->
+		if err
+			log.error('Failed to update aliases for device ' + deviceId)
+			req.flash('error', 'Sorry, something went wrong!')
+		else
+			log.event('Edited aliases for device ' + deviceId)
+			req.flash('success', 'Your changes were saved!')
 
-			res.writeHead(302, { Location: '/aliases' })
-			res.end()
+		res.writeHead(302, { Location: '/aliases' })
+		res.end()
 	)
 )
 
