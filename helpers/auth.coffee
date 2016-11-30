@@ -1,11 +1,11 @@
 funcs = {
-	sha256 = (data) -> crypto.createHash('sha256').update(data).digest('hex')
-	
-	checkOnly: (req, res, next)->
+	sha256: (data) -> crypto.createHash('sha256').update(data).digest('hex')
+
+	checkOnly: (req, res, next) ->
 		res.locals.user = req.user || null
 		next()
 
-	checkAndRefuse: (req, res, next)->
+	checkAndRefuse: (req, res, next) ->
 		if (req.user)
 			funcs.checkOnly(req, res, next)
 		else

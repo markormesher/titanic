@@ -63,6 +63,7 @@ routes = {
 	'bash-functions': rfr('./controllers/bash-functions')
 	'dashboard': rfr('./controllers/dashboard')
 	'devices': rfr('./controllers/devices')
+	'users': rfr('./controllers/users')
 };
 
 for stem, file of routes

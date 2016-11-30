@@ -1,6 +1,7 @@
 ##################
 #  Dependencies  #
 ##################
+EMAIL_REGEX = /^(([^<>()[]\.,;:s@"]+(.[^<>()[]\.,;:s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/
 
 express = require('express')
 rfr = require('rfr')
@@ -26,7 +27,10 @@ router.get('/register', (req, res) ->
 router.post('/register', (req, res) ->
   email = req.body.email
   password = req.body.password
-  UserManager.createUser(email, password)
+	confirmPassword = req.body.confirmPassword
+	if (str.length > 0 && EMAIL_REGEX.text(email) && password == confirmPassword)
+  	UserManager.createUser(email, password)
+
 )
 
 module.exports = router
