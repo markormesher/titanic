@@ -10,13 +10,13 @@ mixin function(f)
 			br
 			span= trimmed
 		p.buttons.btn-group
-			+form_buttonLink('Edit', 'edit', '/bash-functions/edit/' + f._id, {
+			+form_buttonLink('Edit', 'edit', '/bash-functions/edit/' + f.id, {
 				'class': 'btn-warning'
 			})
-			+form_buttonLink('Delete', 'trash', '/bash-functions/delete/' + f._id, {
+			+form_buttonLink('Delete', 'trash', '/bash-functions/delete/' + f.id, {
 				'class': 'btn-danger delete-button',
 				'data-name': f.name,
-				'data-id': f._id.toString()
+				'data-id': f.id.toString()
 			})
 
 block page-head

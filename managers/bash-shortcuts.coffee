@@ -1,77 +1,45 @@
 rfr = require('rfr')
-mongoose = require('mongoose')
-async = require('async')
-BashShortcut = rfr('./models/bash-shortcut')
-DeviceManager = rfr('./managers/devices')
+guid = require('guid')
+mysql = rfr('./helpers/mysql')
 
-module.exports = {
+exp = {
 
-	# get an array of shortcuts matching the given query (can be {} to get all shortcuts)
 	get: (query, callback) ->
-		async.waterfall(
-			[
-				# start with basic non-deleted search query
-				(c) ->
-					c(null, {is_deleted: {$in: [null, false]}})
+		# TODO: handle for_device parameter
+		delete query.for_device
 
-				# is there an ID to add?
-				(searchQuery, c) ->
-					if query.hasOwnProperty('id') && query.id
-						searchQuery._id = query.id
-					c(null, searchQuery)
-
-				# is there a device id or name passed?
-				(searchQuery, c) ->
-					if (query.hasOwnProperty('for_device') && query.for_device) || (query.hasOwnProperty('for_device_name') && query.for_device_name)
-						# build search query
-						q = {}
-						if (query.hasOwnProperty('for_device'))
-							q.id = query.for_device
-						else
-							q.name = query.for_device_name
-
-						# find device
-						DeviceManager.get(q, (err, devices) ->
-							# errors
-							if err || !devices || !devices.length then return c(err)
-
-							# add internal/external restrictions
-							device = devices[0]
-							if device.location == 'internal'
-								searchQuery['available_internal'] = true
-							else
-								searchQuery['available_external'] = true
-
-							# continue
-							c(null, searchQuery)
-						)
-					else
-						c(null, searchQuery)
-
-				# run query
-				(searchQuery, c) ->
-					BashShortcut.find(searchQuery).sort({short_command: 'asc'}).exec((err, result) ->
-						if err then return c(err)
-
-						for r, i in result
-							result[i] = r.toObject()
-
-						callback(null, result)
-					)
-			],
-			() -> callback('Could not load shortcuts')
+		q = mysql.makeSelectQuery('BashShortcut', query)
+		mysql.getConnection((conn) ->
+			conn.query(q[0], q[1], (err, results) ->
+				if (err) then return callback(err)
+				return callback(null, results)
+			)
 		)
 
 	createOrUpdate: (id, shortcut, callback) ->
-		# build query to locate new/target item
-		if id == null || id == 0 || id == '0' then id = false
-		query = {
-			_id: (if id then id else mongoose.Types.ObjectId())
-		}
+		console.log(shortcut)
+		createdNew = false
+		if (id == null || id == 0 || id == '0')
+			# insert
+			createdNew = true
+			id = guid.create().value
+			shortcut.id = id
+			q = mysql.makeInsertQuery('BashShortcut', shortcut)
+		else
+			# update
+			delete shortcut.id
+			q = mysql.makeUpdateQuery('BashShortcut', shortcut, { id: id })
 
-		BashShortcut.update(query, shortcut, {upsert: true}, (err) -> callback(err, query._id, !id))
+		mysql.getConnection((conn) ->
+			conn.query(q[0], q[1], (err) ->
+				if (err) then return callback(err)
+				callback(null, id, createdNew)
+			)
+		)
 
 	delete: (id, callback) ->
-		BashShortcut.update({_id: id}, {is_deleted: true}, {}, (err) -> callback(err))
+		mysql.getConnection((conn) -> conn.query('DELETE FROM BashShortcut WHERE id = ?;', [id], callback))
 
 }
+
+module.exports = exp

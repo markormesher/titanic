@@ -5,7 +5,6 @@
 express = require('express')
 rfr = require('rfr')
 async = require('async')
-log = rfr('./helpers/log')
 auth = rfr('./helpers/auth')
 
 # managers
@@ -41,7 +40,7 @@ router.get('/create', auth.checkAndRefuse, (req, res) ->
 router.get('/edit/:shortcutId', auth.checkAndRefuse, (req, res) ->
 	shortcutId = req.params.shortcutId
 
-	ShortcutManager.get({id: shortcutId}, (err, shortcuts) ->
+	ShortcutManager.get({ id: shortcutId,}, (err, shortcuts) ->
 		if err or shortcuts == []
 			req.flash('error', 'Sorry, that shortcut couldn\'t be loaded!')
 			res.writeHead(302, {Location: '/bash-shortcuts'})
@@ -65,20 +64,17 @@ router.post('/edit/:shortcutId', auth.checkAndRefuse, (req, res) ->
 	shortcut = req.body
 
 	# normalise booleans
-	shortcut.available_internal = shortcut.available_internal == '1'
-	shortcut.available_external = shortcut.available_external == '1'
+	shortcut.available_internal = if shortcut.available_internal == '1' then 1 else 0
+	shortcut.available_external = if shortcut.available_external == '1' then 1 else 0
 
 	ShortcutManager.createOrUpdate(shortcutId, shortcut, (err, shortcutId, createdNew) ->
 		# forward to list
 		if err
-			log.error('Failed to update shortcut ' + shortcutId)
 			req.flash('error', 'Sorry, something went wrong!')
 		else
 			if createdNew
-				log.event('Created shortcut ' + shortcutId)
 				req.flash('success', 'The shortcut <strong>' + shortcut.short_command + '</strong> was created!')
 			else
-				log.event('Edited shortcut ' + shortcutId)
 				req.flash('success', 'Your changes were saved!')
 
 		res.writeHead(302, {Location: '/bash-shortcuts'})
@@ -91,10 +87,8 @@ router.get('/delete/:shortcutId', auth.checkAndRefuse, (req, res) ->
 
 	ShortcutManager.delete(shortcutId, (err) ->
 		if err
-			log.error('Failed to delete shortcut ' + shortcutId)
 			req.flash('error', 'Sorry, something went wrong!')
 		else
-			log.event('Deleted shortcut ' + shortcutId)
 			req.flash('info', 'Shortcut deleted.')
 
 		res.writeHead(302, {Location: '/bash-shortcuts'})

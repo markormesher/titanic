@@ -47,7 +47,7 @@ router.get('/aliases', auth.checkAndRefuse, (req, res) ->
 			)
 
 			# get alias list
-			(deviceMap, c) -> AliasManager.get((err, aliases) ->
+			(deviceMap, c) -> AliasManager.get(null, (err, aliases) ->
 				if (err) then return c(err, null)
 
 				out = {}

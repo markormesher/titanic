@@ -17,8 +17,6 @@
     "guid": "0.0.12",
     "kerberos": "0.0.22",
     "moment": "^2.17.0",
-    "mongodb": "^2.2.11",
-    "mongoose": "^4.7.0",
     "mysql": "^2.12.0",
     "node-sass-middleware": "^0.10.0",
     "passport": "^0.3.2",

@@ -5,7 +5,6 @@
 express = require('express')
 rfr = require('rfr')
 async = require('async')
-log = rfr('./helpers/log')
 c = rfr('./helpers/constants')
 auth = rfr('./helpers/auth')
 
@@ -45,7 +44,7 @@ router.get('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 	deviceId = req.params.deviceId
 
 	# find device
-	DeviceManager.get({id: deviceId}, (err, devices) ->
+	DeviceManager.get({ id: deviceId,}, (err, devices) ->
 		if err or devices == []
 			req.flash('error', 'Sorry, that device couldn\'t be loaded!')
 			res.writeHead(302, {Location: '/devices'})
@@ -70,14 +69,11 @@ router.post('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 
 	DeviceManager.createOrUpdate(deviceId, device, (err, deviceId, createdNew) ->
 		if err
-			log.error('Failed to update device ' + deviceId)
 			req.flash('error', 'Sorry, something went wrong!')
 		else
 			if createdNew
-				log.event('Created device ' + deviceId)
 				req.flash('success', 'The device <strong>' + device.hostname + '</strong> was created!')
 			else
-				log.event('Edited device ' + deviceId)
 				req.flash('success', 'Your changes were saved!')
 
 		res.writeHead(302, {Location: '/devices'})
@@ -90,10 +86,8 @@ router.get('/delete/:deviceId', auth.checkAndRefuse, (req, res) ->
 
 	DeviceManager.delete(deviceId, (err) ->
 		if err
-			log.error('Failed to delete device ' + deviceId)
 			req.flash('error', 'Sorry, something went wrong!')
 		else
-			log.event('Deleted device ' + deviceId)
 			req.flash('info', 'Device deleted.')
 
 		res.writeHead(302, {Location: '/devices'})

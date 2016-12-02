@@ -5,7 +5,6 @@
 express = require('express')
 rfr = require('rfr')
 async = require('async')
-log = rfr('./helpers/log')
 auth = rfr('./helpers/auth')
 
 # managers
@@ -41,7 +40,7 @@ router.get('/create', auth.checkAndRefuse, (req, res) ->
 router.get('/edit/:functionId', auth.checkAndRefuse, (req, res) ->
 	functionId = req.params.functionId
 
-	FunctionManager.get({ id: functionId }, (err, funcs) ->
+	FunctionManager.get({ id: functionId,}, (err, funcs) ->
 		if err or funcs == []
 			req.flash('error', 'Sorry, that function couldn\'t be loaded!')
 			res.writeHead(302, { Location: '/bash-functions' })
@@ -64,20 +63,17 @@ router.post('/edit/:functionId', auth.checkAndRefuse, (req, res) ->
 	func = req.body
 
 	# normalise booleans
-	func.available_internal = func.available_internal == '1'
-	func.available_external = func.available_external == '1'
+	func.available_internal = if func.available_internal == '1' then 1 else 0
+	func.available_external = if func.available_external == '1' then 1 else 0
 
 	FunctionManager.createOrUpdate(functionId, func, (err, functionId, createdNew) ->
 		# forward to list
 		if err
-			log.error('Failed to update function ' + functionId)
 			req.flash('error', 'Sorry, something went wrong!')
 		else
 			if createdNew
-				log.event('Created function ' + functionId)
 				req.flash('success', 'The function <strong>' + func.name + '</strong> was created!')
 			else
-				log.event('Edited function ' + functionId)
 				req.flash('success', 'Your changes were saved!')
 
 		res.writeHead(302, { Location: '/bash-functions' })
@@ -90,10 +86,8 @@ router.get('/delete/:functionId', auth.checkAndRefuse, (req, res) ->
 
 	FunctionManager.delete(functionId, (err) ->
 		if err
-			log.error('Failed to delete function ' + functionId)
 			req.flash('error', 'Sorry, something went wrong!')
 		else
-			log.event('Deleted function ' + functionId)
 			req.flash('info', 'Function deleted.')
 
 		res.writeHead(302, { Location: '/bash-functions' })

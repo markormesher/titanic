@@ -5,7 +5,7 @@ mysql = rfr('./helpers/mysql')
 exp = {
 
 	get: (query, callback) ->
-		q = mysql.makeSelectQuery('Device', { is_deleted: 0 })
+		q = mysql.makeSelectQuery('Device', query)
 		mysql.getConnection((conn) ->
 			conn.query(q[0], q[1], (err, results) ->
 				if (err) then return callback(err)
@@ -34,7 +34,7 @@ exp = {
 		)
 
 	delete: (id, callback) ->
-		exp.createOrUpdate(id, { is_deleted: 1 }, callback)
+		mysql.getConnection((conn) -> conn.query('DELETE FROM Device WHERE id = ?;', [id], callback))
 
 }
 

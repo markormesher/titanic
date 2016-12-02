@@ -6,7 +6,6 @@ express = require('express')
 rfr = require('rfr')
 async = require('async')
 c = rfr('./helpers/constants')
-log = rfr('./helpers/log')
 auth = rfr('./helpers/auth')
 
 # managers
@@ -23,7 +22,7 @@ router.get('/', auth.checkAndRefuse, (req, res) ->
 	async.parallel(
 		{
 			devices: (c) -> DeviceManager.get({}, c)
-			aliases: (c) -> AliasManager.get(c)
+			aliases: (c) -> AliasManager.get(null, c)
 		},
 		(err, results) ->
 			# count aliases
@@ -61,7 +60,7 @@ router.get('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 	async.parallel(
 		{
 			devices: (c) -> DeviceManager.get({}, c)
-			device: (c) -> DeviceManager.get({ id: deviceId }, c)
+			device: (c) -> DeviceManager.get({ id: deviceId,}, c)
 			aliases: (c) -> AliasManager.get(deviceId, c)
 		},
 		(err, results) ->
@@ -78,16 +77,16 @@ router.get('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 			# convert aliases to true/false 2D array
 			aliasMap = {}
 			for d1 in devices
-				aliasMap[d1._id] = {}
+				aliasMap[d1.id] = {}
 				for d2 in devices
-					aliasMap[d1._id][d2._id] = false;
+					aliasMap[d1.id][d2.id] = false;
 			for a in aliases
 				aliasMap[a.from_device][a.to_device] = true
 
 			# rule: aliases are not possible in some situations
 			aliasPossible = (from, to) ->
 				# a -> a not allowed
-				if (from._id.toString() == to._id.toString()) then return false
+				if (from.id.toString() == to.id.toString()) then return false
 
 				# ext -> int not allowed
 				if (from.location == 'external' && to.location == 'internal') then return false
@@ -128,22 +127,14 @@ router.post('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 		if k.substr(0, 3) == 'in_' && v == '1'
 			newAliases.push({ from_device: k.substr(3), to_device: deviceId })
 
-	async.series(
-		[
-			(c) -> AliasManager.deleteAll(deviceId, c)
-			(c) -> AliasManager.create(newAliases, c)
-		],
-		(err) ->
-			# send back to list
-			if err
-				log.error('Failed to update aliases for device ' + deviceId)
-				req.flash('error', 'Sorry, something went wrong!')
-			else
-				log.event('Edited aliases for device ' + deviceId)
-				req.flash('success', 'Your changes were saved!')
+	AliasManager.setAliasesForDevice(deviceId, newAliases, (err) ->
+		if err
+			req.flash('error', 'Sorry, something went wrong!')
+		else
+			req.flash('success', 'Your changes were saved!')
 
-			res.writeHead(302, { Location: '/aliases' })
-			res.end()
+		res.writeHead(302, { Location: '/aliases' })
+		res.end()
 	)
 )
 

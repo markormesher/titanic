@@ -17,7 +17,7 @@ block page-body
 
 		div.portlet-body
 
-			form(action = '/bash-functions/edit/' + (func._id || 0), method = 'post')
+			form(action = '/bash-functions/edit/' + (func.id || 0), method = 'post')
 
 				+form_fieldset
 					+form_label('name', 'Name')
@@ -35,11 +35,11 @@ block page-body
 
 				+form_fieldset
 					+form_switchCheckBox('available_internal', 'Available to internal devices', {
-						checked: func.available_internal
+						checked: func.available_internal == 1
 					})
 				+form_fieldset
 					+form_switchCheckBox('available_external', 'Available to external devices', {
-						checked: func.available_external
+						checked: func.available_external == 1
 					})
 
 				+form_fieldset
