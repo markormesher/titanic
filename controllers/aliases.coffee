@@ -6,7 +6,6 @@ express = require('express')
 rfr = require('rfr')
 async = require('async')
 c = rfr('./helpers/constants')
-log = rfr('./helpers/log')
 auth = rfr('./helpers/auth')
 
 # managers
@@ -120,8 +119,6 @@ router.post('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 	deviceId = req.params.deviceId
 	aliases = req.body
 
-	console.log(req.body)
-
 	# build new aliases
 	newAliases = []
 	for k, v of aliases
@@ -132,10 +129,8 @@ router.post('/edit/:deviceId', auth.checkAndRefuse, (req, res) ->
 
 	AliasManager.setAliasesForDevice(deviceId, newAliases, (err) ->
 		if err
-			log.error('Failed to update aliases for device ' + deviceId)
 			req.flash('error', 'Sorry, something went wrong!')
 		else
-			log.event('Edited aliases for device ' + deviceId)
 			req.flash('success', 'Your changes were saved!')
 
 		res.writeHead(302, { Location: '/aliases' })

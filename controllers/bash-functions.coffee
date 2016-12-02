@@ -5,7 +5,6 @@
 express = require('express')
 rfr = require('rfr')
 async = require('async')
-log = rfr('./helpers/log')
 auth = rfr('./helpers/auth')
 
 # managers
@@ -70,14 +69,11 @@ router.post('/edit/:functionId', auth.checkAndRefuse, (req, res) ->
 	FunctionManager.createOrUpdate(functionId, func, (err, functionId, createdNew) ->
 		# forward to list
 		if err
-			log.error('Failed to update function ' + functionId)
 			req.flash('error', 'Sorry, something went wrong!')
 		else
 			if createdNew
-				log.event('Created function ' + functionId)
 				req.flash('success', 'The function <strong>' + func.name + '</strong> was created!')
 			else
-				log.event('Edited function ' + functionId)
 				req.flash('success', 'Your changes were saved!')
 
 		res.writeHead(302, { Location: '/bash-functions' })
@@ -90,10 +86,8 @@ router.get('/delete/:functionId', auth.checkAndRefuse, (req, res) ->
 
 	FunctionManager.delete(functionId, (err) ->
 		if err
-			log.error('Failed to delete function ' + functionId)
 			req.flash('error', 'Sorry, something went wrong!')
 		else
-			log.event('Deleted function ' + functionId)
 			req.flash('info', 'Function deleted.')
 
 		res.writeHead(302, { Location: '/bash-functions' })

@@ -2,6 +2,9 @@ mysql = require('mysql')
 rfr = require('rfr')
 secrets = rfr('./secrets.json')
 
+# TODO: more comprehensive query maker
+# TODO: sorting
+
 module.exports = {
 
 	getConnection: (onComplete) ->
