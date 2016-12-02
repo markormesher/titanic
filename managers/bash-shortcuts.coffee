@@ -17,7 +17,6 @@ exp = {
 		)
 
 	createOrUpdate: (id, shortcut, callback) ->
-		console.log(shortcut)
 		createdNew = false
 		if (id == null || id == 0 || id == '0')
 			# insert
