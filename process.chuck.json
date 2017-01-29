@@ -1,7 +1,7 @@
 {
 	"apps": [
 		{
-			"name": "easymaps-server",
+			"name": "titanic",
 			"cwd": "/var/node/titanic.markormesher.co.uk/",
 			"script": "./titanic.js"
 		}
