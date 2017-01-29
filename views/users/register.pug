@@ -3,6 +3,15 @@ include ../_mixins/forms
 
 block page-body
 
+	-
+		errors = errors || []
+		errs = {
+			invalidEmail: errors.indexOf('invalid email') >= 0,
+			emailExists: errors.indexOf('email exists') >= 0,
+			invalidPassword: errors.indexOf('invalid password') >= 0,
+			passwordMismatch: errors.indexOf('password mismatch') >= 0
+		}
+
 	div.portlet
 		div.portlet-title
 			div.caption
@@ -12,19 +21,27 @@ block page-body
 
 			form(action = '/users/register', method = 'post')
 
-				+form_fieldset
+				+form_fieldset(errs['invalidEmail'] || errs['emailExists'])
 					+form_label('email', 'Email')
-					+form_textInput('email', '', {
+					+form_textInput('email', email || '', {
 						'data-validation': 'required email'
 					})
+					if (errs['invalidEmail'])
+						+form_error('Please enter a valid email address.')
+					if (errs['emailExists'])
+						+form_error('That email address is already registered.')
 
-				+form_fieldset
-					+form_label('password', 'Password')
+				+form_fieldset(errs['invalidPassword'])
+					+form_label('password', 'Password (min. 8 characters)')
 					+form_passwordInput('password')
+					if (errs['invalidPassword'])
+						+form_error('Please enter a valid password.')
 
-				+form_fieldset
+				+form_fieldset(errs['passwordMismatch'])
 					+form_label('confirmPassword', 'Confirm Password')
 					+form_passwordInput('confirmPassword')
+					if (errs['passwordMismatch'])
+						+form_error('Please make sure the passwords match.')
 
 				+form_fieldset
 					+form_button('Register', 'fa-user-plus', {'class': 'btn-success'})

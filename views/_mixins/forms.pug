@@ -1,9 +1,13 @@
-mixin form_fieldset
-	fieldset.form-group
+mixin form_fieldset(error)
+	- error = error || false
+	fieldset(class = ('form-group' + (error ? ' has-error' : '')))
 		block
 
 mixin form_label(field, title)
 	label.control-label(for = field)= title
+
+mixin form_error(message)
+	span.help-block= message
 
 mixin form_textInput(field, value, attrs)
 	- attrs = attrs || {}

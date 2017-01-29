@@ -1,15 +1,14 @@
 LocalPassportStrategy = require('passport-local').Strategy
-crypto = require('crypto')
-
-sha256 = (data) -> crypto.createHash('sha256').update(data).digest('hex')
+rfr = require('rfr')
+auth = rfr('./helpers/auth')
 
 users = {
 	'mark': {
-		password: sha256('pass')
+		password: auth.sha256('pass')
 		name: 'Mark Ormesher'
 	}
 	'kyle': {
-		password: sha256('pass')
+		password: auth.sha256('pass')
 		name: 'Kyle Hodgetts'
 	}
 }
@@ -20,7 +19,7 @@ module.exports = (passport) ->
 	passport.deserializeUser((user, done) -> done(null, JSON.parse(user)))
 
 	passport.use(new LocalPassportStrategy({ passReqToCallback: true }, (req, username, password, done) ->
-			if (users[username] && users[username].password == sha256(password))
+			if (users[username] && users[username].password == auth.sha256(password))
 				return done(null, users[username])
 
 			req.flash('error', 'Invalid username or password!')
