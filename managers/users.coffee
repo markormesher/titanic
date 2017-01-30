@@ -12,13 +12,26 @@ UserManager = {
 	validatePassword: (password) ->
 		return password.length >= 8
 
+	getUserForAuth: (email, password, callback) ->
+		mysql.getConnection((conn) ->
+			[query, values] = mysql.makeSelectQuery('User', {
+				email: email,
+				password: auth.sha256(password)
+			})
+			conn.query(query, values, (err, results) ->
+				if (err) then return callback(err)
+				if (results && results.length == 1) then return callback(null, results[0])
+				return callback(null, null)
+			)
+		)
+
 	getUser: (email, callback) ->
 		mysql.getConnection((conn) ->
 			[query, values] = mysql.makeSelectQuery('User', { email: email })
 			conn.query(query, values, (err, results) ->
-				if (err) then return callback(null, err)
-				if (results.length == 1) then callback(null, results[0])
-				return callback(null)
+				if (err) then return callback(err)
+				if (results && results.length == 1) then callback(null, results[0])
+				return callback(null, null)
 			)
 		)
 

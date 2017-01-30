@@ -9,7 +9,7 @@ block body
 	div#header
 		h1!= _.title
 		if (locals.user)
-			p.auth Logged in as #{locals.user.name} (#[a(href = '/auth/logout') logout])
+			p.auth Logged in as #{locals.user.email} (#[a(href = '/auth/logout') logout])
 
 	div.container
 		div.row
