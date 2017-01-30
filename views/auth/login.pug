@@ -3,6 +3,8 @@ include ../_mixins/forms
 
 block page-body
 
+	pre= JSON.stringify(locals.messages)
+
 	div.portlet
 		div.portlet-title
 			div.caption
@@ -13,10 +15,9 @@ block page-body
 			form(action = '/auth/login', method = 'post')
 
 				+form_fieldset
-					+form_label('username', 'Username')
-					+form_textInput('username', '', {
-						'data-validation': 'required alphanumeric',
-						'data-validation-allowing': '._-'
+					+form_label('username', 'Email')
+					+form_textInput('username', locals.messages.data.username || '', {
+						'data-validation': 'required email'
 					})
 
 				+form_fieldset

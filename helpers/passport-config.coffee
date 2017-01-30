@@ -18,7 +18,8 @@ module.exports = (passport) ->
 			UserManager.getUserForAuth(email, password, (err, result) ->
 				if (err) then return callback(err)
 				if (!result)
-					req.flash('error', 'Invalid username or password!')
+					req.flash('error', 'Invalid email/password combination!')
+					req.flash('data-username', email)
 					return callback(null, false)
 				return callback(null, result)
 			)

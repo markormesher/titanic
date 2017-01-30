@@ -47,6 +47,14 @@ app.use(session({
 	saveUninitialized: true
 }))
 app.use(flash())
+app.use((req, res, next) ->
+	if (req.session.flash)
+		req.session.flash.data = {}
+		for key, value of req.session.flash
+			if (key.substring(0, 5) == 'data-')
+				req.session.flash.data[key.substring(5)] = value[0]
+	next()
+)
 
 # auth config
 rfr('./helpers/passport-config')(passport)
