@@ -4,22 +4,18 @@ auth = rfr('./helpers/auth')
 UserManager = rfr('./managers/users')
 
 module.exports = (passport) ->
-	passport.serializeUser((user, callback) ->
-		callback(null, JSON.stringify(user)))
+	passport.serializeUser((user, callback) -> callback(null, JSON.stringify(user)))
 
-	passport.deserializeUser((user, callback) ->
-		callback(null, JSON.parse(user)))
+	passport.deserializeUser((user, callback) -> callback(null, JSON.parse(user)))
 
 	passport.use(new LocalPassportStrategy(
-		{
-			passReqToCallback: true
-		},
-		(req, email, password, callback) ->
-			UserManager.getUserForAuth(email, password, (err, result) ->
+		{ passReqToCallback: true },
+		(req, username, password, callback) ->
+			UserManager.getUserForAuth(username, password, (err, result) ->
 				if (err) then return callback(err)
 				if (!result)
 					req.flash('error', 'Invalid email/password combination!')
-					req.flash('data-username', email)
+					req.flash('data-username', username)
 					return callback(null, false)
 				return callback(null, result)
 			)
